@@ -1,147 +1,145 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Topic } from '@/data/topics';
+import { useState } from 'react';
+import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 
 interface InfographicViewerProps {
   topic: Topic;
 }
 
+// Hausa: hoton da za a duba
 export default function InfographicViewer({ topic }: InfographicViewerProps) {
-  const [scale, setScale] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState(1);
 
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setScale(prev => Math.min(Math.max(prev * delta, 0.5), 4));
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    setPosition({
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y,
-    });
-  };
-
-  const handleMouseUp = () => setIsDragging(false);
-
-  const resetView = () => {
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
-  };
-
-  // Image paths for responsive loading
-  const imageSrc = `/images/${topic.imageName}-medium.webp`;
+  // Image paths for responsive loading (with language code)
+  const imageSrc = `/images/${topic.imageName}-en-medium.webp`;
   const imageSrcSet = `
-    /images/${topic.imageName}-medium.webp 1200w,
-    /images/${topic.imageName}-large.webp 2400w,
-    /images/${topic.imageName}-original.webp 4800w
+    /images/${topic.imageName}-en-medium.webp 1200w,
+    /images/${topic.imageName}-en-large.webp 2400w,
+    /images/${topic.imageName}-en-original.webp 4800w
   `;
 
+  const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.25, 3));
+  const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
+  const handleReset = () => setZoom(1);
+
   return (
-    <div
-      ref={containerRef}
-      onWheel={handleWheel}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      style={{
-        flex: 1,
-        overflow: 'hidden',
-        cursor: isDragging ? 'grabbing' : 'grab',
+    <div style={{
+      flex: 1,
+      overflow: 'auto',
+      background: '#0a0a0a',
+      WebkitOverflowScrolling: 'touch',
+      position: 'relative',
+    }}>
+      {/* Zoom controls - top right */}
+      <div style={{
+        position: 'fixed',
+        top: '24px',
+        right: '24px',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#0a0a0a',
-        position: 'relative',
-      }}
-    >
-      {/* Infographic image */}
+        gap: '8px',
+        zIndex: 10,
+      }}>
+        <button
+          onClick={handleZoomIn}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '40px',
+            height: '40px',
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid #444',
+            borderRadius: '8px',
+            color: '#fff',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#888';
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#444';
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+          }}
+        >
+          <ZoomIn size={20} />
+        </button>
+        <button
+          onClick={handleZoomOut}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '40px',
+            height: '40px',
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid #444',
+            borderRadius: '8px',
+            color: '#fff',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#888';
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#444';
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+          }}
+        >
+          <ZoomOut size={20} />
+        </button>
+        <button
+          onClick={handleReset}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '40px',
+            height: '40px',
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid #444',
+            borderRadius: '8px',
+            color: '#fff',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#888';
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#444';
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+          }}
+        >
+          <Maximize2 size={20} />
+        </button>
+      </div>
+
+      {/* Full-width image at top, scroll down to see more */}
       <img
         src={imageSrc}
         srcSet={imageSrcSet}
-        sizes="(max-width: 1200px) 100vw, 80vw"
+        sizes="100vw"
         alt={topic.longTitle}
         style={{
-          transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-          transformOrigin: 'center',
-          transition: isDragging ? 'none' : 'transform 0.1s ease-out',
-          maxHeight: '100%',
-          maxWidth: '100%',
-          objectFit: 'contain',
+          width: `${zoom * 100}%`,
+          height: 'auto',
+          display: 'block',
+          transformOrigin: 'top center',
+          transition: 'width 0.2s ease',
         }}
-        draggable={false}
       />
-
-      {/* Zoom controls */}
-      <div style={{
-        position: 'absolute',
-        top: '16px',
-        right: '16px',
-        display: 'flex',
-        gap: '8px',
-      }}>
-        <button
-          onClick={() => setScale(s => Math.min(s * 1.2, 4))}
-          style={{
-            width: '36px',
-            height: '36px',
-            background: '#1a1a1a',
-            border: '1px solid #333',
-            color: '#888',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <ZoomIn size={16} />
-        </button>
-        <button
-          onClick={() => setScale(s => Math.max(s * 0.8, 0.5))}
-          style={{
-            width: '36px',
-            height: '36px',
-            background: '#1a1a1a',
-            border: '1px solid #333',
-            color: '#888',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <ZoomOut size={16} />
-        </button>
-        <button
-          onClick={resetView}
-          style={{
-            width: '36px',
-            height: '36px',
-            background: '#1a1a1a',
-            border: '1px solid #333',
-            color: '#888',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <RotateCcw size={16} />
-        </button>
-      </div>
+      {/* Bottom padding so overlay buttons don't cover content */}
+      <div style={{ height: '120px' }} />
     </div>
   );
 }

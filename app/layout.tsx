@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 export const metadata: Metadata = {
   title: 'Is This Heresy?',
@@ -13,6 +14,12 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
   },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
 };
 
 export default function RootLayout({
@@ -20,9 +27,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Get GA measurement ID from environment variable
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
+
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {gaId && <GoogleAnalytics measurementId={gaId} />}
+        {children}
+      </body>
     </html>
   );
 }

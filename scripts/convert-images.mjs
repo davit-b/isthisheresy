@@ -1,20 +1,24 @@
 /**
  * Image Conversion Script
- * 
+ *
  * Converts PNG files in dev/native-png/ to WebP at multiple sizes
  * and outputs them to public/images/
- * 
+ *
+ * Supports multi-language structure:
+ *   dev/native-png/english/glyphosate.png    → public/images/glyphosate-en-medium.webp
+ *   dev/native-png/spanish/glifosato.png     → public/images/glifosato-es-medium.webp
+ *   dev/native-png/mandarin/草甘膦.png         → public/images/glyphosate-zh-medium.webp
+ *   dev/native-png/russian/глифосат.png      → public/images/glyphosate-ru-medium.webp
+ *
+ * Falls back to root directory for backward compatibility:
+ *   dev/native-png/glyphosate.png            → public/images/glyphosate-medium.webp
+ *
  * Usage: npm run convert-images
- * 
- * Input:  dev/native-png/glyphosate.png
- * Output: public/images/glyphosate-thumb.webp   (200px wide, ~10KB)
- *         public/images/glyphosate-medium.webp  (1200px wide, ~200KB)
- *         public/images/glyphosate-large.webp   (2400px wide, ~500KB)
- *         public/images/glyphosate-original.webp (4800px wide, ~1.5MB)
  */
 
+// Yorùbá: ìṣẹ́ tí ó ń yí àwọn àwòrán padà
 import sharp from 'sharp';
-import { readdir, mkdir } from 'fs/promises';
+import { readdir, mkdir, stat } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 
@@ -28,6 +32,14 @@ const SIZES = [
   { name: 'original', width: 4800, quality: 90 },
 ];
 
+// Language code mapping
+const LANGUAGE_CODES = {
+  'english': 'en',
+  'spanish': 'es',
+  'mandarin': 'zh',
+  'russian': 'ru',
+};
+
 async function convertImages() {
   // Ensure output directory exists
   if (!existsSync(OUTPUT_DIR)) {
@@ -38,55 +50,118 @@ async function convertImages() {
   if (!existsSync(INPUT_DIR)) {
     console.log(`\n❌ Input directory not found: ${INPUT_DIR}`);
     console.log(`\nCreate the directory and add your PNG files:`);
-    console.log(`  mkdir -p ${INPUT_DIR}`);
-    console.log(`  # Then drag your PNG files into ${INPUT_DIR}/\n`);
+    console.log(`  mkdir -p ${INPUT_DIR}/english`);
+    console.log(`  # Then drag your PNG files into ${INPUT_DIR}/english/\n`);
     process.exit(1);
   }
 
-  // Get all PNG files
-  const files = await readdir(INPUT_DIR);
-  const pngFiles = files.filter(f => f.toLowerCase().endsWith('.png'));
+  let totalConverted = 0;
 
-  if (pngFiles.length === 0) {
-    console.log(`\n⚠️  No PNG files found in ${INPUT_DIR}`);
-    console.log(`Add your infographic PNG files to that folder and run again.\n`);
-    process.exit(0);
-  }
+  // Process language subdirectories
+  const entries = await readdir(INPUT_DIR, { withFileTypes: true });
 
-  console.log(`\n🖼️  Found ${pngFiles.length} PNG file(s) to convert:\n`);
+  for (const entry of entries) {
+    if (entry.isDirectory() && LANGUAGE_CODES[entry.name]) {
+      const langFolder = entry.name;
+      const langCode = LANGUAGE_CODES[langFolder];
+      const langPath = path.join(INPUT_DIR, langFolder);
 
-  for (const file of pngFiles) {
-    const baseName = path.basename(file, '.png').toLowerCase().replace(/\s+/g, '-');
-    const inputPath = path.join(INPUT_DIR, file);
-    
-    console.log(`  Converting: ${file}`);
+      console.log(`\n📁 Processing ${langFolder} (${langCode})...`);
 
-    for (const size of SIZES) {
-      const outputPath = path.join(OUTPUT_DIR, `${baseName}-${size.name}.webp`);
-      
-      try {
-        await sharp(inputPath)
-          .resize(size.width, null, { 
-            withoutEnlargement: true,
-            fit: 'inside'
-          })
-          .webp({ quality: size.quality })
-          .toFile(outputPath);
-        
-        console.log(`    ✓ ${baseName}-${size.name}.webp (${size.width}px)`);
-      } catch (err) {
-        console.log(`    ✗ ${size.name}: ${err.message}`);
+      const files = await readdir(langPath);
+      const pngFiles = files.filter(f => f.toLowerCase().endsWith('.png'));
+
+      if (pngFiles.length === 0) {
+        console.log(`   ⚠️  No PNG files found in ${langFolder}/`);
+        continue;
+      }
+
+      for (const file of pngFiles) {
+        const baseName = path.basename(file, '.png').toLowerCase().replace(/\s+/g, '-');
+        const inputPath = path.join(langPath, file);
+
+        console.log(`\n   Converting: ${file}`);
+
+        for (const size of SIZES) {
+          const outputFilename = `${baseName}-${langCode}-${size.name}.webp`;
+          const outputPath = path.join(OUTPUT_DIR, outputFilename);
+
+          try {
+            await sharp(inputPath)
+              .resize(size.width, null, {
+                withoutEnlargement: true,
+                fit: 'inside'
+              })
+              .webp({ quality: size.quality })
+              .toFile(outputPath);
+
+            console.log(`     ✓ ${outputFilename} (${size.width}px)`);
+            totalConverted++;
+          } catch (err) {
+            console.log(`     ✗ ${size.name}: ${err.message}`);
+          }
+        }
       }
     }
-    console.log('');
   }
 
-  console.log(`✅ Done! WebP files saved to ${OUTPUT_DIR}/\n`);
-  
-  // Remind about data/topics.ts
-  console.log(`📝 Remember to update data/topics.ts with your new topics.`);
-  console.log(`   Each topic needs an imageName that matches the base filename.`);
-  console.log(`   Example: glyphosate.png → imageName: 'glyphosate'\n`);
+  // Also process root-level PNGs for backward compatibility (no language code)
+  const rootFiles = await readdir(INPUT_DIR);
+  const rootPngFiles = [];
+
+  for (const file of rootFiles) {
+    const filePath = path.join(INPUT_DIR, file);
+    const stats = await stat(filePath);
+    if (stats.isFile() && file.toLowerCase().endsWith('.png')) {
+      rootPngFiles.push(file);
+    }
+  }
+
+  if (rootPngFiles.length > 0) {
+    console.log(`\n📁 Processing root-level PNGs (default/English)...`);
+
+    for (const file of rootPngFiles) {
+      const baseName = path.basename(file, '.png').toLowerCase().replace(/\s+/g, '-');
+      const inputPath = path.join(INPUT_DIR, file);
+
+      console.log(`\n   Converting: ${file}`);
+
+      for (const size of SIZES) {
+        const outputFilename = `${baseName}-${size.name}.webp`;
+        const outputPath = path.join(OUTPUT_DIR, outputFilename);
+
+        try {
+          await sharp(inputPath)
+            .resize(size.width, null, {
+              withoutEnlargement: true,
+              fit: 'inside'
+            })
+            .webp({ quality: size.quality })
+            .toFile(outputPath);
+
+          console.log(`     ✓ ${outputFilename} (${size.width}px)`);
+          totalConverted++;
+        } catch (err) {
+          console.log(`     ✗ ${size.name}: ${err.message}`);
+        }
+      }
+    }
+  }
+
+  if (totalConverted === 0) {
+    console.log(`\n⚠️  No images were converted.`);
+    console.log(`\nAdd PNG files to language folders:`);
+    console.log(`  ${INPUT_DIR}/english/`);
+    console.log(`  ${INPUT_DIR}/spanish/`);
+    console.log(`  ${INPUT_DIR}/mandarin/`);
+    console.log(`  ${INPUT_DIR}/russian/\n`);
+  } else {
+    console.log(`\n✅ Done! ${totalConverted} WebP files saved to ${OUTPUT_DIR}/\n`);
+
+    console.log(`📝 Remember to update data/topics.ts:`);
+    console.log(`   - imageName should be the base filename without language code`);
+    console.log(`   - Example: glyphosate-en-medium.webp → imageName: 'glyphosate'\n`);
+  }
 }
 
 convertImages().catch(console.error);

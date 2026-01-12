@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { ExternalLink, Share2, ArrowRight } from 'lucide-react';
+import { Share2, ArrowRight } from 'lucide-react';
 import { Topic, getNextTopic } from '@/data/topics';
+import { trackVerifyClick, trackShare, trackTopicRead } from '@/lib/analytics';
+import { useReadStatus } from '@/hooks/useReadStatus';
 
 interface BottomBarProps {
   topic: Topic;
@@ -12,17 +14,32 @@ const aiPlatforms = [
   { name: 'ChatGPT', baseUrl: 'https://chatgpt.com/', param: 'q' },
   { name: 'Gemini', baseUrl: 'https://gemini.google.com/app', param: 'q' },
   { name: 'Grok', baseUrl: 'https://x.com/i/grok', param: 'text' },
-];
+] as const;
 
-function getVerifyUrl(platform: typeof aiPlatforms[0], prompt: string) {
+function getVerifyUrl(platform: typeof aiPlatforms[number], prompt: string) {
   return `${platform.baseUrl}?${platform.param}=${encodeURIComponent(prompt)}`;
 }
 
 export default function BottomBar({ topic }: BottomBarProps) {
   const nextTopic = getNextTopic(topic.id);
+  const { markAsRead } = useReadStatus();
+
+  const handleVerifyClick = (platformName: string) => {
+    const provider = platformName.toLowerCase() as 'chatgpt' | 'gemini' | 'grok';
+    trackVerifyClick(provider, topic.id);
+  };
+
+  const handleNextClick = () => {
+    // Mark current topic as read when clicking NEXT
+    markAsRead(topic.id);
+    trackTopicRead(topic.id, topic.longTitle);
+  };
 
   const handleShare = async () => {
     const url = `https://isthisheresy.com/${topic.id}`;
+    const method = navigator.share ? 'native_share' : 'clipboard';
+    trackShare(method, topic.id);
+
     if (navigator.share) {
       await navigator.share({
         title: topic.longTitle,
@@ -36,140 +53,137 @@ export default function BottomBar({ topic }: BottomBarProps) {
   };
 
   return (
-    <div style={{
-      borderTop: '1px solid #222',
-      padding: '16px 24px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      background: '#000',
-    }}>
-      {/* Verify buttons */}
-      {aiPlatforms.map((platform) => (
-        <a
-          key={platform.name}
-          href={getVerifyUrl(platform, topic.verifyPrompt)}
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      {/* Verify buttons - stacked vertically on the left */}
+      <div style={{
+        position: 'fixed',
+        bottom: '24px',
+        left: '224px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        zIndex: 10,
+      }}>
+        {aiPlatforms.map((platform) => (
+          <a
+            key={platform.name}
+            href={getVerifyUrl(platform, topic.verifyPrompt)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => handleVerifyClick(platform.name)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '10px 16px',
+              background: 'rgba(0, 0, 0, 0.8)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid #444',
+              borderRadius: '8px',
+              color: '#fff',
+              textDecoration: 'none',
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '11px',
+              fontWeight: '600',
+              letterSpacing: '0.5px',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#888';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#444';
+              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+            }}
+          >
+            VERIFY WITH {platform.name.toUpperCase()}
+          </a>
+        ))}
+      </div>
+
+      {/* Share and Next buttons - stacked on the right */}
+      <div style={{
+        position: 'fixed',
+        bottom: '24px',
+        right: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        zIndex: 10,
+      }}>
+        {/* Share button */}
+        <button
+          onClick={handleShare}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '6px',
+            justifyContent: 'center',
+            gap: '8px',
             padding: '10px 16px',
-            background: 'transparent',
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(10px)',
             border: '1px solid #444',
+            borderRadius: '8px',
             color: '#fff',
-            textDecoration: 'none',
             fontFamily: "'Space Mono', monospace",
             fontSize: '11px',
+            fontWeight: '600',
             letterSpacing: '0.5px',
+            cursor: 'pointer',
             transition: 'all 0.15s ease',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.borderColor = '#888';
-            e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.borderColor = '#444';
-            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
           }}
         >
-          VERIFY · {platform.name.toUpperCase()}
-          <ExternalLink size={11} />
-        </a>
-      ))}
+          <Share2 size={14} />
+          SHARE
+        </button>
 
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
-
-      {/* Share button */}
-      <button
-        onClick={handleShare}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          padding: '10px 16px',
-          background: 'transparent',
-          border: '1px solid #444',
-          color: '#fff',
-          fontFamily: "'Space Mono', monospace",
-          fontSize: '11px',
-          letterSpacing: '0.5px',
-          cursor: 'pointer',
-          transition: 'all 0.15s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = '#888';
-          e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = '#444';
-          e.currentTarget.style.background = 'transparent';
-        }}
-      >
-        <Share2 size={11} />
-        SHARE
-      </button>
-
-      {/* Next infographic preview */}
-      <Link
-        href={`/${nextTopic.id}`}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          padding: '8px 16px 8px 8px',
-          background: 'rgba(255,255,255,0.03)',
-          border: '1px solid #444',
-          cursor: 'pointer',
-          transition: 'all 0.15s ease',
-          textDecoration: 'none',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = '#888';
-          e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = '#444';
-          e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-        }}
-      >
-        {/* Thumbnail */}
-        <div style={{
-          width: '48px',
-          height: '48px',
-          background: '#1a1a1a',
-          backgroundImage: `url(/images/${nextTopic.imageName}-thumb.webp)`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          borderRadius: '4px',
-          flexShrink: 0,
-        }} />
-        {/* Text */}
-        <div style={{ textAlign: 'left' }}>
+        {/* Next button */}
+        <Link
+          href={`/${nextTopic.id}`}
+          onClick={handleNextClick}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '10px 16px',
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid #444',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            textDecoration: 'none',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#888';
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#444';
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+          }}
+        >
           <div style={{
             fontFamily: "'Space Mono', monospace",
-            fontSize: '10px',
-            color: '#888',
-            letterSpacing: '1px',
-            marginBottom: '4px',
-          }}>
-            NEXT
-          </div>
-          <div style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: '13px',
-            fontWeight: '700',
+            fontSize: '11px',
+            fontWeight: '600',
             color: '#fff',
             letterSpacing: '0.5px',
           }}>
-            {nextTopic.brickTitle}
+            NEXT: {nextTopic.brickTitle}
           </div>
-        </div>
-        {/* Arrow */}
-        <ArrowRight size={16} color="#888" style={{ marginLeft: '8px' }} />
-      </Link>
-    </div>
+          <ArrowRight size={14} color="#fff" />
+        </Link>
+      </div>
+    </>
   );
 }

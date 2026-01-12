@@ -4,6 +4,7 @@ import { topics, getTopicById } from '@/data/topics';
 import LeftRail from '@/components/LeftRail';
 import InfographicViewer from '@/components/InfographicViewer';
 import BottomBar from '@/components/BottomBar';
+import ReadTracker from '@/components/ReadTracker';
 
 interface PageProps {
   params: { topic: string };
@@ -64,12 +65,14 @@ export default function TopicPage({ params }: PageProps) {
       display: 'flex',
       overflow: 'hidden',
     }}>
+      <ReadTracker topicId={topic.id} />
       <LeftRail currentTopic={topic} />
-      
+
       <div style={{
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
       }}>
         {/* Title header for long titles */}
         {topic.brickTitle.length > 15 && (
@@ -87,8 +90,10 @@ export default function TopicPage({ params }: PageProps) {
         )}
 
         <InfographicViewer topic={topic} />
-        <BottomBar topic={topic} />
       </div>
+
+      {/* Fixed overlay buttons */}
+      <BottomBar topic={topic} />
     </div>
   );
 }
