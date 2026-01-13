@@ -289,6 +289,9 @@ export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenu
           >
             REQUEST
           </button>
+
+          {/* Bottom spacer for scroll clearance */}
+          <div style={{ height: '80px' }} />
         </div>
       </div>
 

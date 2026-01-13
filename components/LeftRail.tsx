@@ -316,6 +316,9 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
               REQUEST
             </button>
           </div>
+
+          {/* Bottom spacer for scroll clearance */}
+          <div style={{ height: '80px' }} />
         </div>
       </div>
 
