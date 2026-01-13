@@ -13,7 +13,8 @@
  * Falls back to root directory for backward compatibility:
  *   dev/native-png/glyphosate.png            → public/images/glyphosate-medium.webp
  *
- * Usage: npm run convert-images
+ * Usage: npm run convert-images          # Incremental (only new/changed)
+ *        npm run convert-images -- --force  # Force reconvert all
  */
 
 // Yorùbá: ìṣẹ́ tí ó ń yí àwọn àwòrán padà
@@ -21,6 +22,9 @@ import sharp from 'sharp';
 import { readdir, mkdir, stat } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+
+// Check if we should force reconversion of all images
+const FORCE_ALL = process.argv.includes('--force');
 
 const INPUT_DIR = './dev/native-png';
 const OUTPUT_DIR = './public/images';
@@ -40,6 +44,26 @@ const LANGUAGE_CODES = {
   'russian': 'ru',
 };
 
+/**
+ * Check if conversion is needed by comparing modification times.
+ * Returns true if output doesn't exist or source is newer than output.
+ */
+async function needsConversion(inputPath, outputPath) {
+  if (FORCE_ALL) return true;
+  if (!existsSync(outputPath)) return true;
+
+  try {
+    const [inputStat, outputStat] = await Promise.all([
+      stat(inputPath),
+      stat(outputPath)
+    ]);
+    // Convert if source PNG is newer than output WebP
+    return inputStat.mtimeMs > outputStat.mtimeMs;
+  } catch {
+    return true; // If we can't check, convert anyway
+  }
+}
+
 async function convertImages() {
   // Ensure output directory exists
   if (!existsSync(OUTPUT_DIR)) {
@@ -56,6 +80,7 @@ async function convertImages() {
   }
 
   let totalConverted = 0;
+  let totalSkipped = 0;
 
   // Process language subdirectories
   const entries = await readdir(INPUT_DIR, { withFileTypes: true });
@@ -80,11 +105,22 @@ async function convertImages() {
         const baseName = path.basename(file, '.png').toLowerCase().replace(/\s+/g, '-');
         const inputPath = path.join(langPath, file);
 
-        console.log(`\n   Converting: ${file}`);
+        let convertedAny = false;
+        let skippedAll = true;
 
         for (const size of SIZES) {
           const outputFilename = `${baseName}-${langCode}-${size.name}.webp`;
           const outputPath = path.join(OUTPUT_DIR, outputFilename);
+
+          if (!await needsConversion(inputPath, outputPath)) {
+            continue; // Skip - already up to date
+          }
+
+          if (!convertedAny) {
+            console.log(`\n   Converting: ${file}`);
+            convertedAny = true;
+          }
+          skippedAll = false;
 
           try {
             await sharp(inputPath)
@@ -100,6 +136,10 @@ async function convertImages() {
           } catch (err) {
             console.log(`     ✗ ${size.name}: ${err.message}`);
           }
+        }
+
+        if (skippedAll) {
+          totalSkipped++;
         }
       }
     }
@@ -124,11 +164,22 @@ async function convertImages() {
       const baseName = path.basename(file, '.png').toLowerCase().replace(/\s+/g, '-');
       const inputPath = path.join(INPUT_DIR, file);
 
-      console.log(`\n   Converting: ${file}`);
+      let convertedAny = false;
+      let skippedAll = true;
 
       for (const size of SIZES) {
         const outputFilename = `${baseName}-${size.name}.webp`;
         const outputPath = path.join(OUTPUT_DIR, outputFilename);
+
+        if (!await needsConversion(inputPath, outputPath)) {
+          continue; // Skip - already up to date
+        }
+
+        if (!convertedAny) {
+          console.log(`\n   Converting: ${file}`);
+          convertedAny = true;
+        }
+        skippedAll = false;
 
         try {
           await sharp(inputPath)
@@ -145,18 +196,29 @@ async function convertImages() {
           console.log(`     ✗ ${size.name}: ${err.message}`);
         }
       }
+
+      if (skippedAll) {
+        totalSkipped++;
+      }
     }
   }
 
-  if (totalConverted === 0) {
+  if (totalConverted === 0 && totalSkipped === 0) {
     console.log(`\n⚠️  No images were converted.`);
     console.log(`\nAdd PNG files to language folders:`);
     console.log(`  ${INPUT_DIR}/english/`);
     console.log(`  ${INPUT_DIR}/spanish/`);
     console.log(`  ${INPUT_DIR}/mandarin/`);
     console.log(`  ${INPUT_DIR}/russian/\n`);
+  } else if (totalConverted === 0 && totalSkipped > 0) {
+    console.log(`\n✅ All ${totalSkipped} image(s) already up to date. Nothing to convert.`);
+    console.log(`   Use --force to reconvert all images.\n`);
   } else {
-    console.log(`\n✅ Done! ${totalConverted} WebP files saved to ${OUTPUT_DIR}/\n`);
+    console.log(`\n✅ Done! ${totalConverted} WebP files converted.`);
+    if (totalSkipped > 0) {
+      console.log(`   ${totalSkipped} image(s) skipped (already up to date).`);
+    }
+    console.log(`   Use --force to reconvert all images.\n`);
 
     console.log(`📝 Remember to update data/topics.ts:`);
     console.log(`   - imageName should be the base filename without language code`);
