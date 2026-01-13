@@ -3,47 +3,50 @@
 ## High Priority
 
 ### 1. Homepage Redesign - Gold Styling
-- [ ] Invert gold styling: make the font/text gold instead of background fill
-- [ ] Current: gold background with black text
-- [ ] Target: transparent/dark background with gold text
+- [x] Invert gold styling: make the font/text gold instead of background fill
+- [x] Current: gold background with black text
+- [x] Target: transparent/dark background with gold text
 
 ### 2. Homepage Brick Styling
-- [ ] Reduce font weight on homepage bricks - currently too bold and hard to read
-- [ ] Font looks "fat" and difficult to parse
-- [ ] Adjust to more readable weight (maybe 500 or 600 instead of 700)
+- [x] Reduce font weight on homepage bricks - currently too bold and hard to read
+- [x] Font looks "fat" and difficult to parse
+- [x] Adjust to more readable weight (maybe 500 or 600 instead of 700)
 
 ### 3. Favicon
-- [ ] Design and add favicon for the website
-- [ ] Add to `public/` directory
-- [ ] Update `app/layout.tsx` to include favicon link
+- [x] Design and add favicon for the website
+- [x] Add to `public/` directory
+- [x] Update `app/layout.tsx` to include favicon link
+- [x] Simple SVG: black circle with white "H"
 
 ### 4. Homepage Footer
-- [ ] Add footer to homepage with text: "the only constant is change"
-- [ ] Style to match the minimalist aesthetic
+- [x] Add footer to homepage with text: "the only constant is change"
+- [x] Style to match the minimalist aesthetic
 
 ### 5. Fix Rail Flashing Animation
-- [ ] SECRET button appears briefly then disappears on navigation
-- [ ] Causes REQUEST button to shift down (layout jump)
-- [ ] Likely caused by localStorage check delay on mount
-- [ ] Fix: either pre-render with correct state or prevent flash with CSS
+- [x] SECRET button appears briefly then disappears on navigation
+- [x] Causes REQUEST button to shift down (layout jump)
+- [x] Likely caused by localStorage check delay on mount
+- [x] Fix: Use null loading state, only render SECRET after localStorage check
 
 ### 6. OpenGraph Meta Tags
-- [ ] Add OpenGraph tags for rich link previews
-- [ ] Each topic page should show:
+- [x] Add OpenGraph tags for rich link previews
+- [x] Each topic page should show:
   - Topic title (og:title)
   - Share snippet description (og:description)
-  - Thumbnail image (og:image) - need to generate preview images
+  - Thumbnail image (og:image) - using infographic images
   - URL (og:url)
-- [ ] Add to dynamic `[topic]/page.tsx`
-- [ ] Generate social preview images for each infographic
+- [x] Add to dynamic `[topic]/page.tsx`
+- [x] Fixed image paths to use -en-medium.webp with absolute URLs
 
 ### 7. SEO Improvements
-- [ ] Add proper meta descriptions for each page
-- [ ] Add structured data (JSON-LD) for articles
-- [ ] Optimize page titles
-- [ ] Add sitemap.xml
-- [ ] Add robots.txt
-- [ ] Improve semantic HTML structure
+- [x] Add proper meta descriptions for each page
+- [x] Add structured data (JSON-LD) for articles
+- [x] Optimize page titles
+- [x] Add sitemap.xml (dynamic sitemap.ts)
+- [x] Add robots.txt
+- [x] Added canonical URLs
+- [x] Homepage: WebSite schema
+- [x] Topic pages: Article schema
 
 ### 8. Google Analytics
 - [x] Google Analytics already set up and tracking
