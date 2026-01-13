@@ -20,22 +20,31 @@ export function generateStaticParams() {
 // Generate metadata for each topic (OpenGraph)
 export function generateMetadata({ params }: PageProps): Metadata {
   const topic = getTopicById(params.topic);
-  
+
   if (!topic) {
     return { title: 'Not Found' };
   }
 
+  const baseUrl = 'https://isthisheresy.com';
+  const imageUrl = `${baseUrl}/images/${topic.imageName}-en-medium.webp`;
+  const pageUrl = `${baseUrl}/${topic.id}`;
+
   return {
     title: `${topic.longTitle} | Is This Heresy?`,
     description: topic.shareSnippet,
+    metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
       title: topic.longTitle,
       description: topic.shareSnippet,
+      url: pageUrl,
       type: 'article',
       siteName: 'Is This Heresy?',
       images: [
         {
-          url: `/images/${topic.imageName}-medium.webp`,
+          url: imageUrl,
           width: 1200,
           height: 1800,
           alt: topic.longTitle,
@@ -46,7 +55,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
       card: 'summary_large_image',
       title: topic.longTitle,
       description: topic.shareSnippet,
-      images: [`/images/${topic.imageName}-medium.webp`],
+      images: [imageUrl],
     },
   };
 }
@@ -58,14 +67,44 @@ export default function TopicPage({ params }: PageProps) {
     notFound();
   }
 
+  // Structured data for topic article
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: topic.longTitle,
+    description: topic.shareSnippet,
+    image: `https://isthisheresy.com/images/${topic.imageName}-en-medium.webp`,
+    author: {
+      '@type': 'Organization',
+      name: 'Is This Heresy?',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Is This Heresy?',
+      url: 'https://isthisheresy.com',
+    },
+    url: `https://isthisheresy.com/${topic.id}`,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://isthisheresy.com/${topic.id}`,
+    },
+  };
+
   return (
-    <div style={{
-      height: '100vh',
-      background: '#000',
-      display: 'flex',
-      overflow: 'hidden',
-    }}>
-      <ReadTracker topicId={topic.id} />
+    <>
+      {/* Structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+
+      <div style={{
+        height: '100vh',
+        background: '#000',
+        display: 'flex',
+        overflow: 'hidden',
+      }}>
+        <ReadTracker topicId={topic.id} />
       <LeftRail currentTopic={topic} />
 
       <div style={{
@@ -92,8 +131,9 @@ export default function TopicPage({ params }: PageProps) {
         <InfographicViewer topic={topic} />
       </div>
 
-      {/* Fixed overlay buttons */}
-      <BottomBar topic={topic} />
-    </div>
+        {/* Fixed overlay buttons */}
+        <BottomBar topic={topic} />
+      </div>
+    </>
   );
 }

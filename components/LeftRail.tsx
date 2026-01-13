@@ -15,7 +15,7 @@ interface LeftRailProps {
 export default function LeftRail({ currentTopic }: LeftRailProps) {
   const [showPasscodeModal, setShowPasscodeModal] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null); // null = loading
   const { isRead, isInitialized } = useReadStatus();
 
   // Check unlock status on mount
@@ -138,8 +138,8 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
             </div>
           ))}
 
-          {/* Secret item (looks like a regular menu item) */}
-          {!isUnlocked && (
+          {/* Secret item (looks like a regular menu item) - only show after loading */}
+          {isUnlocked !== null && !isUnlocked && (
             <button
               onClick={() => setShowPasscodeModal(true)}
               style={{
