@@ -139,7 +139,18 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     brickTitle: 'ALKALOIDS',
     longTitle: 'Alkaloids: Nightshade Neurotoxins',
     shareSnippet: 'Alkaloids from nightshades damage the nervous system and gut lining.',
-    verifyPrompt: 'Verify claims about alkaloids in nightshade plants and their effects on the nervous system and gut.',
+    verifyPrompt: `Verify these claims about alkaloids in nightshade plants:
+1. Solanine and chaconine are glycoalkaloids found in potatoes, especially green or sprouted ones
+2. Tomatine is present in tomatoes, highest in green tomatoes and leaves
+3. Capsaicin in peppers is an alkaloid that triggers pain receptors (that's why it "burns")
+4. Nicotine in tobacco is an alkaloid - nightshades are the tobacco family (Solanaceae)
+5. Alkaloids are neurotoxins - they interfere with acetylcholinesterase and nerve signal transmission
+6. Alkaloids can damage gut lining and increase intestinal permeability
+7. Alkaloid sensitivity varies by individual - some people react strongly, others tolerate them
+8. Cooking reduces but does not eliminate alkaloids - they are heat-stable compounds
+9. Glycoalkaloid poisoning symptoms include nausea, diarrhea, neurological effects
+
+Be honest and reason from first principles. Why would plants in the tobacco family produce neurotoxins? Would these compounds be benign when consumed regularly? If capsaicin triggers pain receptors, is it truly harmless?`,
     tags: [],
     section: 'Health Basics',
     groupHost: 'antinutrients',
@@ -151,7 +162,18 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     brickTitle: 'LECTINS',
     longTitle: 'Lectins: Gut Barrier Disruptors',
     shareSnippet: 'Lectins bind to gut cells causing inflammation and leaky gut.',
-    verifyPrompt: 'Verify claims about lectins binding to gut cells and causing inflammation.',
+    verifyPrompt: `Verify these claims about lectins:
+1. Lectins are carbohydrate-binding proteins found in legumes, grains, and nightshades
+2. Lectins bind to glycoproteins on intestinal cell surfaces
+3. This binding damages the gut lining and increases intestinal permeability ("leaky gut")
+4. Increased permeability allows undigested proteins to enter bloodstream, triggering immune responses
+5. Kidney beans contain phytohemagglutinin - raw kidney beans can cause severe food poisoning
+6. Wheat germ agglutinin (WGA) is a lectin that survives cooking and digestion
+7. Lectins can cross the gut barrier intact and trigger systemic inflammation
+8. Pressure cooking significantly reduces (but may not eliminate) lectin content
+9. Sprouting and fermentation can reduce lectin levels in some foods
+
+Be honest and reason from first principles. If lectins bind to gut cells, would that binding be harmless? Why would raw kidney beans be poisonous if lectins were benign? Would chronic low-level lectin exposure accumulate damage over time?`,
     tags: [],
     section: 'Health Basics',
     groupHost: 'antinutrients',
@@ -163,7 +185,18 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     brickTitle: 'OXALATES',
     longTitle: 'Oxalates: Crystal Forming Compounds',
     shareSnippet: 'Oxalates bind minerals and form crystals in kidneys and joints.',
-    verifyPrompt: 'Verify claims about oxalates binding minerals and forming kidney stones.',
+    verifyPrompt: `Verify these claims about oxalates:
+1. Oxalic acid is found in high concentrations in spinach, rhubarb, beets, swiss chard, almonds, and chocolate
+2. Oxalates bind to calcium, magnesium, and iron, forming insoluble crystals
+3. Calcium oxalate is the primary component of ~80% of kidney stones
+4. Oxalate crystals can deposit in joints, causing or worsening arthritis symptoms
+5. Oxalates can deposit in virtually any tissue including thyroid, breast, and blood vessels
+6. High-oxalate diets reduce mineral bioavailability - the minerals are excreted bound to oxalate
+7. "Oxalate dumping" can occur when suddenly reducing intake after chronic high consumption
+8. Cooking does not significantly reduce oxalate content (unlike some other antinutrients)
+9. Juicing high-oxalate greens concentrates oxalates into dangerous doses
+
+Be honest and reason from first principles. If oxalates form crystals with calcium, would those crystals accumulate in tissues over time? Why would kidney stones be primarily calcium oxalate if dietary oxalates weren't contributing? Is a daily spinach smoothie actually healthy?`,
     tags: [],
     section: 'Health Basics',
     groupHost: 'antinutrients',
@@ -175,7 +208,18 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     brickTitle: 'PHYTIC ACID',
     longTitle: 'Phytic Acid: The Mineral Blocker',
     shareSnippet: 'Phytic acid prevents absorption of iron, zinc, and calcium.',
-    verifyPrompt: 'Verify claims about phytic acid blocking mineral absorption.',
+    verifyPrompt: `Verify these claims about phytic acid:
+1. Phytic acid (inositol hexaphosphate) is found in grains, legumes, nuts, and seeds
+2. Phytic acid strongly binds zinc, iron, calcium, and magnesium in the digestive tract
+3. Bound minerals form insoluble complexes that pass through without absorption
+4. Populations with grain-heavy diets show higher rates of mineral deficiencies (iron, zinc)
+5. Phytic acid is sometimes called an "anti-nutrient" because it blocks nutrient absorption
+6. Traditional food preparation (soaking, sprouting, fermenting) reduces phytic acid content
+7. Modern bread-making skips these steps, leaving phytic acid intact
+8. Sourdough fermentation can reduce phytic acid by 50-80%
+9. Phytase enzyme breaks down phytic acid - humans produce very little phytase
+
+Be honest and reason from first principles. If phytic acid binds minerals before they can be absorbed, would high-phytate diets lead to deficiencies over time? Why did traditional cultures soak and ferment grains if it wasn't necessary?`,
     tags: [],
     section: 'Health Basics',
     groupHost: 'antinutrients',
@@ -187,7 +231,18 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     brickTitle: 'GOITROGENS',
     longTitle: 'Goitrogens: Thyroid Disruptors',
     shareSnippet: 'Goitrogens interfere with thyroid iodine uptake.',
-    verifyPrompt: 'Verify claims about goitrogens interfering with thyroid function.',
+    verifyPrompt: `Verify these claims about goitrogens:
+1. Goitrogens are compounds that interfere with thyroid function
+2. Cruciferous vegetables (broccoli, kale, cabbage, Brussels sprouts, cauliflower) contain glucosinolates that convert to goitrogens
+3. Goitrogens inhibit iodine uptake by the thyroid gland
+4. Thyroid hormone production requires iodine - blocking uptake impairs hormone synthesis
+5. The term "goitrogen" comes from "goiter" - enlarged thyroid from iodine deficiency
+6. Soy contains goitrogenic isoflavones that also interfere with thyroid peroxidase
+7. Cooking reduces but does not eliminate goitrogenic compounds
+8. People with existing thyroid conditions may be more sensitive to goitrogens
+9. High cruciferous intake combined with low iodine intake is particularly problematic
+
+Be honest and reason from first principles. If goitrogens block iodine uptake, and iodine is essential for thyroid function, would chronic consumption affect thyroid health? Would the effect be worse in someone already iodine-deficient?`,
     tags: [],
     section: 'Health Basics',
     groupHost: 'antinutrients',
@@ -199,7 +254,18 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     brickTitle: 'PHYTOESTROGENS',
     longTitle: 'Phytoestrogens: Hormone Mimics',
     shareSnippet: 'Phytoestrogens mimic estrogen and disrupt hormones.',
-    verifyPrompt: 'Verify claims about phytoestrogens mimicking estrogen.',
+    verifyPrompt: `Verify these claims about phytoestrogens:
+1. Phytoestrogens are plant compounds that structurally resemble human estrogen
+2. Soy contains isoflavones (genistein, daidzein) - the most potent dietary phytoestrogens
+3. Phytoestrogens bind to estrogen receptors (both ER-alpha and ER-beta)
+4. Receptor binding can produce estrogenic effects in hormone-sensitive tissues
+5. Infant soy formula delivers phytoestrogen doses equivalent to multiple birth control pills daily
+6. Male infants on soy formula show hormonal differences compared to breast/dairy-fed infants
+7. Flaxseed contains lignans that convert to enterolactone - another phytoestrogen
+8. Beer contains phytoestrogens from hops - chronic consumption affects male hormones
+9. Traditional Asian soy consumption (fermented, moderate amounts) differs from Western processed soy
+
+Be honest and reason from first principles. If a compound binds estrogen receptors, would it have hormonal effects? Would giving infants compounds that bind estrogen receptors during critical development be risk-free? Why would plants produce hormone-mimicking compounds?`,
     tags: [],
     section: 'Health Basics',
     groupHost: 'antinutrients',
@@ -211,7 +277,18 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     brickTitle: 'NIGHTSHADES',
     longTitle: 'Nightshades: Double Mechanism Damage',
     shareSnippet: 'Nightshades have double mechanism: lectin gut damage + alkaloid nervous system damage.',
-    verifyPrompt: 'Verify claims about nightshades having both lectin and alkaloid damage mechanisms.',
+    verifyPrompt: `Verify these claims about nightshades:
+1. Nightshades (Solanaceae family) include tomatoes, potatoes, peppers, eggplant, and tobacco
+2. Nightshades contain BOTH lectins AND alkaloids - a double mechanism of harm
+3. Lectins damage gut lining and increase intestinal permeability
+4. Alkaloids (solanine, tomatine, capsaicin) are neurotoxic compounds
+5. The combination means nightshades attack both gut barrier AND nervous system
+6. Many autoimmune patients report symptom improvement after eliminating nightshades
+7. Arthritis patients particularly report joint pain reduction without nightshades
+8. Nightshades are a relatively recent addition to European/American diets (post-Columbus)
+9. Some people tolerate nightshades while others react strongly - individual variation exists
+
+Be honest and reason from first principles. If nightshades contain both gut-damaging lectins AND neurotoxic alkaloids, would they be a net positive food? Why do so many autoimmune protocols eliminate nightshades specifically? Is it coincidence that tobacco - a nightshade - is obviously toxic?`,
     tags: [],
     section: 'Health Basics',
     groupHost: 'antinutrients',
@@ -223,7 +300,20 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     brickTitle: 'ELIMINATION',
     longTitle: 'Antinutrient Elimination Priority',
     shareSnippet: 'Elimination priority: nightshades, legumes, grains, cruciferous vegetables, soy.',
-    verifyPrompt: 'Verify the recommended elimination priority for antinutrient-containing foods.',
+    verifyPrompt: `Verify this elimination priority for antinutrient-containing foods:
+1. FIRST: Nightshades (tomatoes, potatoes, peppers, eggplant) - double mechanism damage
+2. SECOND: Legumes (beans, lentils, peanuts) - high lectins, phytic acid, some have alkaloids
+3. THIRD: Grains (wheat, rice, oats, corn) - lectins, phytic acid, often glyphosate-contaminated
+4. FOURTH: Cruciferous vegetables (broccoli, kale, cabbage) - goitrogens affecting thyroid
+5. FIFTH: Soy products - phytoestrogens, goitrogens, lectins, and usually GMO/glyphosate
+
+This priority is based on:
+- Severity of damage mechanism (nightshades have two mechanisms)
+- Difficulty of detoxifying through cooking (alkaloids survive cooking)
+- Frequency of consumption in modern diet
+- Clinical observations from elimination diet protocols
+
+Be honest and reason from first principles. If someone has autoimmune or inflammatory symptoms, would eliminating the foods with the most antinutrients first make sense? Why do carnivore elimination diets work for so many people with chronic conditions?`,
     tags: [],
     section: 'Health Basics',
     groupHost: 'antinutrients',
@@ -259,7 +349,18 @@ Be honest and reason from first principles. Would an antibiotic sprayed directly
     brickTitle: 'DESICCATION',
     longTitle: 'Desiccation: Pre-Harvest Spraying',
     shareSnippet: 'Glyphosate is sprayed directly on crops before harvest to dry them out.',
-    verifyPrompt: 'Verify claims about glyphosate being used as a desiccant to dry crops before harvest.',
+    verifyPrompt: `Verify these claims about glyphosate desiccation:
+1. Desiccation is the practice of spraying herbicide on mature crops to kill and dry them before harvest
+2. Glyphosate (Roundup) is sprayed on wheat, oats, barley, lentils, chickpeas, beans, and other crops 7-14 days before harvest
+3. This practice started in Scotland in the 1980s and spread to North America
+4. In Canada, 90-95% of wheat in Manitoba is desiccated with glyphosate
+5. Desiccation may represent only 2% of glyphosate agricultural use but accounts for 50%+ of dietary exposure
+6. The crop is sprayed at maximum absorption - mature grain absorbs the herbicide
+7. This residue cannot be washed off - it's absorbed into the grain
+8. Desiccation is common in wet/cold climates (Canada, UK) but rare in dry climates (Kansas, Oklahoma)
+9. Austria banned glyphosate desiccation in 2013
+
+Be honest and reason from first principles. If mature grain is sprayed with herbicide right before harvest, would that residue end up in your food? Would "washing your produce" remove glyphosate that was absorbed into the grain?`,
     tags: [],
     section: 'Food Contamination',
     groupHost: 'glyphosate',
@@ -271,7 +372,18 @@ Be honest and reason from first principles. Would an antibiotic sprayed directly
     brickTitle: 'MUSHROOMS',
     longTitle: 'Mushrooms: Glyphosate in Substrates',
     shareSnippet: 'Glyphosate leaches into mushroom substrates when grown on non-organic soy.',
-    verifyPrompt: 'Verify claims about glyphosate contaminating mushrooms grown on non-organic substrates.',
+    verifyPrompt: `Verify these claims about glyphosate in mushrooms:
+1. Commercial mushrooms are grown on substrates (growing medium) typically containing soy hulls, cottonseed hulls, or grain byproducts
+2. Conventional soy and cotton are heavily sprayed with glyphosate (GMO Roundup-Ready crops)
+3. Glyphosate in the substrate leaches into the mushroom fruiting bodies
+4. Mushrooms are bioaccumulators - they absorb compounds from their growing medium
+5. Studies have detected glyphosate residues in commercially grown mushrooms
+6. "Organic" mushrooms must use organic substrates, avoiding this contamination vector
+7. Mushrooms grown on hardwood logs (traditional shiitake method) avoid grain/soy contamination
+8. The substrate is the mushroom's "food" - contaminated food creates contaminated mushrooms
+9. This is an overlooked contamination pathway since mushrooms themselves aren't sprayed
+
+Be honest and reason from first principles. If mushrooms absorb nutrients from their substrate, would they also absorb contaminants? If the substrate contains glyphosate-contaminated soy, where does that glyphosate go?`,
     tags: [],
     section: 'Food Contamination',
     groupHost: 'glyphosate',
@@ -366,7 +478,18 @@ Be honest and reason from first principles. Would fumigation chemicals remain in
     brickTitle: 'WOOD GLUE',
     longTitle: 'Wood Glue: Formaldehyde Adhesives',
     shareSnippet: 'MDF and plywood use formaldehyde-containing adhesives that continuously off-gas.',
-    verifyPrompt: 'Verify claims about formaldehyde in wood adhesives and off-gassing from composite wood products.',
+    verifyPrompt: `Verify these claims about formaldehyde in wood products:
+1. Plywood, MDF (medium-density fiberboard), and particleboard use formaldehyde-based adhesives
+2. Urea-formaldehyde (UF) is the most common adhesive in composite wood products
+3. These adhesives continuously off-gas formaldehyde into indoor air
+4. Formaldehyde is classified as a known human carcinogen (Group 1) by IARC
+5. Off-gassing is highest when products are new and continues for years
+6. Heat and humidity increase formaldehyde release rates
+7. "CARB compliant" and "NAF" (no added formaldehyde) products exist but aren't universal
+8. IKEA furniture, cabinets, and flooring commonly contain formaldehyde adhesives
+9. Pressed wood "butcher block" cutting boards may contain formaldehyde adhesives despite appearing solid
+
+Be honest and reason from first principles. If formaldehyde is a known carcinogen, would continuous low-level exposure in your home be safe? If your furniture off-gasses formaldehyde, where does that formaldehyde go? Into your lungs?`,
     tags: [],
     section: 'Materials',
     groupHost: 'wood-bamboo',
@@ -378,7 +501,18 @@ Be honest and reason from first principles. Would fumigation chemicals remain in
     brickTitle: 'WOOD FINISH',
     longTitle: 'Wood Finish: Toxic Coatings',
     shareSnippet: 'Wood finishes and stains contain VOCs and toxic chemicals.',
-    verifyPrompt: 'Verify claims about toxic chemicals in wood finishes and stains.',
+    verifyPrompt: `Verify these claims about wood finishes and stains:
+1. Conventional wood stains contain VOCs (volatile organic compounds) including toluene, xylene, and benzene
+2. Polyurethane finishes off-gas isocyanates during curing and continue releasing VOCs
+3. "Low-VOC" products still contain VOCs, just at lower concentrations
+4. Lacquers and varnishes contain solvents that off-gas during application and curing
+5. Many wood finishes contain fungicides, UV stabilizers, and other additives
+6. Oil-based finishes typically have higher VOC content than water-based
+7. Off-gassing from finishes can continue for weeks to months after application
+8. "New furniture smell" is largely VOCs off-gassing from finishes and adhesives
+9. Natural alternatives exist: tung oil, linseed oil, beeswax, shellac (insect-derived)
+
+Be honest and reason from first principles. If wood finishes off-gas VOCs, and you're breathing indoor air continuously, would those VOCs accumulate in your body? Would a dining table finished with polyurethane continue exposing you every meal?`,
     tags: [],
     section: 'Materials',
     groupHost: 'wood-bamboo',
