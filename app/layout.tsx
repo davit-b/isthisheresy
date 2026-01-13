@@ -5,6 +5,11 @@ import GoogleAnalytics from '@/components/GoogleAnalytics';
 export const metadata: Metadata = {
   title: 'Is This Heresy?',
   description: 'Health information they don\'t teach you. Verify everything yourself.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   openGraph: {
     title: 'Is This Heresy?',
     description: 'Health information they don\'t teach you. Verify everything yourself.',

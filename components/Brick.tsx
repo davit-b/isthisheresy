@@ -27,7 +27,7 @@ export default function Brick({ topic }: BrickProps) {
   // Text color: green if read, gold if start-here, white otherwise
   const getTextColor = () => {
     if (hasBeenRead) return '#22c55e'; // Green
-    if (isStartHere && !isHovered) return '#000'; // Gold brick has black text
+    if (isStartHere && !isHovered) return '#d4af37'; // Gold text for start-here
     if (isHovered) return '#000'; // Hovered state
     return '#fff'; // Default white
   };
@@ -37,14 +37,8 @@ export default function Brick({ topic }: BrickProps) {
     ? (LucideIcons as any)[topic.icon]
     : null;
 
-  // Gold gradient for featured brick
-  const goldBackground = isStartHere && !isHovered
-    ? 'linear-gradient(135deg, #d4af37 0%, #f4e5a1 25%, #d4af37 50%, #c5a028 75%, #d4af37 100%)'
-    : isStartHere && isHovered
-    ? '#fff'
-    : isHovered
-    ? '#fff'
-    : 'transparent';
+  // Background: transparent for normal, white for hovered
+  const background = isHovered ? '#fff' : 'transparent';
 
   const textColor = getTextColor();
   const borderColor = isStartHere ? '#d4af37' : '#444';
@@ -55,13 +49,13 @@ export default function Brick({ topic }: BrickProps) {
       onClick={handleClick}
       style={{
         padding: '10px 16px',
-        background: goldBackground,
+        background: background,
         border: `1px solid ${borderColor}`,
         borderRadius: '8px',
         color: textColor,
         fontFamily: "'Space Mono', monospace",
         fontSize: '28px',
-        fontWeight: '700',
+        fontWeight: '600',
         letterSpacing: '1px',
         cursor: 'pointer',
         transition: 'all 0.15s ease',

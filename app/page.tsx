@@ -37,6 +37,19 @@ export default function HomePage() {
           <Brick key={topic.id} topic={topic} />
         ))}
       </div>
+
+      {/* Footer */}
+      <footer style={{
+        marginTop: '60px',
+        fontFamily: "'Space Mono', monospace",
+        fontSize: '12px',
+        fontWeight: '400',
+        color: '#666',
+        letterSpacing: '1px',
+        textAlign: 'center',
+      }}>
+        the only constant is change
+      </footer>
     </div>
   );
 }
