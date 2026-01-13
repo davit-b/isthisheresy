@@ -192,7 +192,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
       </div>
 
       {/* Top padding - hidden on initial load but can scroll up to it */}
-      <div style={{ height: '100px' }} />
+      <div style={{ height: '80px' }} />
 
       {/* Loading skeleton */}
       {isImageLoading && (
@@ -226,7 +226,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         />
       </picture>
       {/* Bottom padding so overlay buttons don't cover content */}
-      <div style={{ height: isMobile ? '130px' : '260px' }} />
+      <div style={{ height: isMobile ? '130px' : '120px' }} />
     </div>
   );
 }

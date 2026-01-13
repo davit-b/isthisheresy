@@ -150,9 +150,11 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                 fontFamily: "'Space Mono', monospace",
                 fontSize: '10px',
                 fontWeight: '700',
-                color: '#666',
+                color: '#888',
                 letterSpacing: '1.5px',
                 textTransform: 'uppercase',
+                borderBottom: '1px solid #444',
+                marginRight: '16px',
               }}>
                 {sectionName}
               </div>
@@ -232,9 +234,11 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
               fontFamily: "'Space Mono', monospace",
               fontSize: '10px',
               fontWeight: '700',
-              color: '#666',
+              color: '#888',
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
+              borderBottom: '1px solid #444',
+              marginRight: '16px',
             }}>
               Other
             </div>
@@ -264,8 +268,8 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
               GLOSSARY
             </Link>
 
-            {/* Secret item - only show after hydration if not unlocked */}
-            {isHydrated && !isUnlocked && (
+            {/* Secret item - commented out until we have secret pages */}
+            {/* {isHydrated && !isUnlocked && (
               <button
                 onClick={() => setShowPasscodeModal(true)}
                 style={{
@@ -289,7 +293,7 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
               >
                 SECRET
               </button>
-            )}
+            )} */}
 
             {/* Request button */}
             <button

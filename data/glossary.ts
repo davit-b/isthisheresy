@@ -127,9 +127,14 @@ export const glossaryEntries: GlossaryEntry[] = [
     relatedTopics: ['antinutrients', 'alkaloids', 'nightshades'],
   },
   {
+    term: 'Canola Oil',
+    definition: 'Marketing name for oil extracted from rapeseed bred to have lower erucic acid content. "Canola" stands for "Canadian Oil Low Acid." Extracted using hexane solvent, contains ~21% linoleic acid.',
+    relatedTopics: ['seed-oils-decoded'],
+  },
+  {
     term: 'Cardiolipin',
     definition: 'A phospholipid found in mitochondrial membranes, essential for energy production. Its fatty acid composition reflects dietary fat intake. High linoleic acid in cardiolipin impairs mitochondrial function.',
-    relatedTopics: ['fat-101', 'linoleic-acid'],
+    relatedTopics: ['fat-101', 'linoleic-acid-problem'],
   },
   {
     term: 'Chelation',
@@ -148,6 +153,11 @@ export const glossaryEntries: GlossaryEntry[] = [
     term: 'DATEM',
     definition: 'Diacetyl Tartaric Acid Esters of Monoglycerides. An emulsifier used in commercial bread to improve texture and shelf life. One of many additives in American bread that don\'t exist in traditional recipes.',
     relatedTopics: ['american-wheat'],
+  },
+  {
+    term: 'Degumming',
+    definition: 'Industrial process using phosphoric acid to remove phospholipids ("gums") from crude seed oils. One of several refining steps required to make seed oils palatable.',
+    relatedTopics: ['seed-oils-decoded'],
   },
   {
     term: 'Desiccation',
@@ -250,8 +260,8 @@ export const glossaryEntries: GlossaryEntry[] = [
   },
   {
     term: 'Glyphosate',
-    definition: 'The active ingredient in Roundup herbicide. Patented as an antibiotic (US Patent 7,771,736). Sprayed on GMO crops and as a pre-harvest desiccant. Destroys gut microbiota and chelates essential minerals.',
-    relatedTopics: ['glyphosate', 'desiccation', 'american-wheat'],
+    definition: 'The active ingredient in Roundup herbicide, the most widely used agricultural chemical in history. Sprayed on seed oil crops (soy, corn, canola) both during growth and as a pre-harvest desiccant. Residues detected in refined vegetable oils.',
+    relatedTopics: ['glyphosate', 'desiccation', 'american-wheat', 'seed-oils-decoded'],
   },
   {
     term: 'Glycation',
@@ -280,6 +290,11 @@ export const glossaryEntries: GlossaryEntry[] = [
     term: 'Heritage Wheat',
     definition: 'Traditional wheat varieties (einkorn, emmer, spelt) with 14-28 chromosomes versus 42 in modern wheat. Simpler gluten structure, lower gliadin content, better tolerated by many people.',
     relatedTopics: ['international-wheat', 'traditional-bread'],
+  },
+  {
+    term: 'Hexane Extraction',
+    definition: 'Industrial process using hexane (a petroleum-derived solvent) to dissolve and extract oil from crushed seeds. Required for commercial seed oil production because mechanical pressing alone only recovers ~70% of oil. Residual hexane is permitted in food without labeling.',
+    relatedTopics: ['seed-oils-decoded'],
   },
   {
     term: '4-HNE (4-Hydroxynonenal)',
@@ -352,13 +367,13 @@ export const glossaryEntries: GlossaryEntry[] = [
   },
   {
     term: 'Linoleic Acid',
-    definition: 'An omega-6 polyunsaturated fatty acid that comprises 50-70% of seed oils. Has ~40x the oxidation susceptibility of saturated fat. Accumulates in tissues and increases oxidative damage.',
-    relatedTopics: ['fat-101', 'linoleic-acid', 'pufa-oxidation'],
+    definition: 'An 18-carbon omega-6 polyunsaturated fatty acid with 2 double bonds. The dominant fat in seed oils (54-75% of content). Oxidizes approximately 40x faster than monounsaturated fats due to its unstable double bonds.',
+    relatedTopics: ['seed-oils-decoded', 'linoleic-acid-problem', 'pufa-oxidation', 'animal-fat-contamination'],
   },
   {
     term: 'Lipid Peroxidation',
     definition: 'The oxidative degradation of fats, particularly polyunsaturated fats. Creates toxic aldehydes (4-HNE, MDA) that damage cells. Happens both during cooking and inside the body.',
-    relatedTopics: ['fat-101', 'pufa-oxidation', 'linoleic-acid'],
+    relatedTopics: ['fat-101', 'pufa-oxidation', 'linoleic-acid-problem'],
   },
   // ═══════════════════════════════════════════════════════════════════════════════
   // M
@@ -422,7 +437,7 @@ export const glossaryEntries: GlossaryEntry[] = [
   {
     term: 'Omega-6',
     definition: 'A class of polyunsaturated fatty acids, primarily linoleic acid. Dominant in seed oils. Pro-inflammatory when consumed in excess. Modern diets have omega-6:omega-3 ratios of 20:1 or higher.',
-    relatedTopics: ['fat-101', 'linoleic-acid'],
+    relatedTopics: ['fat-101', 'linoleic-acid-problem', 'seed-oils-decoded'],
   },
   {
     term: 'Oxalates',
@@ -432,7 +447,12 @@ export const glossaryEntries: GlossaryEntry[] = [
   {
     term: 'Oxidation',
     definition: 'A chemical reaction involving oxygen that damages molecules. Polyunsaturated fats are highly susceptible. Creates toxic byproducts. Happens during cooking and inside the body.',
-    relatedTopics: ['fat-101', 'pufa-oxidation', 'linoleic-acid'],
+    relatedTopics: ['fat-101', 'pufa-oxidation', 'linoleic-acid-problem'],
+  },
+  {
+    term: 'Oxidation Multiplier',
+    definition: 'The exponential increase in oxidation susceptibility with each additional double bond in fatty acids. Linoleic acid (2 bonds) oxidizes ~40x faster than oleic acid (1 bond); EPA (5 bonds) oxidizes ~320x faster.',
+    relatedTopics: ['linoleic-acid-problem', 'pufa-oxidation'],
   },
   // ═══════════════════════════════════════════════════════════════════════════════
   // P
@@ -485,7 +505,7 @@ export const glossaryEntries: GlossaryEntry[] = [
   {
     term: 'PUFA (Polyunsaturated Fatty Acid)',
     definition: 'Fatty acids with multiple double bonds, making them highly prone to oxidation. Include omega-3 and omega-6 fats. Seed oils are 50-70% PUFA. Integrate into cell membranes and continue oxidizing.',
-    relatedTopics: ['fat-101', 'pufa-oxidation', 'linoleic-acid'],
+    relatedTopics: ['fat-101', 'pufa-oxidation', 'linoleic-acid-problem', 'seed-oils-decoded'],
   },
   // ═══════════════════════════════════════════════════════════════════════════════
   // R
@@ -511,7 +531,7 @@ export const glossaryEntries: GlossaryEntry[] = [
   {
     term: 'Seed Oils',
     definition: 'Industrial vegetable oils extracted from seeds using heat and chemical solvents. Include soybean, corn, canola, sunflower, and safflower oils. High in oxidation-prone linoleic acid.',
-    relatedTopics: ['fat-101', 'linoleic-acid', 'pufa-oxidation'],
+    relatedTopics: ['seed-oils-decoded', 'linoleic-acid-problem', 'pufa-oxidation'],
   },
   {
     term: 'Shikimate Pathway',

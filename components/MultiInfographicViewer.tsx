@@ -238,7 +238,7 @@ export default function MultiInfographicViewer({ topics, hostTopic }: MultiInfog
       </div>
 
       {/* Top padding */}
-      <div style={{ height: '100px' }} />
+      <div style={{ height: '80px' }} />
 
       {/* Single image container with virtual anchors */}
       <div style={{ position: 'relative' }}>
@@ -294,7 +294,7 @@ export default function MultiInfographicViewer({ topics, hostTopic }: MultiInfog
       </div>
 
       {/* Bottom padding */}
-      <div style={{ height: isMobile ? '130px' : '260px' }} />
+      <div style={{ height: isMobile ? '130px' : '120px' }} />
     </div>
   );
 }

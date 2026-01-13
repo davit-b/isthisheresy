@@ -968,29 +968,7 @@ Be honest and reason from first principles. If dietary fat becomes part of your 
     section: 'Nutrition',
     groupHost: 'fat-101',
     groupOrder: 1,
-    scrollOffset: 0.2,
-  },
-  {
-    id: 'linoleic-acid',
-    brickTitle: 'LINOLEIC ACID',
-    longTitle: 'Linoleic Acid: 40x Oxidation Rate and Mitochondrial Damage',
-    shareSnippet: 'Linoleic acid (omega-6) has 40x the oxidation potential of saturated fat. It damages mitochondria, accumulates in tissues, and increases UV-induced skin cancer risk.',
-    verifyPrompt: `Verify these claims about linoleic acid:
-1. Linoleic acid is an 18-carbon omega-6 polyunsaturated fatty acid
-2. Linoleic acid has approximately 40x the oxidation susceptibility of saturated fat
-3. Seed oils (soybean, corn, sunflower, safflower) are 50-70% linoleic acid
-4. Linoleic acid consumption has increased 3-4x over the past century
-5. High linoleic acid intake correlates with increased oxidative stress markers
-6. Linoleic acid accumulates in skin and increases UV-induced lipid peroxidation
-7. Mitochondrial cardiolipin (membrane component) incorporates dietary linoleic acid
-8. Oxidized cardiolipin impairs mitochondrial function and energy production
-
-Be honest and reason from first principles. If linoleic acid oxidizes 40x faster than saturated fat, and it accumulates in your mitochondria and skin, what would happen with chronic high intake? Would UV exposure on linoleic-acid-loaded skin increase oxidative damage?`,
-    tags: [],
-    section: 'Nutrition',
-    groupHost: 'fat-101',
-    groupOrder: 2,
-    scrollOffset: 0.4,
+    scrollOffset: 0.33,
   },
   {
     id: 'animal-fat-contamination',
@@ -1011,8 +989,62 @@ Be honest and reason from first principles. If animals store dietary fat in thei
     tags: [],
     section: 'Nutrition',
     groupHost: 'fat-101',
-    groupOrder: 3,
-    scrollOffset: 0.6,
+    groupOrder: 2,
+    scrollOffset: 0.66,
+  },
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // SEED OILS DECODED SERIES (3 pages)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  {
+    id: 'seed-oils-decoded',
+    brickTitle: 'SEED OILS',
+    longTitle: 'Seed Oils Decoded: What "Vegetable Oil" Actually Is',
+    shareSnippet: 'Vegetable oil contains no vegetables. It\'s soybean and corn extracted with hexane, a petroleum solvent. No traditional culture consumed these because the technology didn\'t exist.',
+    imageName: 'seed_oils',
+    verifyPrompt: `Verify these claims about seed oils:
+1. "Vegetable oil" is typically soybean oil, corn oil, or a blend - not from vegetables
+2. "Canola" is a marketing rebrand of rapeseed oil (Canadian Oil Low Acid)
+3. Commercial seed oil extraction uses hexane, a petroleum-derived solvent
+4. Hexane is used because mechanical pressing only extracts ~70% of oil
+5. The FDA allows residual hexane in food oils without labeling requirements
+6. Seed oil production requires degumming, bleaching, and deodorizing steps
+7. Soybean oil is 54% linoleic acid, corn oil is 59%, sunflower is 69%
+8. No whole food in nature contains 50%+ linoleic acid concentration
+9. Traditional fats (olive oil, butter, tallow) can be extracted by pressing alone
+10. 94% of US soybeans and 92% of US corn are GMO/Roundup Ready varieties
+11. Glyphosate residues have been detected in refined vegetable oils
+12. Commercial seed oil production began in the early 1900s
+
+Be honest and reason from first principles. If these oils require petroleum solvents to extract and contain fatty acid concentrations that don't exist in nature, are they traditional human foods? Could any pre-industrial culture have consumed them?`,
+    tags: [],
+    icon: 'Factory',
+    section: 'Nutrition',
+  },
+  {
+    id: 'linoleic-acid-problem',
+    brickTitle: 'LINOLEIC ACID',
+    longTitle: 'The Linoleic Acid Problem: 40x Oxidation and Cellular Damage',
+    shareSnippet: 'Linoleic acid oxidizes 40x faster than monounsaturated fat. It now makes up 20-30% of American body fat. It\'s in your cell membranes and mitochondria, oxidizing under UV light.',
+    verifyPrompt: `Verify these claims about linoleic acid:
+1. Linoleic acid is an 18-carbon omega-6 PUFA with 2 double bonds
+2. Each additional double bond exponentially increases oxidation susceptibility
+3. Linoleic acid oxidizes approximately 40x faster than oleic acid (1 double bond)
+4. EPA (5 double bonds) oxidizes approximately 320x faster than oleic acid
+5. American linoleic acid consumption increased from ~2% to ~8-10% of calories since 1909
+6. Human adipose tissue linoleic acid content has increased from ~8% to ~20-30% since the 1960s
+7. Dietary fatty acids integrate into cell membrane phospholipids
+8. Mitochondrial cardiolipin incorporates dietary linoleic acid
+9. UV light triggers PUFA oxidation in skin cell membranes
+10. PUFA oxidation produces toxic aldehydes including 4-HNE and malondialdehyde
+11. Chronic low-grade inflammation is associated with increased cancer risk
+12. Oxidized cardiolipin impairs mitochondrial electron transport function
+
+Be honest and reason from first principles. If linoleic acid oxidizes 40x faster than saturated fat, and it now comprises 20-30% of body fat (triple historical levels), and it integrates into cell and mitochondrial membranes - what happens when those membranes are exposed to UV light or metabolic stress?`,
+    tags: [],
+    section: 'Nutrition',
+    groupHost: 'seed-oils-decoded',
+    groupOrder: 1,
+    scrollOffset: 0.33,
   },
   {
     id: 'omega-confusion',
@@ -1032,9 +1064,9 @@ Be honest and reason from first principles. If animals store dietary fat in thei
 Be honest and reason from first principles. If conversion efficiency is 5%, would consuming 1 tablespoon of flaxseed oil provide equivalent omega-3 benefit to fish oil? What would you actually be getting?`,
     tags: [],
     section: 'Nutrition',
-    groupHost: 'fat-101',
-    groupOrder: 4,
-    scrollOffset: 0.8,
+    groupHost: 'seed-oils-decoded',
+    groupOrder: 2,
+    scrollOffset: 0.66,
   },
 ];
 
