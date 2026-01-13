@@ -29,6 +29,7 @@ export interface Topic {
   verifyPrompt: string;
   tags: string[];
   icon?: string;
+  section?: string; // Optional section grouping for left rail
 }
 
 export const topics: Topic[] = [
@@ -47,7 +48,8 @@ export const topics: Topic[] = [
 
 Be honest and reason from first principles. Would concentrated sugar exposure harm tissue structure? What would be the biochemical effects on proteins and fats?`,
     tags: ['start-here'],
-    icon: 'Flame'
+    icon: 'Flame',
+    section: 'Health Basics'
   },
   {
     id: 'antinutrients',
@@ -69,7 +71,8 @@ Elimination priority: nightshades, legumes (lectins), grains (phytic acid), cruc
 
 Be honest and reason from first principles. Would plants evolve chemical defenses against being eaten? What would these compounds do to human digestion and nutrient absorption? Absence of evidence is not evidence of absence.`,
     tags: [],
-    icon: 'ShieldAlert'
+    icon: 'ShieldAlert',
+    section: 'Health Basics'
   },
   {
     id: 'glyphosate',
@@ -91,7 +94,8 @@ Be honest and reason from first principles. Would plants evolve chemical defense
 
 Be honest and reason from first principles. Would an antibiotic sprayed directly on food damage gut bacteria? What would happen to animals fed glyphosate-contaminated feed? Absence of long-term human studies is not evidence of safety.`,
     tags: [],
-    icon: 'Sprout'
+    icon: 'Sprout',
+    section: 'Food Contamination'
   },
   {
     id: 'atrazine',
@@ -110,7 +114,8 @@ Be honest and reason from first principles. Would an antibiotic sprayed directly
 
 Be honest and reason from first principles. If a chemical feminizes frogs at trace levels, would it affect human hormones? What would happen to children exposed during development? Absence of evidence is not evidence of absence.`,
     tags: [],
-    icon: 'Droplets'
+    icon: 'Droplets',
+    section: 'Food Contamination'
   },
   {
     id: 'reverse-osmosis',
@@ -130,11 +135,12 @@ Be honest and reason from first principles. If a chemical feminizes frogs at tra
 
 Be honest and reason from first principles. Would industrial waste added to drinking water accumulate in the body? Can wastewater treatment remove all pharmaceutical compounds? What happens when you bathe in contaminated water?`,
     tags: [],
-    icon: 'Filter'
+    icon: 'Filter',
+    section: 'Water'
   },
   {
     id: 'salt-scam',
-    brickTitle: 'SALT SCAM',
+    brickTitle: 'PINK SALT',
     longTitle: 'The Mineral Salt Scam: Lead, Arsenic, and Microplastics',
     shareSnippet: 'Celtic sea salt has lead and arsenic. Himalayan salt is mined in Pakistan. Sea salt concentrates ocean pollution.',
     imageName: 'mineral_salt_bullshit',
@@ -150,7 +156,8 @@ Cite independent laboratory testing results for Celtic sea salt contamination.
 
 Be honest and reason from first principles. If the ocean contains pollution, would evaporated sea water concentrate those pollutants? Is "mined in Pakistan" a guarantee of purity for American consumers?`,
     tags: [],
-    icon: 'Sparkles'
+    icon: 'Sparkles',
+    section: 'Food Contamination'
   },
   {
     id: 'wood-bamboo',
@@ -169,7 +176,8 @@ Be honest and reason from first principles. If the ocean contains pollution, wou
 
 Be honest and reason from first principles. Would fumigation chemicals remain in porous wood fibers? What happens when these materials are used daily in your home or for food preparation?`,
     tags: [],
-    icon: 'Trees'
+    icon: 'Trees',
+    section: 'Materials'
   },
   {
     id: 'clean-storage',
@@ -188,7 +196,8 @@ Be honest and reason from first principles. Would fumigation chemicals remain in
 
 Be honest and reason from first principles. Would plastic components in contact with food remain inert over time? What happens when acidic or fatty foods touch polymer linings? Is there truly such a thing as "food-safe" plastic?`,
     tags: [],
-    icon: 'Package'
+    icon: 'Package',
+    section: 'Materials'
   },
 ];
 

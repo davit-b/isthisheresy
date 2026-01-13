@@ -32,6 +32,16 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
     return true;
   });
 
+  // Group topics by section
+  const groupedTopics: { [key: string]: typeof visibleTopics } = {};
+  visibleTopics.forEach(t => {
+    const section = t.section || 'Other';
+    if (!groupedTopics[section]) {
+      groupedTopics[section] = [];
+    }
+    groupedTopics[section].push(t);
+  });
+
   return (
     <>
       <div style={{
@@ -66,49 +76,67 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
             </div>
           </Link>
 
-          {/* All topics */}
-          {visibleTopics.map((t) => {
-            const displayLabel = t.brickTitle.length > 15
-              ? t.brickTitle.slice(0, 15) + '…'
-              : t.brickTitle;
-            const isActive = t.id === currentTopic.id;
-            const isSecret = t.tags.includes('secret');
-            const hasBeenRead = isInitialized && isRead(t.id);
+          {/* Topics grouped by section */}
+          {Object.entries(groupedTopics).map(([sectionName, sectionTopics]) => (
+            <div key={sectionName}>
+              {/* Section header */}
+              <div style={{
+                padding: '16px 16px 8px',
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '10px',
+                fontWeight: '700',
+                color: '#666',
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+              }}>
+                {sectionName}
+              </div>
 
-            // Determine text color: active=red, read=green, secret=gold, default=white
-            let textColor = '#fff';
-            if (isActive) textColor = '#dc2626';
-            else if (hasBeenRead) textColor = '#22c55e';
-            else if (isSecret) textColor = '#d4af37';
+              {/* Topics in this section */}
+              {sectionTopics.map((t) => {
+                const displayLabel = t.brickTitle.length > 15
+                  ? t.brickTitle.slice(0, 15) + '…'
+                  : t.brickTitle;
+                const isActive = t.id === currentTopic.id;
+                const isSecret = t.tags.includes('secret');
+                const hasBeenRead = isInitialized && isRead(t.id);
 
-            return (
-              <Link
-                key={t.id}
-                href={`/${t.id}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  width: '100%',
-                  background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                  border: 'none',
-                  borderLeft: isActive ? '3px solid #dc2626' : '3px solid transparent',
-                  padding: '12px 16px',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: '14px',
-                  fontWeight: isActive ? '700' : '400',
-                  color: textColor,
-                  letterSpacing: '1px',
-                  transition: 'all 0.1s ease',
-                  textDecoration: 'none',
-                }}
-              >
-                {displayLabel}
-              </Link>
-            );
-          })}
+                // Determine text color: active=red, read=green, secret=gold, default=white
+                let textColor = '#fff';
+                if (isActive) textColor = '#dc2626';
+                else if (hasBeenRead) textColor = '#22c55e';
+                else if (isSecret) textColor = '#d4af37';
+
+                return (
+                  <Link
+                    key={t.id}
+                    href={`/${t.id}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                      border: 'none',
+                      borderLeft: isActive ? '3px solid #dc2626' : '3px solid transparent',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: '14px',
+                      fontWeight: isActive ? '700' : '400',
+                      color: textColor,
+                      letterSpacing: '1px',
+                      transition: 'none',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    {displayLabel}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
 
           {/* Secret item (looks like a regular menu item) */}
           {!isUnlocked && (
