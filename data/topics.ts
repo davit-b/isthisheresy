@@ -547,7 +547,7 @@ Be honest and reason from first principles. Would plastic components in contact 
     brickTitle: 'HIDDEN PLASTIC',
     longTitle: 'Hidden Plastic in "Non-Plastic" Packaging: What Actually Touches Your Food',
     shareSnippet: 'Paper cups have plastic linings. Cans have epoxy coatings. Tea bags release billions of microplastics. Your food is always touching plastic.',
-    imageName: 'hidden_plastic_packaging',
+    imageName: 'hidden_plastic_in_packaging',
     verifyPrompt: `Verify these claims about hidden plastic in packaging:
 1. Metal cans are lined with epoxy resin containing BPA or BPS that contacts food
 2. "Paper" cups are lined with polyethylene plastic film - hot coffee releases ~25,000 microplastic particles per cup
@@ -595,7 +595,7 @@ Be honest and reason from first principles. Would water-resistant coatings disso
     brickTitle: 'AMERICAN WHEAT',
     longTitle: 'Why American Wheat Makes You Sick: 9 Ways US Wheat Differs From Traditional Grain',
     shareSnippet: 'American wheat is sprayed with Roundup before harvest, bromated, bleached, fast-fermented, and loaded with additives. You\'re not gluten sensitive - you\'re eating a chemical product.',
-    imageName: 'american_wheat_master',
+    imageName: 'american_wheat_bread',
     verifyPrompt: `Verify these claims about American wheat:
 1. Conventional US and Canadian wheat is sprayed with glyphosate (Roundup) 7-14 days before harvest as a desiccant
 2. Glyphosate is a patented antibiotic that destroys gut bacteria
@@ -864,7 +864,7 @@ Be honest and reason from first principles. If protein and carbohydrates are pac
     brickTitle: 'FUEL SYSTEMS',
     longTitle: 'The Two Human Fuel Tanks: 1,500 Calories vs 80,000 Calories',
     shareSnippet: 'Your glycogen tank holds 1,500 calories. Your fat stores hold 80,000+. Marathon runners hit "the wall" at mile 18 when glycogen depletes. Fat-adapted athletes don\'t.',
-    imageName: 'fuel_systems',
+    imageName: 'two_human_fuel_tanks',
     verifyPrompt: `Verify these claims about human fuel systems:
 1. Glycogen (stored glucose) capacity is approximately 1,500-2,000 calories (400-500g)
 2. Fat stores in a lean person contain 80,000+ calories of potential energy
