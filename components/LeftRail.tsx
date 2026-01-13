@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { topics, Topic, getTopicUrl, getHostTopic } from '@/data/topics';
 import { Lock, MessageSquarePlus } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useReadStatus } from '@/hooks/useReadStatus';
 import { trackPasscodeAttempt, trackPasscodeUnlock, trackRequestSubmit } from '@/lib/analytics';
 
@@ -15,13 +15,48 @@ interface LeftRailProps {
 export default function LeftRail({ currentTopic }: LeftRailProps) {
   const [showPasscodeModal, setShowPasscodeModal] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null); // null = loading
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [currentHash, setCurrentHash] = useState('');
   const { isRead, isInitialized } = useReadStatus();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Check unlock status on mount
+  // Save scroll position to sessionStorage on scroll
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const handleScroll = () => {
+        sessionStorage.setItem('leftRailScroll', String(container.scrollTop));
+      };
+      container.addEventListener('scroll', handleScroll, { passive: true });
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  // Restore scroll position from sessionStorage on mount
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    const saved = sessionStorage.getItem('leftRailScroll');
+    if (container && saved) {
+      container.scrollTop = parseInt(saved, 10);
+    }
+  }, []);
+
+  // Check unlock status on mount (only runs once on client)
   useEffect(() => {
     const unlocked = localStorage.getItem('secretUnlocked') === 'true';
     setIsUnlocked(unlocked);
+    setIsHydrated(true);
+  }, []);
+
+  // Track hash changes for highlighting active anchor
+  useEffect(() => {
+    function updateHash() {
+      setCurrentHash(window.location.hash.slice(1));
+    }
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+    return () => window.removeEventListener('hashchange', updateHash);
   }, []);
 
   // Filter topics based on unlock status
@@ -42,14 +77,26 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
     groupedTopics[section].push(t);
   });
 
+  // Handle click on grouped topics - manually update hash for same-page navigation
+  function handleGroupedTopicClick(t: Topic) {
+    // If we're already on the host page, manually update the hash state
+    // since Next.js Link doesn't fire hashchange for same-page hash changes
+    if (t.groupHost === currentTopic.id) {
+      setCurrentHash(t.id);
+    }
+  }
+
   return (
     <>
-      <div style={{
-        width: '200px',
-        borderRight: '1px solid #222',
-        overflowY: 'auto',
-        flexShrink: 0,
-      }}>
+      <div
+        ref={scrollContainerRef}
+        style={{
+          width: '200px',
+          borderRight: '1px solid #222',
+          overflowY: 'auto',
+          flexShrink: 0,
+        }}
+      >
         {/* Single scrollable list */}
         <div style={{
           padding: '12px 0',
@@ -97,14 +144,25 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                 const displayLabel = t.brickTitle.length > 15
                   ? t.brickTitle.slice(0, 15) + '…'
                   : t.brickTitle;
-                // For grouped topics, check if we're on the host page
                 const hostTopic = getHostTopic(t);
-                const isActive = t.id === currentTopic.id ||
-                  (t.groupHost && t.groupHost === currentTopic.id) ||
-                  (currentTopic.groupHost && currentTopic.groupHost === hostTopic.id && t.id === currentTopic.id);
+                const isGrouped = !!t.groupHost;
+                const isHost = !isGrouped && topics.some(x => x.groupHost === t.id);
+
+                // Determine if this topic is active
+                let isActive = false;
+                if (isGrouped) {
+                  // Grouped topic: active if hash matches this topic's id
+                  isActive = currentHash === t.id;
+                } else if (isHost) {
+                  // Host topic: active if we're on this page AND no hash OR at top
+                  isActive = t.id === currentTopic.id && (!currentHash || currentHash === t.id);
+                } else {
+                  // Standalone topic: active if we're on this page
+                  isActive = t.id === currentTopic.id;
+                }
+
                 const isSecret = t.tags.includes('secret');
                 const hasBeenRead = isInitialized && isRead(t.id);
-                const isGrouped = !!t.groupHost;
 
                 // Determine text color: active=red, read=green, secret=gold, default=white
                 let textColor = '#fff';
@@ -116,6 +174,7 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                   <Link
                     key={t.id}
                     href={getTopicUrl(t)}
+                    onClick={() => isGrouped && handleGroupedTopicClick(t)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -184,8 +243,8 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
               GLOSSARY
             </Link>
 
-            {/* Secret item - only show after loading */}
-            {isUnlocked !== null && !isUnlocked && (
+            {/* Secret item - only show after hydration if not unlocked */}
+            {isHydrated && !isUnlocked && (
               <button
                 onClick={() => setShowPasscodeModal(true)}
                 style={{

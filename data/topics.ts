@@ -197,6 +197,31 @@ Be honest and reason from first principles. Would an antibiotic sprayed directly
     icon: 'Sprout',
     section: 'Food Contamination'
   },
+  // Glyphosate virtual anchors
+  {
+    id: 'desiccation',
+    brickTitle: 'DESICCATION',
+    longTitle: 'Desiccation: Pre-Harvest Spraying',
+    shareSnippet: 'Glyphosate is sprayed directly on crops before harvest to dry them out.',
+    verifyPrompt: 'Verify claims about glyphosate being used as a desiccant to dry crops before harvest.',
+    tags: [],
+    section: 'Food Contamination',
+    groupHost: 'glyphosate',
+    groupOrder: 1,
+    scrollOffset: 0.4082,
+  },
+  {
+    id: 'mushrooms',
+    brickTitle: 'MUSHROOMS',
+    longTitle: 'Mushrooms: Glyphosate in Substrates',
+    shareSnippet: 'Glyphosate leaches into mushroom substrates when grown on non-organic soy.',
+    verifyPrompt: 'Verify claims about glyphosate contaminating mushrooms grown on non-organic substrates.',
+    tags: [],
+    section: 'Food Contamination',
+    groupHost: 'glyphosate',
+    groupOrder: 2,
+    scrollOffset: 0.8165,
+  },
   {
     id: 'atrazine',
     brickTitle: 'ATRAZINE',
@@ -279,6 +304,31 @@ Be honest and reason from first principles. Would fumigation chemicals remain in
     icon: 'Trees',
     section: 'Materials'
   },
+  // Wood/Bamboo virtual anchors
+  {
+    id: 'wood-glue',
+    brickTitle: 'WOOD GLUE',
+    longTitle: 'Wood Glue: Formaldehyde Adhesives',
+    shareSnippet: 'MDF and plywood use formaldehyde-containing adhesives that continuously off-gas.',
+    verifyPrompt: 'Verify claims about formaldehyde in wood adhesives and off-gassing from composite wood products.',
+    tags: [],
+    section: 'Materials',
+    groupHost: 'wood-bamboo',
+    groupOrder: 1,
+    scrollOffset: 0.3333,
+  },
+  {
+    id: 'wood-finish',
+    brickTitle: 'WOOD FINISH',
+    longTitle: 'Wood Finish: Toxic Coatings',
+    shareSnippet: 'Wood finishes and stains contain VOCs and toxic chemicals.',
+    verifyPrompt: 'Verify claims about toxic chemicals in wood finishes and stains.',
+    tags: [],
+    section: 'Materials',
+    groupHost: 'wood-bamboo',
+    groupOrder: 2,
+    scrollOffset: 0.6666,
+  },
   {
     id: 'clean-storage',
     brickTitle: 'CLEAN STORAGE',
@@ -340,56 +390,25 @@ export function getHostTopic(topic: Topic): Topic {
 }
 
 // Helper to get next topic (for "Next" button)
-// If in a group, goes to next in group first, then next standalone/group
+// Always goes to the next main topic (skips grouped sub-topics)
 export function getNextTopic(currentId: string): Topic {
   const current = getTopicById(currentId);
   if (!current) {
     return topics[0];
   }
 
-  // Determine if we're in a group
-  const hostId = current.groupHost ?? (isGroupHost(current.id) ? current.id : null);
+  // If current is a grouped topic, use its host as the starting point
+  const startId = current.groupHost ?? current.id;
+  const startIndex = topics.findIndex(t => t.id === startId);
 
-  if (hostId) {
-    // We're in a group - check if there's a next item in the group
-    const groupMembers = getGroupedTopics(hostId);
-    const currentIndexInGroup = groupMembers.findIndex(t => t.id === currentId);
-
-    if (currentIndexInGroup < groupMembers.length - 1) {
-      // There's another topic in this group
-      return groupMembers[currentIndexInGroup + 1];
-    }
-
-    // We're at the end of the group - go to next standalone/host
-    const hostIndex = topics.findIndex(t => t.id === hostId);
-    // Find the next topic that is NOT part of this group
-    for (let i = 1; i < topics.length; i++) {
-      const nextIndex = (hostIndex + i) % topics.length;
-      const nextTopic = topics[nextIndex];
-      if (nextTopic.groupHost !== hostId) {
-        // If this is a grouped topic, go to its host instead
-        if (nextTopic.groupHost) {
-          return topics.find(t => t.id === nextTopic.groupHost) ?? nextTopic;
-        }
-        return nextTopic;
-      }
-    }
-  }
-
-  // Standalone topic - find next standalone or group host
-  const currentIndex = topics.findIndex(t => t.id === currentId);
+  // Find the next topic that is NOT a grouped sub-topic
   for (let i = 1; i < topics.length; i++) {
-    const nextIndex = (currentIndex + i) % topics.length;
+    const nextIndex = (startIndex + i) % topics.length;
     const nextTopic = topics[nextIndex];
-    // Skip grouped topics, go to their host instead
-    if (nextTopic.groupHost) {
-      const host = topics.find(t => t.id === nextTopic.groupHost);
-      if (host && host.id !== currentId) {
-        return host;
-      }
-      continue;
+    // Skip grouped topics - only return standalone topics or group hosts
+    if (!nextTopic.groupHost) {
+      return nextTopic;
     }
-    return nextTopic;
   }
 
   return topics[0];

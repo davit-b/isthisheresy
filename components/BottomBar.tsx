@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Share2, ArrowRight, CheckCircle, Copy } from 'lucide-react';
-import { Topic, getNextTopic, getTopicUrl, getTopicById, isGroupHost, getGroupedTopics } from '@/data/topics';
+import { Topic, getNextTopic, getTopicUrl } from '@/data/topics';
 import { trackVerifyClick, trackShare, trackTopicRead } from '@/lib/analytics';
 import { useReadStatus } from '@/hooks/useReadStatus';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface BottomBarProps {
   topic: Topic;
@@ -26,33 +26,8 @@ export default function BottomBar({ topic }: BottomBarProps) {
   const router = useRouter();
   const { markAsRead } = useReadStatus();
   const [showVerifyMenu, setShowVerifyMenu] = useState(false);
-  const [currentHash, setCurrentHash] = useState('');
 
-  // Track hash changes to know which virtual anchor we're viewing
-  useEffect(() => {
-    function updateHash() {
-      setCurrentHash(window.location.hash.slice(1));
-    }
-    updateHash();
-    window.addEventListener('hashchange', updateHash);
-    return () => window.removeEventListener('hashchange', updateHash);
-  }, []);
-
-  // Determine the "current" topic based on hash (for grouped topics)
-  function getCurrentTopicId(): string {
-    // If we have a hash and it matches a grouped topic under this host, use it
-    if (currentHash && isGroupHost(topic.id)) {
-      const groupedTopics = getGroupedTopics(topic.id);
-      const matchingTopic = groupedTopics.find(t => t.id === currentHash);
-      if (matchingTopic) {
-        return currentHash;
-      }
-    }
-    return topic.id;
-  }
-
-  const currentTopicId = getCurrentTopicId();
-  const nextTopic = getNextTopic(currentTopicId);
+  const nextTopic = getNextTopic(topic.id);
 
   const handleVerifyClick = (platformName: string) => {
     const provider = platformName.toLowerCase() as 'chatgpt' | 'gemini' | 'grok';
@@ -60,22 +35,11 @@ export default function BottomBar({ topic }: BottomBarProps) {
     setShowVerifyMenu(false);
   };
 
-  const handleNextClick = (e: React.MouseEvent) => {
+  const handleNextClick = () => {
     // Mark current topic as read when clicking NEXT
-    markAsRead(currentTopicId);
-    trackTopicRead(currentTopicId, topic.longTitle);
-
-    // Check if next topic is a virtual anchor on the same page
-    const nextUrl = getTopicUrl(nextTopic);
-    const isInPageNavigation = nextUrl.startsWith(`/${topic.id}#`);
-
-    if (isInPageNavigation) {
-      e.preventDefault();
-      // Update hash and trigger scroll
-      const newHash = nextTopic.id;
-      window.location.hash = newHash;
-    }
-    // Otherwise, let the Link handle navigation normally
+    markAsRead(topic.id);
+    trackTopicRead(topic.id, topic.longTitle);
+    // Link handles navigation
   };
 
   const handleCopyPrompt = async () => {
@@ -316,13 +280,28 @@ export default function BottomBar({ topic }: BottomBarProps) {
           }}
         >
           <div style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: '11px',
-            fontWeight: '600',
-            color: '#fff',
-            letterSpacing: '0.5px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
           }}>
-            {nextTopic.brickTitle}
+            <div style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '9px',
+              fontWeight: '400',
+              color: '#888',
+              letterSpacing: '0.5px',
+            }}>
+              NEXT
+            </div>
+            <div style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '11px',
+              fontWeight: '600',
+              color: '#fff',
+              letterSpacing: '0.5px',
+            }}>
+              {nextTopic.brickTitle}
+            </div>
           </div>
           <ArrowRight size={14} color="#fff" />
         </Link>
