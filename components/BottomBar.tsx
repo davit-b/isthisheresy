@@ -40,10 +40,11 @@ export default function BottomBar({ topic }: BottomBarProps) {
 
   const handleShare = async () => {
     const url = `https://isthisheresy.com/${topic.id}`;
-    const method = navigator.share ? 'native_share' : 'clipboard';
+    const hasNativeShare = typeof navigator !== 'undefined' && 'share' in navigator;
+    const method = hasNativeShare ? 'native_share' : 'clipboard';
     trackShare(method, topic.id);
 
-    if (navigator.share) {
+    if (hasNativeShare) {
       await navigator.share({
         title: topic.longTitle,
         text: topic.shareSnippet,
