@@ -36,6 +36,10 @@ const SIZES = [
   { name: 'original', width: 4800, quality: 90 },
 ];
 
+// OpenGraph image dimensions (standard: 1200x630)
+const OG_WIDTH = 1200;
+const OG_HEIGHT = 630;
+
 // Language code mapping
 const LANGUAGE_CODES = {
   'english': 'en',
@@ -61,6 +65,39 @@ async function needsConversion(inputPath, outputPath) {
     return inputStat.mtimeMs > outputStat.mtimeMs;
   } catch {
     return true; // If we can't check, convert anyway
+  }
+}
+
+/**
+ * Generate OpenGraph image by cropping top portion of infographic.
+ * Resizes to OG_WIDTH, then crops to OG_HEIGHT from the top.
+ */
+async function generateOgImage(inputPath, outputPath) {
+  // First resize to OG_WIDTH, keeping aspect ratio
+  const resized = sharp(inputPath).resize(OG_WIDTH, null, {
+    withoutEnlargement: true,
+    fit: 'inside'
+  });
+
+  // Get dimensions after resize
+  const metadata = await resized.toBuffer().then(buffer => sharp(buffer).metadata());
+
+  // If image is shorter than OG_HEIGHT after resize, just use it as-is (centered)
+  if (metadata.height <= OG_HEIGHT) {
+    await sharp(inputPath)
+      .resize(OG_WIDTH, OG_HEIGHT, {
+        fit: 'contain',
+        background: { r: 255, g: 255, b: 255, alpha: 1 }
+      })
+      .webp({ quality: 85 })
+      .toFile(outputPath);
+  } else {
+    // Crop top portion at OG_HEIGHT
+    await sharp(inputPath)
+      .resize(OG_WIDTH, null, { withoutEnlargement: true, fit: 'inside' })
+      .extract({ left: 0, top: 0, width: OG_WIDTH, height: OG_HEIGHT })
+      .webp({ quality: 85 })
+      .toFile(outputPath);
   }
 }
 
@@ -138,6 +175,26 @@ async function convertImages() {
           }
         }
 
+        // Generate OG image (top-cropped for social sharing)
+        const ogFilename = `${baseName}-${langCode}-og.webp`;
+        const ogPath = path.join(OUTPUT_DIR, ogFilename);
+
+        if (await needsConversion(inputPath, ogPath)) {
+          if (!convertedAny) {
+            console.log(`\n   Converting: ${file}`);
+            convertedAny = true;
+          }
+          skippedAll = false;
+
+          try {
+            await generateOgImage(inputPath, ogPath);
+            console.log(`     ✓ ${ogFilename} (${OG_WIDTH}x${OG_HEIGHT} OG)`);
+            totalConverted++;
+          } catch (err) {
+            console.log(`     ✗ og: ${err.message}`);
+          }
+        }
+
         if (skippedAll) {
           totalSkipped++;
         }
@@ -194,6 +251,26 @@ async function convertImages() {
           totalConverted++;
         } catch (err) {
           console.log(`     ✗ ${size.name}: ${err.message}`);
+        }
+      }
+
+      // Generate OG image (top-cropped for social sharing)
+      const ogFilename = `${baseName}-og.webp`;
+      const ogPath = path.join(OUTPUT_DIR, ogFilename);
+
+      if (await needsConversion(inputPath, ogPath)) {
+        if (!convertedAny) {
+          console.log(`\n   Converting: ${file}`);
+          convertedAny = true;
+        }
+        skippedAll = false;
+
+        try {
+          await generateOgImage(inputPath, ogPath);
+          console.log(`     ✓ ${ogFilename} (${OG_WIDTH}x${OG_HEIGHT} OG)`);
+          totalConverted++;
+        } catch (err) {
+          console.log(`     ✗ og: ${err.message}`);
         }
       }
 

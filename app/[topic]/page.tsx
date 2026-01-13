@@ -28,7 +28,9 @@ export function generateMetadata({ params }: PageProps): Metadata {
   }
 
   const baseUrl = 'https://isthisheresy.com';
-  const imageUrl = `${baseUrl}/images/${topic.imageName}-en-medium.webp`;
+  // Use OG-cropped image (1200x630) for social sharing
+  const imageName = topic.imageName ?? topic.id;
+  const ogImageUrl = `${baseUrl}/images/${imageName}-en-og.webp`;
   const pageUrl = `${baseUrl}/${topic.id}`;
 
   return {
@@ -46,9 +48,9 @@ export function generateMetadata({ params }: PageProps): Metadata {
       siteName: 'Is This Heresy?',
       images: [
         {
-          url: imageUrl,
+          url: ogImageUrl,
           width: 1200,
-          height: 1800,
+          height: 630,
           alt: topic.longTitle,
         },
       ],
@@ -57,7 +59,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
       card: 'summary_large_image',
       title: topic.longTitle,
       description: topic.shareSnippet,
-      images: [imageUrl],
+      images: [ogImageUrl],
     },
   };
 }
