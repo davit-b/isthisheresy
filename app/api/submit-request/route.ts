@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 
 // Yorùbá: ibi tí a ti ń fi àwọn ìbéèrè pamọ́
 interface RequestData {
@@ -9,10 +9,18 @@ interface RequestData {
   ipHash?: string;
 }
 
-// Create Redis client connection
-const redis = await createClient({
-  url: process.env.REDIS_URL
-}).connect();
+// Redis client singleton
+let redis: RedisClientType | null = null;
+
+async function getRedisClient() {
+  if (!redis) {
+    redis = createClient({
+      url: process.env.REDIS_URL
+    });
+    await redis.connect();
+  }
+  return redis;
+}
 
 // Helper to get IP from request
 function getClientIp(request: NextRequest): string {
@@ -52,6 +60,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get Redis client
+    const redisClient = await getRedisClient();
+
     // Get IP and create hash
     const clientIp = getClientIp(request);
     const ipHash = hashIp(clientIp);
@@ -60,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     // LAYER 2: IP-based rate limiting (3 requests per hour)
     const rateLimitKey = `ratelimit:${ipHash}`;
-    const currentCount = await redis.get(rateLimitKey);
+    const currentCount = await redisClient.get(rateLimitKey);
 
     if (currentCount && Number(currentCount) >= 3) {
       return NextResponse.json(
@@ -70,13 +81,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Increment rate limit counter with 1-hour expiry
-    await redis.incr(rateLimitKey);
-    await redis.expire(rateLimitKey, 3600);
+    await redisClient.incr(rateLimitKey);
+    await redisClient.expire(rateLimitKey, 3600);
 
     // LAYER 3: Content deduplication (24 hours)
     const contentHash = hashContent(message);
     const dedupKey = `dedup:${contentHash}`;
-    const isDuplicate = await redis.get(dedupKey);
+    const isDuplicate = await redisClient.get(dedupKey);
 
     if (isDuplicate) {
       return NextResponse.json(
@@ -86,7 +97,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Mark content as seen for 24 hours
-    await redis.set(dedupKey, 'true', { EX: 86400 });
+    await redisClient.set(dedupKey, 'true', { EX: 86400 });
 
     // Store the request
     const requestData: RequestData = {
@@ -95,7 +106,7 @@ export async function POST(request: NextRequest) {
       ipHash,
     };
 
-    await redis.lPush('infographic-requests', JSON.stringify(requestData));
+    await redisClient.lPush('infographic-requests', JSON.stringify(requestData));
 
     // Igbo: ihe ịchọrọ enwetara nke ọma
     return NextResponse.json(
