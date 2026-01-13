@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { topics, Topic } from '@/data/topics';
+import { topics, Topic, getTopicUrl, getHostTopic } from '@/data/topics';
 import { Lock, MessageSquarePlus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useReadStatus } from '@/hooks/useReadStatus';
@@ -97,9 +97,14 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                 const displayLabel = t.brickTitle.length > 15
                   ? t.brickTitle.slice(0, 15) + '…'
                   : t.brickTitle;
-                const isActive = t.id === currentTopic.id;
+                // For grouped topics, check if we're on the host page
+                const hostTopic = getHostTopic(t);
+                const isActive = t.id === currentTopic.id ||
+                  (t.groupHost && t.groupHost === currentTopic.id) ||
+                  (currentTopic.groupHost && currentTopic.groupHost === hostTopic.id && t.id === currentTopic.id);
                 const isSecret = t.tags.includes('secret');
                 const hasBeenRead = isInitialized && isRead(t.id);
+                const isGrouped = !!t.groupHost;
 
                 // Determine text color: active=red, read=green, secret=gold, default=white
                 let textColor = '#fff';
@@ -110,7 +115,7 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                 return (
                   <Link
                     key={t.id}
-                    href={`/${t.id}`}
+                    href={getTopicUrl(t)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -120,10 +125,11 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                       border: 'none',
                       borderLeft: isActive ? '3px solid #dc2626' : '3px solid transparent',
                       padding: '12px 16px',
+                      paddingLeft: isGrouped ? '28px' : '16px', // Indent grouped topics
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontFamily: "'Space Mono', monospace",
-                      fontSize: '14px',
+                      fontSize: isGrouped ? '12px' : '14px', // Slightly smaller for grouped
                       fontWeight: isActive ? '700' : '400',
                       color: textColor,
                       letterSpacing: '1px',
@@ -138,10 +144,76 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
             </div>
           ))}
 
-          {/* Secret item (looks like a regular menu item) - only show after loading */}
-          {isUnlocked !== null && !isUnlocked && (
+          {/* Other section */}
+          <div>
+            {/* Section header */}
+            <div style={{
+              padding: '16px 16px 8px',
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '10px',
+              fontWeight: '700',
+              color: '#666',
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
+            }}>
+              Other
+            </div>
+
+            {/* Glossary link */}
+            <Link
+              href="/glossary"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                width: '100%',
+                background: currentTopic.id === 'glossary' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                border: 'none',
+                borderLeft: currentTopic.id === 'glossary' ? '3px solid #dc2626' : '3px solid transparent',
+                padding: '12px 16px',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '14px',
+                fontWeight: currentTopic.id === 'glossary' ? '700' : '400',
+                color: currentTopic.id === 'glossary' ? '#dc2626' : '#fff',
+                letterSpacing: '1px',
+                textDecoration: 'none',
+              }}
+            >
+              GLOSSARY
+            </Link>
+
+            {/* Secret item - only show after loading */}
+            {isUnlocked !== null && !isUnlocked && (
+              <button
+                onClick={() => setShowPasscodeModal(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  background: 'transparent',
+                  border: 'none',
+                  borderLeft: '3px solid transparent',
+                  padding: '12px 16px',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '14px',
+                  fontWeight: '400',
+                  color: '#d4af37',
+                  letterSpacing: '1px',
+                  transition: 'all 0.1s ease',
+                }}
+              >
+                SECRET
+              </button>
+            )}
+
+            {/* Request button */}
             <button
-              onClick={() => setShowPasscodeModal(true)}
+              onClick={() => setShowRequestModal(true)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -156,39 +228,14 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                 fontFamily: "'Space Mono', monospace",
                 fontSize: '14px',
                 fontWeight: '400',
-                color: '#d4af37',
+                color: '#fff',
                 letterSpacing: '1px',
                 transition: 'all 0.1s ease',
               }}
             >
-              SECRET
+              REQUEST
             </button>
-          )}
-
-          {/* Request item (looks like a regular menu item) */}
-          <button
-            onClick={() => setShowRequestModal(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              width: '100%',
-              background: 'transparent',
-              border: 'none',
-              borderLeft: '3px solid transparent',
-              padding: '12px 16px',
-              cursor: 'pointer',
-              textAlign: 'left',
-              fontFamily: "'Space Mono', monospace",
-              fontSize: '14px',
-              fontWeight: '400',
-              color: '#fff',
-              letterSpacing: '1px',
-              transition: 'all 0.1s ease',
-            }}
-          >
-            REQUEST
-          </button>
+          </div>
         </div>
       </div>
 

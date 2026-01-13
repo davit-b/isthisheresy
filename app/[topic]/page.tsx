@@ -1,8 +1,9 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Metadata } from 'next';
-import { topics, getTopicById } from '@/data/topics';
+import { topics, getTopicById, isGroupHost, getGroupedTopics } from '@/data/topics';
 import LeftRail from '@/components/LeftRail';
 import InfographicViewer from '@/components/InfographicViewer';
+import MultiInfographicViewer from '@/components/MultiInfographicViewer';
 import BottomBar from '@/components/BottomBar';
 import ReadTracker from '@/components/ReadTracker';
 
@@ -10,7 +11,7 @@ interface PageProps {
   params: { topic: string };
 }
 
-// Generate static params for all topics
+// Generate static params for all topics (including grouped ones for redirect handling)
 export function generateStaticParams() {
   return topics.map((topic) => ({
     topic: topic.id,
@@ -67,6 +68,15 @@ export default function TopicPage({ params }: PageProps) {
     notFound();
   }
 
+  // If this is a grouped topic (not a host), redirect to the host page with anchor
+  if (topic.groupHost) {
+    redirect(`/${topic.groupHost}#${topic.id}`);
+  }
+
+  // Check if this topic is a group host (has other topics grouped under it)
+  const isHost = isGroupHost(topic.id);
+  const groupedTopics = isHost ? getGroupedTopics(topic.id) : [topic];
+
   // Structured data for topic article
   const structuredData = {
     '@context': 'https://schema.org',
@@ -105,31 +115,35 @@ export default function TopicPage({ params }: PageProps) {
         overflow: 'hidden',
       }}>
         <ReadTracker topicId={topic.id} />
-      <LeftRail currentTopic={topic} />
+        <LeftRail currentTopic={topic} />
 
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }}>
-        {/* Title header for long titles */}
-        {topic.brickTitle.length > 15 && (
-          <div style={{
-            padding: '16px 24px',
-            borderBottom: '1px solid #222',
-            fontFamily: "'Space Mono', monospace",
-            fontSize: '20px',
-            fontWeight: '700',
-            color: '#fff',
-            letterSpacing: '2px',
-          }}>
-            {topic.longTitle}
-          </div>
-        )}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}>
+          {/* Title header for long titles */}
+          {topic.brickTitle.length > 15 && (
+            <div style={{
+              padding: '16px 24px',
+              borderBottom: '1px solid #222',
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '20px',
+              fontWeight: '700',
+              color: '#fff',
+              letterSpacing: '2px',
+            }}>
+              {topic.longTitle}
+            </div>
+          )}
 
-        <InfographicViewer topic={topic} />
-      </div>
+          {isHost ? (
+            <MultiInfographicViewer topics={groupedTopics} hostTopic={topic} />
+          ) : (
+            <InfographicViewer topic={topic} />
+          )}
+        </div>
 
         {/* Fixed overlay buttons */}
         <BottomBar topic={topic} />

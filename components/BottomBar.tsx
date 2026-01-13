@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Share2, ArrowRight, CheckCircle, Copy } from 'lucide-react';
-import { Topic, getNextTopic } from '@/data/topics';
+import { Topic, getNextTopic, getTopicUrl, getTopicById, isGroupHost, getGroupedTopics } from '@/data/topics';
 import { trackVerifyClick, trackShare, trackTopicRead } from '@/lib/analytics';
 import { useReadStatus } from '@/hooks/useReadStatus';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface BottomBarProps {
   topic: Topic;
@@ -22,9 +23,36 @@ function getVerifyUrl(platform: typeof aiPlatforms[number], prompt: string) {
 }
 
 export default function BottomBar({ topic }: BottomBarProps) {
-  const nextTopic = getNextTopic(topic.id);
+  const router = useRouter();
   const { markAsRead } = useReadStatus();
   const [showVerifyMenu, setShowVerifyMenu] = useState(false);
+  const [currentHash, setCurrentHash] = useState('');
+
+  // Track hash changes to know which virtual anchor we're viewing
+  useEffect(() => {
+    function updateHash() {
+      setCurrentHash(window.location.hash.slice(1));
+    }
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+    return () => window.removeEventListener('hashchange', updateHash);
+  }, []);
+
+  // Determine the "current" topic based on hash (for grouped topics)
+  function getCurrentTopicId(): string {
+    // If we have a hash and it matches a grouped topic under this host, use it
+    if (currentHash && isGroupHost(topic.id)) {
+      const groupedTopics = getGroupedTopics(topic.id);
+      const matchingTopic = groupedTopics.find(t => t.id === currentHash);
+      if (matchingTopic) {
+        return currentHash;
+      }
+    }
+    return topic.id;
+  }
+
+  const currentTopicId = getCurrentTopicId();
+  const nextTopic = getNextTopic(currentTopicId);
 
   const handleVerifyClick = (platformName: string) => {
     const provider = platformName.toLowerCase() as 'chatgpt' | 'gemini' | 'grok';
@@ -32,10 +60,22 @@ export default function BottomBar({ topic }: BottomBarProps) {
     setShowVerifyMenu(false);
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = (e: React.MouseEvent) => {
     // Mark current topic as read when clicking NEXT
-    markAsRead(topic.id);
-    trackTopicRead(topic.id, topic.longTitle);
+    markAsRead(currentTopicId);
+    trackTopicRead(currentTopicId, topic.longTitle);
+
+    // Check if next topic is a virtual anchor on the same page
+    const nextUrl = getTopicUrl(nextTopic);
+    const isInPageNavigation = nextUrl.startsWith(`/${topic.id}#`);
+
+    if (isInPageNavigation) {
+      e.preventDefault();
+      // Update hash and trigger scroll
+      const newHash = nextTopic.id;
+      window.location.hash = newHash;
+    }
+    // Otherwise, let the Link handle navigation normally
   };
 
   const handleCopyPrompt = async () => {
@@ -250,7 +290,7 @@ export default function BottomBar({ topic }: BottomBarProps) {
 
         {/* Next button */}
         <Link
-          href={`/${nextTopic.id}`}
+          href={getTopicUrl(nextTopic)}
           onClick={handleNextClick}
           aria-label={`Next topic: ${nextTopic.longTitle}`}
           style={{

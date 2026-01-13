@@ -25,11 +25,14 @@ export interface Topic {
   brickTitle: string;
   longTitle: string;
   shareSnippet: string;
-  imageName: string;
+  imageName?: string; // Optional - virtual anchors use host's image
   verifyPrompt: string;
   tags: string[];
   icon?: string;
   section?: string; // Optional section grouping for left rail
+  groupHost?: string; // If set, this topic renders on the groupHost's page with anchor
+  groupOrder?: number; // Order within the group (1, 2, 3...) - host is always first
+  scrollOffset?: number; // 0-1 percentage offset within host's image (for virtual anchors)
 }
 
 export const topics: Topic[] = [
@@ -74,6 +77,103 @@ Be honest and reason from first principles. Would plants evolve chemical defense
     icon: 'ShieldAlert',
     section: 'Health Basics'
   },
+  // Antinutrient virtual anchors (9 slides total, each ~11.1%)
+  {
+    id: 'alkaloids',
+    brickTitle: 'ALKALOIDS',
+    longTitle: 'Alkaloids: Nightshade Neurotoxins',
+    shareSnippet: 'Alkaloids from nightshades damage the nervous system and gut lining.',
+    verifyPrompt: 'Verify claims about alkaloids in nightshade plants and their effects on the nervous system and gut.',
+    tags: [],
+    section: 'Health Basics',
+    groupHost: 'antinutrients',
+    groupOrder: 1,
+    scrollOffset: 0.111,
+  },
+  {
+    id: 'lectins',
+    brickTitle: 'LECTINS',
+    longTitle: 'Lectins: Gut Barrier Disruptors',
+    shareSnippet: 'Lectins bind to gut cells causing inflammation and leaky gut.',
+    verifyPrompt: 'Verify claims about lectins binding to gut cells and causing inflammation.',
+    tags: [],
+    section: 'Health Basics',
+    groupHost: 'antinutrients',
+    groupOrder: 2,
+    scrollOffset: 0.222,
+  },
+  {
+    id: 'oxalates',
+    brickTitle: 'OXALATES',
+    longTitle: 'Oxalates: Crystal Forming Compounds',
+    shareSnippet: 'Oxalates bind minerals and form crystals in kidneys and joints.',
+    verifyPrompt: 'Verify claims about oxalates binding minerals and forming kidney stones.',
+    tags: [],
+    section: 'Health Basics',
+    groupHost: 'antinutrients',
+    groupOrder: 3,
+    scrollOffset: 0.333,
+  },
+  {
+    id: 'phytic-acid',
+    brickTitle: 'PHYTIC ACID',
+    longTitle: 'Phytic Acid: The Mineral Blocker',
+    shareSnippet: 'Phytic acid prevents absorption of iron, zinc, and calcium.',
+    verifyPrompt: 'Verify claims about phytic acid blocking mineral absorption.',
+    tags: [],
+    section: 'Health Basics',
+    groupHost: 'antinutrients',
+    groupOrder: 4,
+    scrollOffset: 0.444,
+  },
+  {
+    id: 'goitrogens',
+    brickTitle: 'GOITROGENS',
+    longTitle: 'Goitrogens: Thyroid Disruptors',
+    shareSnippet: 'Goitrogens interfere with thyroid iodine uptake.',
+    verifyPrompt: 'Verify claims about goitrogens interfering with thyroid function.',
+    tags: [],
+    section: 'Health Basics',
+    groupHost: 'antinutrients',
+    groupOrder: 5,
+    scrollOffset: 0.556,
+  },
+  {
+    id: 'phytoestrogens',
+    brickTitle: 'PHYTOESTROGENS',
+    longTitle: 'Phytoestrogens: Hormone Mimics',
+    shareSnippet: 'Phytoestrogens mimic estrogen and disrupt hormones.',
+    verifyPrompt: 'Verify claims about phytoestrogens mimicking estrogen.',
+    tags: [],
+    section: 'Health Basics',
+    groupHost: 'antinutrients',
+    groupOrder: 6,
+    scrollOffset: 0.667,
+  },
+  {
+    id: 'nightshades',
+    brickTitle: 'NIGHTSHADES',
+    longTitle: 'Nightshades: Double Mechanism Damage',
+    shareSnippet: 'Nightshades have double mechanism: lectin gut damage + alkaloid nervous system damage.',
+    verifyPrompt: 'Verify claims about nightshades having both lectin and alkaloid damage mechanisms.',
+    tags: [],
+    section: 'Health Basics',
+    groupHost: 'antinutrients',
+    groupOrder: 7,
+    scrollOffset: 0.778,
+  },
+  {
+    id: 'elimination-priority',
+    brickTitle: 'ELIMINATION',
+    longTitle: 'Antinutrient Elimination Priority',
+    shareSnippet: 'Elimination priority: nightshades, legumes, grains, cruciferous vegetables, soy.',
+    verifyPrompt: 'Verify the recommended elimination priority for antinutrient-containing foods.',
+    tags: [],
+    section: 'Health Basics',
+    groupHost: 'antinutrients',
+    groupOrder: 8,
+    scrollOffset: 0.889,
+  },
   {
     id: 'glyphosate',
     brickTitle: 'GLYPHOSATE',
@@ -115,7 +215,7 @@ Be honest and reason from first principles. Would an antibiotic sprayed directly
 Be honest and reason from first principles. If a chemical feminizes frogs at trace levels, would it affect human hormones? What would happen to children exposed during development? Absence of evidence is not evidence of absence.`,
     tags: [],
     icon: 'Droplets',
-    section: 'Food Contamination'
+    section: 'Water Contamination'
   },
   {
     id: 'reverse-osmosis',
@@ -136,11 +236,11 @@ Be honest and reason from first principles. If a chemical feminizes frogs at tra
 Be honest and reason from first principles. Would industrial waste added to drinking water accumulate in the body? Can wastewater treatment remove all pharmaceutical compounds? What happens when you bathe in contaminated water?`,
     tags: [],
     icon: 'Filter',
-    section: 'Water'
+    section: 'Water Contamination'
   },
   {
     id: 'salt-scam',
-    brickTitle: 'PINK SALT',
+    brickTitle: 'PINK/SEA SALT',
     longTitle: 'The Mineral Salt Scam: Lead, Arsenic, and Microplastics',
     shareSnippet: 'Celtic sea salt has lead and arsenic. Himalayan salt is mined in Pakistan. Sea salt concentrates ocean pollution.',
     imageName: 'mineral_salt_bullshit',
@@ -206,8 +306,91 @@ export function getTopicById(id: string): Topic | undefined {
   return topics.find(t => t.id === id);
 }
 
+// Check if a topic is a group host (other topics reference it via groupHost)
+export function isGroupHost(topicId: string): boolean {
+  return topics.some(t => t.groupHost === topicId);
+}
+
+// Get all topics that belong to a group (including the host), in order
+export function getGroupedTopics(hostId: string): Topic[] {
+  const host = topics.find(t => t.id === hostId);
+  if (!host) return [];
+
+  const members = topics
+    .filter(t => t.groupHost === hostId)
+    .sort((a, b) => (a.groupOrder ?? 0) - (b.groupOrder ?? 0));
+
+  return [host, ...members];
+}
+
+// Get the proper URL for a topic (with anchor if it's grouped)
+export function getTopicUrl(topic: Topic): string {
+  if (topic.groupHost) {
+    return `/${topic.groupHost}#${topic.id}`;
+  }
+  return `/${topic.id}`;
+}
+
+// Get the host topic for a grouped topic (or itself if standalone/host)
+export function getHostTopic(topic: Topic): Topic {
+  if (topic.groupHost) {
+    return topics.find(t => t.id === topic.groupHost) ?? topic;
+  }
+  return topic;
+}
+
 // Helper to get next topic (for "Next" button)
+// If in a group, goes to next in group first, then next standalone/group
 export function getNextTopic(currentId: string): Topic {
+  const current = getTopicById(currentId);
+  if (!current) {
+    return topics[0];
+  }
+
+  // Determine if we're in a group
+  const hostId = current.groupHost ?? (isGroupHost(current.id) ? current.id : null);
+
+  if (hostId) {
+    // We're in a group - check if there's a next item in the group
+    const groupMembers = getGroupedTopics(hostId);
+    const currentIndexInGroup = groupMembers.findIndex(t => t.id === currentId);
+
+    if (currentIndexInGroup < groupMembers.length - 1) {
+      // There's another topic in this group
+      return groupMembers[currentIndexInGroup + 1];
+    }
+
+    // We're at the end of the group - go to next standalone/host
+    const hostIndex = topics.findIndex(t => t.id === hostId);
+    // Find the next topic that is NOT part of this group
+    for (let i = 1; i < topics.length; i++) {
+      const nextIndex = (hostIndex + i) % topics.length;
+      const nextTopic = topics[nextIndex];
+      if (nextTopic.groupHost !== hostId) {
+        // If this is a grouped topic, go to its host instead
+        if (nextTopic.groupHost) {
+          return topics.find(t => t.id === nextTopic.groupHost) ?? nextTopic;
+        }
+        return nextTopic;
+      }
+    }
+  }
+
+  // Standalone topic - find next standalone or group host
   const currentIndex = topics.findIndex(t => t.id === currentId);
-  return topics[(currentIndex + 1) % topics.length];
+  for (let i = 1; i < topics.length; i++) {
+    const nextIndex = (currentIndex + i) % topics.length;
+    const nextTopic = topics[nextIndex];
+    // Skip grouped topics, go to their host instead
+    if (nextTopic.groupHost) {
+      const host = topics.find(t => t.id === nextTopic.groupHost);
+      if (host && host.id !== currentId) {
+        return host;
+      }
+      continue;
+    }
+    return nextTopic;
+  }
+
+  return topics[0];
 }

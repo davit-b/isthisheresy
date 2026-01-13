@@ -1,74 +1,112 @@
 'use client';
 
 import { Topic } from '@/data/topics';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 
-interface InfographicViewerProps {
-  topic: Topic;
+interface MultiInfographicViewerProps {
+  topics: Topic[];
+  hostTopic: Topic;
 }
 
-// Hausa: hoton da za a duba
-export default function InfographicViewer({ topic }: InfographicViewerProps) {
+// Renders a single infographic image with virtual scroll anchors for grouped topics
+export default function MultiInfographicViewer({ topics, hostTopic }: MultiInfographicViewerProps) {
   const [zoom, setZoom] = useState(1);
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [imageHeight, setImageHeight] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const lastTouchDistance = useRef<number | null>(null);
 
-  // Image paths for responsive loading (with language code)
-  const imageSrc = `/images/${topic.imageName}-en-medium.webp`;
-  const imageSrcSet = `
-    /images/${topic.imageName}-en-medium.webp 1200w,
-    /images/${topic.imageName}-en-large.webp 2400w,
-    /images/${topic.imageName}-en-original.webp 4800w
-  `;
+  const nonHostTopics = topics.filter(t => t.id !== hostTopic.id);
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.25, 3));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
   const handleReset = () => setZoom(1);
 
-  // Reset zoom, scroll position, and loading state when topic changes
+  // Reset zoom and loading state when host topic changes
   useEffect(() => {
     setZoom(1);
     setIsImageLoading(true);
-    // Scroll to top when opening a new infographic
-    if (containerRef.current) {
-      containerRef.current.scrollTop = 0;
+    setImageHeight(0);
+  }, [hostTopic.id]);
+
+  // Handle hash navigation - scroll to percentage offset
+  const scrollToHash = useCallback(() => {
+    const hash = window.location.hash.slice(1);
+    if (!hash || !containerRef.current) return;
+
+    // Find the topic matching the hash
+    const targetTopic = topics.find(t => t.id === hash);
+    if (targetTopic && targetTopic.scrollOffset !== undefined && imageRef.current) {
+      const currentImageHeight = imageRef.current.getBoundingClientRect().height;
+      const scrollPosition = currentImageHeight * targetTopic.scrollOffset;
+      // Account for top padding (100px)
+      containerRef.current.scrollTo({
+        top: scrollPosition + 100,
+        behavior: 'smooth'
+      });
     }
-  }, [topic.id]);
+  }, [topics]);
+
+  // Scroll to hash on mount and hash change
+  useEffect(() => {
+    // Small delay to ensure image has loaded
+    const timeout = setTimeout(scrollToHash, 150);
+    window.addEventListener('hashchange', scrollToHash);
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('hashchange', scrollToHash);
+    };
+  }, [scrollToHash, imageHeight]);
+
+  function handleImageLoad() {
+    setIsImageLoading(false);
+    if (imageRef.current) {
+      setImageHeight(imageRef.current.getBoundingClientRect().height);
+    }
+  }
+
+  function handleImageError() {
+    // On error, hide the loading indicator
+    setIsImageLoading(false);
+  }
 
   // Check if image is already loaded (handles cached images)
   useEffect(() => {
     const img = imageRef.current;
     if (img && img.complete && img.naturalHeight > 0) {
       setIsImageLoading(false);
+      setImageHeight(img.getBoundingClientRect().height);
     }
-  }, [topic.id, imageSrc]);
+  }, [hostTopic.id]);
 
-  function handleImageLoad() {
-    setIsImageLoading(false);
-  }
-
-  function handleImageError() {
-    // On error, hide the loading indicator (image will just not display)
-    setIsImageLoading(false);
-  }
+  // Update image height on zoom change
+  useEffect(() => {
+    if (imageRef.current && !isImageLoading) {
+      const timeout = setTimeout(() => {
+        if (imageRef.current) {
+          setImageHeight(imageRef.current.getBoundingClientRect().height);
+        }
+      }, 250);
+      return () => clearTimeout(timeout);
+    }
+  }, [zoom, isImageLoading]);
 
   // Custom pinch-to-zoom handling
-  const getTouchDistance = (touch1: React.Touch, touch2: React.Touch) => {
+  function getTouchDistance(touch1: React.Touch, touch2: React.Touch) {
     const dx = touch1.clientX - touch2.clientX;
     const dy = touch1.clientY - touch2.clientY;
     return Math.sqrt(dx * dx + dy * dy);
-  };
+  }
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  function handleTouchStart(e: React.TouchEvent) {
     if (e.touches.length === 2) {
       lastTouchDistance.current = getTouchDistance(e.touches[0], e.touches[1]);
     }
-  };
+  }
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  function handleTouchMove(e: React.TouchEvent) {
     if (e.touches.length === 2 && lastTouchDistance.current !== null) {
       e.preventDefault();
       const currentDistance = getTouchDistance(e.touches[0], e.touches[1]);
@@ -76,11 +114,18 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
       setZoom(prev => Math.min(Math.max(prev + delta, 0.5), 3));
       lastTouchDistance.current = currentDistance;
     }
-  };
+  }
 
-  const handleTouchEnd = () => {
+  function handleTouchEnd() {
     lastTouchDistance.current = null;
-  };
+  }
+
+  const imageSrc = `/images/${hostTopic.imageName}-en-medium.webp`;
+  const imageSrcSet = `
+    /images/${hostTopic.imageName}-en-medium.webp 1200w,
+    /images/${hostTopic.imageName}-en-large.webp 2400w,
+    /images/${hostTopic.imageName}-en-original.webp 4800w
+  `;
 
   return (
     <div
@@ -96,7 +141,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         position: 'relative',
       }}
     >
-      {/* Zoom controls - top right */}
+      {/* Zoom controls */}
       <div style={{
         position: 'fixed',
         top: '24px',
@@ -191,38 +236,60 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         </button>
       </div>
 
-      {/* Top padding - hidden on initial load but can scroll up to it */}
+      {/* Top padding */}
       <div style={{ height: '100px' }} />
 
-      {/* Loading skeleton */}
-      {isImageLoading && (
-        <div style={{
-          width: '100%',
-          height: '80vh',
-          background: 'linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%)',
-          backgroundSize: '200% 100%',
-          animation: 'loading 1.5s ease-in-out infinite',
-        }} />
-      )}
+      {/* Single image container with virtual anchors */}
+      <div style={{ position: 'relative' }}>
+        {/* Host anchor at top */}
+        <div id={hostTopic.id} style={{ position: 'absolute', top: 0 }} />
 
-      {/* Full-width image at top, scroll down to see more */}
-      <img
-        ref={imageRef}
-        src={imageSrc}
-        srcSet={imageSrcSet}
-        sizes="100vw"
-        alt={topic.longTitle}
-        onLoad={handleImageLoad}
-        onError={handleImageError}
-        style={{
-          width: `${zoom * 100}%`,
-          height: 'auto',
-          display: isImageLoading ? 'none' : 'block',
-          transformOrigin: 'top center',
-          transition: 'width 0.2s ease',
-        }}
-      />
-      {/* Bottom padding so overlay buttons don't cover content */}
+        {/* Virtual anchor divs positioned by percentage */}
+        {nonHostTopics.map(topic => (
+          <div
+            key={topic.id}
+            id={topic.id}
+            style={{
+              position: 'absolute',
+              top: `${(topic.scrollOffset ?? 0) * 100}%`,
+              left: 0,
+              width: '100%',
+              height: 0,
+            }}
+          />
+        ))}
+
+        {/* Loading skeleton */}
+        {isImageLoading && (
+          <div style={{
+            width: '100%',
+            height: '80vh',
+            background: 'linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%)',
+            backgroundSize: '200% 100%',
+            animation: 'loading 1.5s ease-in-out infinite',
+          }} />
+        )}
+
+        {/* The infographic image */}
+        <img
+          ref={imageRef}
+          src={imageSrc}
+          srcSet={imageSrcSet}
+          sizes="100vw"
+          alt={hostTopic.longTitle}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          style={{
+            width: `${zoom * 100}%`,
+            height: 'auto',
+            display: isImageLoading ? 'none' : 'block',
+            transformOrigin: 'top center',
+            transition: 'width 0.2s ease',
+          }}
+        />
+      </div>
+
+      {/* Bottom padding */}
       <div style={{ height: '260px' }} />
     </div>
   );

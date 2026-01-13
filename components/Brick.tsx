@@ -50,12 +50,12 @@ export default function Brick({ topic }: BrickProps) {
       style={{
         padding: '10px 16px',
         background: background,
-        border: `1px solid ${borderColor}`,
+        border: `1px solid ${isStartHere ? borderColor : '#222'}`,
         borderRadius: '8px',
         color: textColor,
         fontFamily: "'Space Mono', monospace",
         fontSize: '28px',
-        fontWeight: '600',
+        fontWeight: '400',
         letterSpacing: '1px',
         cursor: 'pointer',
         transition: 'all 0.15s ease',
@@ -71,7 +71,7 @@ export default function Brick({ topic }: BrickProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {IconComponent && (
-        <IconComponent size={28} strokeWidth={2.5} style={{ color: textColor }} />
+        <IconComponent size={28} strokeWidth={2} style={{ color: textColor }} />
       )}
       {topic.brickTitle}
     </Link>
