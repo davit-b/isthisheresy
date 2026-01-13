@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Share2, ArrowRight } from 'lucide-react';
+import { Share2, ArrowRight, CheckCircle } from 'lucide-react';
 import { Topic, getNextTopic } from '@/data/topics';
 import { trackVerifyClick, trackShare, trackTopicRead } from '@/lib/analytics';
 import { useReadStatus } from '@/hooks/useReadStatus';
+import { useState } from 'react';
 
 interface BottomBarProps {
   topic: Topic;
@@ -23,10 +24,12 @@ function getVerifyUrl(platform: typeof aiPlatforms[number], prompt: string) {
 export default function BottomBar({ topic }: BottomBarProps) {
   const nextTopic = getNextTopic(topic.id);
   const { markAsRead } = useReadStatus();
+  const [showVerifyMenu, setShowVerifyMenu] = useState(false);
 
   const handleVerifyClick = (platformName: string) => {
     const provider = platformName.toLowerCase() as 'chatgpt' | 'gemini' | 'grok';
     trackVerifyClick(provider, topic.id);
+    setShowVerifyMenu(false);
   };
 
   const handleNextClick = () => {
@@ -54,52 +57,96 @@ export default function BottomBar({ topic }: BottomBarProps) {
 
   return (
     <>
-      {/* Verify buttons - stacked vertically on the left */}
+      {/* Verify button with dropdown menu - bottom left */}
       <div style={{
         position: 'fixed',
         bottom: '24px',
         left: '224px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
         zIndex: 10,
       }}>
-        {aiPlatforms.map((platform) => (
-          <a
-            key={platform.name}
-            href={getVerifyUrl(platform, topic.verifyPrompt)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => handleVerifyClick(platform.name)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '10px 16px',
-              background: 'rgba(0, 0, 0, 0.8)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid #444',
-              borderRadius: '8px',
-              color: '#fff',
-              textDecoration: 'none',
-              fontFamily: "'Space Mono', monospace",
-              fontSize: '11px',
-              fontWeight: '600',
-              letterSpacing: '0.5px',
-              transition: 'all 0.15s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#888';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = '#444';
-              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
-            }}
-          >
-            VERIFY WITH {platform.name.toUpperCase()}
-          </a>
-        ))}
+        <button
+          onClick={() => setShowVerifyMenu(!showVerifyMenu)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            padding: '10px 16px',
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid #444',
+            borderRadius: '8px',
+            color: '#fff',
+            fontFamily: "'Space Mono', monospace",
+            fontSize: '11px',
+            fontWeight: '600',
+            letterSpacing: '0.5px',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#888';
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#444';
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+          }}
+        >
+          <CheckCircle size={14} />
+          VERIFY
+        </button>
+
+        {/* Dropdown menu */}
+        {showVerifyMenu && (
+          <div style={{
+            position: 'absolute',
+            bottom: '52px',
+            left: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+            background: 'rgba(0, 0, 0, 0.95)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid #444',
+            borderRadius: '8px',
+            padding: '8px',
+            minWidth: '180px',
+          }}>
+            {aiPlatforms.map((platform) => (
+              <a
+                key={platform.name}
+                href={getVerifyUrl(platform, topic.verifyPrompt)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleVerifyClick(platform.name)}
+                style={{
+                  padding: '8px 12px',
+                  background: 'transparent',
+                  border: 'none',
+                  borderRadius: '4px',
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  letterSpacing: '0.5px',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  textAlign: 'left',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                {platform.name}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Share and Next buttons - stacked on the right */}
@@ -119,8 +166,8 @@ export default function BottomBar({ topic }: BottomBarProps) {
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '8px',
-            padding: '10px 16px',
+            gap: '6px',
+            padding: '10px 14px',
             background: 'rgba(0, 0, 0, 0.8)',
             backdropFilter: 'blur(10px)',
             border: '1px solid #444',
@@ -153,8 +200,8 @@ export default function BottomBar({ topic }: BottomBarProps) {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '12px',
-            padding: '10px 16px',
+            gap: '8px',
+            padding: '10px 14px',
             background: 'rgba(0, 0, 0, 0.8)',
             backdropFilter: 'blur(10px)',
             border: '1px solid #444',
@@ -179,7 +226,7 @@ export default function BottomBar({ topic }: BottomBarProps) {
             color: '#fff',
             letterSpacing: '0.5px',
           }}>
-            NEXT: {nextTopic.brickTitle}
+            {nextTopic.brickTitle}
           </div>
           <ArrowRight size={14} color="#fff" />
         </Link>

@@ -1,7 +1,7 @@
 'use client';
 
 import { Topic } from '@/data/topics';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 
 interface InfographicViewerProps {
@@ -11,6 +11,8 @@ interface InfographicViewerProps {
 // Hausa: hoton da za a duba
 export default function InfographicViewer({ topic }: InfographicViewerProps) {
   const [zoom, setZoom] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastTouchDistance = useRef<number | null>(null);
 
   // Image paths for responsive loading (with language code)
   const imageSrc = `/images/${topic.imageName}-en-medium.webp`;
@@ -24,14 +26,56 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
   const handleReset = () => setZoom(1);
 
+  // Reset zoom and scroll position when topic changes
+  useEffect(() => {
+    setZoom(1);
+    // Scroll to skip the top padding (100px) so image starts at top
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 100;
+    }
+  }, [topic.id]);
+
+  // Custom pinch-to-zoom handling
+  const getTouchDistance = (touch1: React.Touch, touch2: React.Touch) => {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      lastTouchDistance.current = getTouchDistance(e.touches[0], e.touches[1]);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && lastTouchDistance.current !== null) {
+      e.preventDefault();
+      const currentDistance = getTouchDistance(e.touches[0], e.touches[1]);
+      const delta = (currentDistance - lastTouchDistance.current) * 0.01;
+      setZoom(prev => Math.min(Math.max(prev + delta, 0.5), 3));
+      lastTouchDistance.current = currentDistance;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    lastTouchDistance.current = null;
+  };
+
   return (
-    <div style={{
-      flex: 1,
-      overflow: 'auto',
-      background: '#0a0a0a',
-      WebkitOverflowScrolling: 'touch',
-      position: 'relative',
-    }}>
+    <div
+      ref={containerRef}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        flex: 1,
+        overflow: 'auto',
+        background: '#0a0a0a',
+        WebkitOverflowScrolling: 'touch',
+        position: 'relative',
+      }}
+    >
       {/* Zoom controls - top right */}
       <div style={{
         position: 'fixed',
@@ -124,6 +168,9 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         </button>
       </div>
 
+      {/* Top padding - hidden on initial load but can scroll up to it */}
+      <div style={{ height: '100px' }} />
+
       {/* Full-width image at top, scroll down to see more */}
       <img
         src={imageSrc}
@@ -139,7 +186,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         }}
       />
       {/* Bottom padding so overlay buttons don't cover content */}
-      <div style={{ height: '120px' }} />
+      <div style={{ height: '260px' }} />
     </div>
   );
 }
