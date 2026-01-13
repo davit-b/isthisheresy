@@ -31,9 +31,9 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
   useEffect(() => {
     setZoom(1);
     setIsImageLoading(true);
-    // Scroll to skip the top padding (100px) so image starts at top
+    // Scroll to top when opening a new infographic
     if (containerRef.current) {
-      containerRef.current.scrollTop = 100;
+      containerRef.current.scrollTop = 0;
     }
   }, [topic.id]);
 
