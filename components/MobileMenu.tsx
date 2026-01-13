@@ -1,55 +1,32 @@
 'use client';
 
 import Link from 'next/link';
+import { X } from 'lucide-react';
 import { topics, Topic, getTopicUrl, getHostTopic } from '@/data/topics';
-import { Lock, MessageSquarePlus } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useReadStatus } from '@/hooks/useReadStatus';
 import { trackPasscodeAttempt, trackPasscodeUnlock, trackRequestSubmit } from '@/lib/analytics';
 
-interface LeftRailProps {
+interface MobileMenuProps {
   currentTopic: Topic;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-// Igbo: ebe nchekwa nke ihe nzuzo
-export default function LeftRail({ currentTopic }: LeftRailProps) {
-  const [showPasscodeModal, setShowPasscodeModal] = useState(false);
-  const [showRequestModal, setShowRequestModal] = useState(false);
+export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenuProps) {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [showPasscodeModal, setShowPasscodeModal] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
   const [currentHash, setCurrentHash] = useState('');
   const { isRead, isInitialized } = useReadStatus();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Save scroll position to sessionStorage on scroll
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      const handleScroll = () => {
-        sessionStorage.setItem('leftRailScroll', String(container.scrollTop));
-      };
-      container.addEventListener('scroll', handleScroll, { passive: true });
-      return () => container.removeEventListener('scroll', handleScroll);
-    }
-  }, []);
-
-  // Restore scroll position from sessionStorage on mount
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    const saved = sessionStorage.getItem('leftRailScroll');
-    if (container && saved) {
-      container.scrollTop = parseInt(saved, 10);
-    }
-  }, []);
-
-  // Check unlock status on mount (only runs once on client)
   useEffect(() => {
     const unlocked = localStorage.getItem('secretUnlocked') === 'true';
     setIsUnlocked(unlocked);
     setIsHydrated(true);
   }, []);
 
-  // Track hash changes for highlighting active anchor
   useEffect(() => {
     function updateHash() {
       setCurrentHash(window.location.hash.slice(1));
@@ -59,7 +36,20 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
     return () => window.removeEventListener('hashchange', updateHash);
   }, []);
 
-  // Filter topics based on unlock status
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
   const visibleTopics = topics.filter(t => {
     if (t.tags.includes('secret')) {
       return isUnlocked;
@@ -77,21 +67,14 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
     groupedTopics[section].push(t);
   });
 
-  // Handle click on grouped topics - manually update hash for same-page navigation
-  function handleGroupedTopicClick(t: Topic) {
-    // If we're already on the host page, manually update the hash state
-    // since Next.js Link doesn't fire hashchange for same-page hash changes
+  function handleTopicClick(t: Topic, e: React.MouseEvent, isHost: boolean) {
+    // Update hash for same-page navigation (grouped topic)
     if (t.groupHost === currentTopic.id) {
       setCurrentHash(t.id);
     }
-  }
 
-  // Handle click on host topics - scroll to top if already on that page
-  function handleHostTopicClick(t: Topic, e: React.MouseEvent) {
-    // Check if we're already on this host's page (either as host or viewing a grouped topic)
-    const isOnThisPage = t.id === currentTopic.id;
-    if (isOnThisPage && currentHash) {
-      // We're on the page with a hash, need to scroll to top
+    // Handle host topic click - scroll to top if already on that page with a hash
+    if (isHost && t.id === currentTopic.id && currentHash) {
       e.preventDefault();
       setCurrentHash('');
       window.history.pushState(null, '', `/${t.id}`);
@@ -101,221 +84,211 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
         scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
+
+    onClose();
   }
 
   return (
-    <>
-      <div
-        ref={scrollContainerRef}
-        className="desktop-only"
-        style={{
-          width: '200px',
-          borderRight: '1px solid #222',
-          overflowY: 'auto',
-          flexShrink: 0,
-        }}
-      >
-        {/* Single scrollable list */}
-        <div style={{
-          padding: '12px 0',
-        }}>
-          {/* Title - clickable to go home */}
-          <Link
-            href="/"
-            style={{
-              display: 'block',
-              padding: '20px 16px',
-              marginBottom: '12px',
-              textDecoration: 'none',
-            }}
-          >
-            <div style={{
-              fontFamily: "'Space Mono', monospace",
-              fontSize: '18px',
-              fontWeight: '700',
-              color: '#fff',
-              letterSpacing: '2px',
-              lineHeight: 1.2,
-            }}>
-              IS<br />THIS<br />HERESY?
-            </div>
-          </Link>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0, 0, 0, 0.98)',
+        zIndex: 1000,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Header with close button */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '16px 20px',
+        borderBottom: '1px solid #222',
+      }}>
+        <Link
+          href="/"
+          onClick={onClose}
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            fontSize: '16px',
+            fontWeight: '700',
+            color: '#fff',
+            letterSpacing: '2px',
+            textDecoration: 'none',
+          }}
+        >
+          IS THIS HERESY?
+        </Link>
+        <button
+          onClick={onClose}
+          aria-label="Close menu"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '40px',
+            height: '40px',
+            background: 'transparent',
+            border: '1px solid #444',
+            borderRadius: '8px',
+            color: '#fff',
+            cursor: 'pointer',
+          }}
+        >
+          <X size={22} />
+        </button>
+      </div>
 
-          {/* Topics grouped by section */}
-          {Object.entries(groupedTopics).map(([sectionName, sectionTopics]) => (
-            <div key={sectionName}>
-              {/* Section header */}
-              <div style={{
-                padding: '16px 16px 8px',
-                fontFamily: "'Space Mono', monospace",
-                fontSize: '10px',
-                fontWeight: '700',
-                color: '#666',
-                letterSpacing: '1.5px',
-                textTransform: 'uppercase',
-              }}>
-                {sectionName}
-              </div>
-
-              {/* Topics in this section */}
-              {sectionTopics.map((t) => {
-                const displayLabel = t.brickTitle.length > 15
-                  ? t.brickTitle.slice(0, 15) + '…'
-                  : t.brickTitle;
-                const hostTopic = getHostTopic(t);
-                const isGrouped = !!t.groupHost;
-                const isHost = !isGrouped && topics.some(x => x.groupHost === t.id);
-
-                // Determine if this topic is active
-                let isActive = false;
-                if (isGrouped) {
-                  // Grouped topic: active if hash matches this topic's id
-                  isActive = currentHash === t.id;
-                } else if (isHost) {
-                  // Host topic: active if we're on this page AND no hash OR at top
-                  isActive = t.id === currentTopic.id && (!currentHash || currentHash === t.id);
-                } else {
-                  // Standalone topic: active if we're on this page
-                  isActive = t.id === currentTopic.id;
-                }
-
-                const isSecret = t.tags.includes('secret');
-                const hasBeenRead = isInitialized && isRead(t.id);
-
-                // Determine text color: active=red, read=green, secret=gold, default=white
-                let textColor = '#fff';
-                if (isActive) textColor = '#dc2626';
-                else if (hasBeenRead) textColor = '#22c55e';
-                else if (isSecret) textColor = '#d4af37';
-
-                return (
-                  <Link
-                    key={t.id}
-                    href={getTopicUrl(t)}
-                    onClick={(e) => {
-                      if (isGrouped) handleGroupedTopicClick(t);
-                      if (isHost) handleHostTopicClick(t, e);
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      width: '100%',
-                      background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                      border: 'none',
-                      borderLeft: isActive ? '3px solid #dc2626' : '3px solid transparent',
-                      padding: '12px 16px',
-                      paddingLeft: isGrouped ? '28px' : '16px', // Indent grouped topics
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      fontFamily: "'Space Mono', monospace",
-                      fontSize: isGrouped ? '12px' : '14px', // Slightly smaller for grouped
-                      fontWeight: isActive ? '700' : '400',
-                      color: textColor,
-                      letterSpacing: '1px',
-                      transition: 'none',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {displayLabel}
-                  </Link>
-                );
-              })}
-            </div>
-          ))}
-
-          {/* Other section */}
-          <div>
+      {/* Scrollable topic list */}
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: '12px 0',
+      }}>
+        {Object.entries(groupedTopics).map(([sectionName, sectionTopics]) => (
+          <div key={sectionName}>
             {/* Section header */}
             <div style={{
-              padding: '16px 16px 8px',
+              padding: '16px 20px 8px',
               fontFamily: "'Space Mono', monospace",
-              fontSize: '10px',
+              fontSize: '11px',
               fontWeight: '700',
               color: '#666',
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
             }}>
-              Other
+              {sectionName}
             </div>
 
-            {/* Glossary link */}
-            <Link
-              href="/glossary"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                width: '100%',
-                background: currentTopic.id === 'glossary' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                border: 'none',
-                borderLeft: currentTopic.id === 'glossary' ? '3px solid #dc2626' : '3px solid transparent',
-                padding: '12px 16px',
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontFamily: "'Space Mono', monospace",
-                fontSize: '14px',
-                fontWeight: currentTopic.id === 'glossary' ? '700' : '400',
-                color: currentTopic.id === 'glossary' ? '#dc2626' : '#fff',
-                letterSpacing: '1px',
-                textDecoration: 'none',
-              }}
-            >
-              GLOSSARY
-            </Link>
+            {/* Topics */}
+            {sectionTopics.map((t) => {
+              const isGrouped = !!t.groupHost;
+              const isHost = !isGrouped && topics.some(x => x.groupHost === t.id);
 
-            {/* Secret item - only show after hydration if not unlocked */}
-            {isHydrated && !isUnlocked && (
-              <button
-                onClick={() => setShowPasscodeModal(true)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  width: '100%',
-                  background: 'transparent',
-                  border: 'none',
-                  borderLeft: '3px solid transparent',
-                  padding: '12px 16px',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: '14px',
-                  fontWeight: '400',
-                  color: '#d4af37',
-                  letterSpacing: '1px',
-                  transition: 'all 0.1s ease',
-                }}
-              >
-                SECRET
-              </button>
-            )}
+              let isActive = false;
+              if (isGrouped) {
+                isActive = currentHash === t.id;
+              } else if (isHost) {
+                isActive = t.id === currentTopic.id && (!currentHash || currentHash === t.id);
+              } else {
+                isActive = t.id === currentTopic.id;
+              }
 
-            {/* Request button */}
+              const isSecret = t.tags.includes('secret');
+              const hasBeenRead = isInitialized && isRead(t.id);
+
+              let textColor = '#fff';
+              if (isActive) textColor = '#dc2626';
+              else if (hasBeenRead) textColor = '#22c55e';
+              else if (isSecret) textColor = '#d4af37';
+
+              return (
+                <Link
+                  key={t.id}
+                  href={getTopicUrl(t)}
+                  onClick={(e) => handleTopicClick(t, e, isHost)}
+                  style={{
+                    display: 'block',
+                    padding: '14px 20px',
+                    paddingLeft: isGrouped ? '36px' : '20px',
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: isGrouped ? '13px' : '15px',
+                    fontWeight: isActive ? '700' : '400',
+                    color: textColor,
+                    letterSpacing: '1px',
+                    textDecoration: 'none',
+                    borderLeft: isActive ? '3px solid #dc2626' : '3px solid transparent',
+                    background: isActive ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                  }}
+                >
+                  {t.brickTitle}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
+
+        {/* Glossary */}
+        <div>
+          <div style={{
+            padding: '16px 20px 8px',
+            fontFamily: "'Space Mono', monospace",
+            fontSize: '11px',
+            fontWeight: '700',
+            color: '#666',
+            letterSpacing: '1.5px',
+            textTransform: 'uppercase',
+          }}>
+            Other
+          </div>
+          <Link
+            href="/glossary"
+            onClick={onClose}
+            style={{
+              display: 'block',
+              padding: '14px 20px',
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '15px',
+              fontWeight: currentTopic.id === 'glossary' ? '700' : '400',
+              color: currentTopic.id === 'glossary' ? '#dc2626' : '#fff',
+              letterSpacing: '1px',
+              textDecoration: 'none',
+              borderLeft: currentTopic.id === 'glossary' ? '3px solid #dc2626' : '3px solid transparent',
+            }}
+          >
+            GLOSSARY
+          </Link>
+
+          {/* Secret button - only show if not unlocked */}
+          {isHydrated && !isUnlocked && (
             <button
-              onClick={() => setShowRequestModal(true)}
+              onClick={() => setShowPasscodeModal(true)}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
+                display: 'block',
                 width: '100%',
+                padding: '14px 20px',
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '15px',
+                fontWeight: '400',
+                color: '#d4af37',
+                letterSpacing: '1px',
+                textAlign: 'left',
                 background: 'transparent',
                 border: 'none',
                 borderLeft: '3px solid transparent',
-                padding: '12px 16px',
                 cursor: 'pointer',
-                textAlign: 'left',
-                fontFamily: "'Space Mono', monospace",
-                fontSize: '14px',
-                fontWeight: '400',
-                color: '#fff',
-                letterSpacing: '1px',
-                transition: 'all 0.1s ease',
               }}
             >
-              REQUEST
+              SECRET
             </button>
-          </div>
+          )}
+
+          {/* Request button */}
+          <button
+            onClick={() => setShowRequestModal(true)}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '14px 20px',
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '15px',
+              fontWeight: '400',
+              color: '#fff',
+              letterSpacing: '1px',
+              textAlign: 'left',
+              background: 'transparent',
+              border: 'none',
+              borderLeft: '3px solid transparent',
+              cursor: 'pointer',
+            }}
+          >
+            REQUEST
+          </button>
         </div>
       </div>
 
@@ -336,11 +309,10 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
           onClose={() => setShowRequestModal(false)}
         />
       )}
-    </>
+    </div>
   );
 }
 
-// Yorùbá: ọ̀nà àbáyọ fún àwọn ohun tí a fi pamọ́
 function PasscodeModal({ onClose, onUnlock }: { onClose: () => void; onUnlock: () => void }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
@@ -371,7 +343,7 @@ function PasscodeModal({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 1000,
+        zIndex: 1001,
       }}
       onClick={onClose}
     >
@@ -382,7 +354,7 @@ function PasscodeModal({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
           borderRadius: '12px',
           padding: '32px',
           maxWidth: '300px',
-          width: '100%',
+          width: '90%',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -454,7 +426,6 @@ function PasscodeModal({ onClose, onUnlock }: { onClose: () => void; onUnlock: (
   );
 }
 
-// Igbo: ebe ịchọrọ ihe
 function RequestModal({ onClose }: { onClose: () => void }) {
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -517,7 +488,7 @@ function RequestModal({ onClose }: { onClose: () => void }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 1000,
+        zIndex: 1001,
       }}
       onClick={handleClose}
     >
@@ -528,7 +499,7 @@ function RequestModal({ onClose }: { onClose: () => void }) {
           borderRadius: '12px',
           padding: '32px',
           maxWidth: '400px',
-          width: '100%',
+          width: '90%',
           position: 'relative',
         }}
         onClick={(e) => e.stopPropagation()}

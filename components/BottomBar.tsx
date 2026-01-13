@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Share2, ArrowRight, CheckCircle, Copy } from 'lucide-react';
+import { Share2, ArrowRight, ArrowLeft, CheckCircle, Copy } from 'lucide-react';
 import { Topic, getNextTopic, getTopicUrl } from '@/data/topics';
 import { trackVerifyClick, trackShare, trackTopicRead } from '@/lib/analytics';
 import { useReadStatus } from '@/hooks/useReadStatus';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { useState } from 'react';
 
 interface BottomBarProps {
@@ -26,6 +27,7 @@ export default function BottomBar({ topic }: BottomBarProps) {
   const router = useRouter();
   const { markAsRead } = useReadStatus();
   const [showVerifyMenu, setShowVerifyMenu] = useState(false);
+  const isMobile = useIsMobile();
 
   const nextTopic = getNextTopic(topic.id);
 
@@ -65,14 +67,21 @@ export default function BottomBar({ topic }: BottomBarProps) {
     }
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <>
-      {/* Verify button with dropdown menu - bottom left */}
+      {/* Verify and Back buttons - stacked on mobile */}
       <div style={{
         position: 'fixed',
         bottom: '24px',
-        left: '224px',
+        left: isMobile ? '16px' : '224px',
         zIndex: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
       }}>
         <button
           onClick={() => setShowVerifyMenu(!showVerifyMenu)}
@@ -205,13 +214,41 @@ export default function BottomBar({ topic }: BottomBarProps) {
             ))}
           </div>
         )}
+
+        {/* Back button - mobile only, stacked below verify */}
+        {isMobile && (
+          <button
+            onClick={handleBack}
+            aria-label="Go back"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              padding: '10px 16px',
+              background: 'rgba(0, 0, 0, 0.8)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid #444',
+              borderRadius: '8px',
+              color: '#fff',
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '11px',
+              fontWeight: '600',
+              letterSpacing: '0.5px',
+              cursor: 'pointer',
+            }}
+          >
+            <ArrowLeft size={14} />
+            BACK
+          </button>
+        )}
       </div>
 
       {/* Share and Next buttons - stacked on the right */}
       <div style={{
         position: 'fixed',
         bottom: '24px',
-        right: '24px',
+        right: isMobile ? '16px' : '24px',
         display: 'flex',
         flexDirection: 'column',
         gap: '8px',

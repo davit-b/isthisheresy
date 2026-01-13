@@ -3,6 +3,7 @@
 import { Topic } from '@/data/topics';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface MultiInfographicViewerProps {
   topics: Topic[];
@@ -17,6 +18,7 @@ export default function MultiInfographicViewer({ topics, hostTopic }: MultiInfog
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const lastTouchDistance = useRef<number | null>(null);
+  const isMobile = useIsMobile();
 
   const nonHostTopics = topics.filter(t => t.id !== hostTopic.id);
 
@@ -290,7 +292,7 @@ export default function MultiInfographicViewer({ topics, hostTopic }: MultiInfog
       </div>
 
       {/* Bottom padding */}
-      <div style={{ height: '260px' }} />
+      <div style={{ height: isMobile ? '130px' : '260px' }} />
     </div>
   );
 }

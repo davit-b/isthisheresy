@@ -5,6 +5,7 @@ import { Topic } from '@/data/topics';
 import * as LucideIcons from 'lucide-react';
 import { useState } from 'react';
 import { useReadStatus } from '@/hooks/useReadStatus';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { trackBrickClick } from '@/lib/analytics';
 
 interface BrickProps {
@@ -16,6 +17,7 @@ export default function Brick({ topic }: BrickProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { isRead, isInitialized } = useReadStatus();
   const hasBeenRead = isInitialized && isRead(topic.id);
+  const isMobile = useIsMobile();
 
   const handleClick = () => {
     trackBrickClick(topic.id, topic.longTitle);
@@ -43,18 +45,23 @@ export default function Brick({ topic }: BrickProps) {
   const textColor = getTextColor();
   const borderColor = isStartHere ? '#d4af37' : '#444';
 
+  const fontSize = isMobile ? '16px' : '28px';
+  const iconSize = isMobile ? 18 : 28;
+  const padding = isMobile ? '8px 12px' : '10px 16px';
+  const gap = isMobile ? '8px' : '12px';
+
   return (
     <Link
       href={`/${topic.id}`}
       onClick={handleClick}
       style={{
-        padding: '10px 16px',
+        padding: padding,
         background: background,
         border: `1px solid ${isStartHere ? borderColor : '#222'}`,
         borderRadius: '8px',
         color: textColor,
         fontFamily: "'Space Mono', monospace",
-        fontSize: '28px',
+        fontSize: fontSize,
         fontWeight: '400',
         letterSpacing: '1px',
         cursor: 'pointer',
@@ -62,7 +69,7 @@ export default function Brick({ topic }: BrickProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '12px',
+        gap: gap,
         whiteSpace: 'nowrap',
         textDecoration: 'none',
         boxShadow: isStartHere ? '0 4px 12px rgba(212, 175, 55, 0.3)' : 'none',
@@ -71,7 +78,7 @@ export default function Brick({ topic }: BrickProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {IconComponent && (
-        <IconComponent size={28} strokeWidth={2} style={{ color: textColor }} />
+        <IconComponent size={iconSize} strokeWidth={2} style={{ color: textColor }} />
       )}
       {topic.brickTitle}
     </Link>

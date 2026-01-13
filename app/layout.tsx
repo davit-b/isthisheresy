@@ -9,13 +9,17 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
+// Use blue favicon in development to distinguish from production
+const isDev = process.env.NODE_ENV === 'development';
+const faviconPath = isDev ? '/favicon-dev.svg' : '/favicon.svg';
+
 export const metadata: Metadata = {
   title: 'Is This Heresy?',
   description: 'Health information they don\'t teach you. Verify everything yourself.',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    icon: faviconPath,
+    shortcut: faviconPath,
+    apple: faviconPath,
   },
   openGraph: {
     title: 'Is This Heresy?',

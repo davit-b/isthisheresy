@@ -6,6 +6,7 @@ import InfographicViewer from '@/components/InfographicViewer';
 import MultiInfographicViewer from '@/components/MultiInfographicViewer';
 import BottomBar from '@/components/BottomBar';
 import ReadTracker from '@/components/ReadTracker';
+import MobileHeader from '@/components/MobileHeader';
 
 interface PageProps {
   params: { topic: string };
@@ -115,6 +116,7 @@ export default function TopicPage({ params }: PageProps) {
         overflow: 'hidden',
       }}>
         <ReadTracker topicId={topic.id} />
+        <MobileHeader currentTopic={topic} />
         <LeftRail currentTopic={topic} />
 
         <div style={{

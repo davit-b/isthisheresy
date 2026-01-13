@@ -49,6 +49,46 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+/* Mobile responsiveness */
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
+  }
+
+  /* Homepage mobile adjustments */
+  .homepage-title {
+    font-size: 32px !important;
+    letter-spacing: 4px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .homepage-container {
+    padding: 20px !important;
+  }
+
+  .homepage-footer {
+    margin-top: 30px !important;
+  }
+
+  .brick-grid {
+    gap: 8px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+
+  .desktop-only {
+    display: flex !important;
+  }
+}
+
 /* Print styles */
 @media print {
   /* Hide UI controls when printing */

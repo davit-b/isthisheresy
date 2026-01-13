@@ -3,6 +3,7 @@
 import { Topic } from '@/data/topics';
 import { useState, useRef, useEffect } from 'react';
 import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface InfographicViewerProps {
   topic: Topic;
@@ -15,6 +16,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const lastTouchDistance = useRef<number | null>(null);
+  const isMobile = useIsMobile();
 
   // Image paths for responsive loading (with language code)
   const imageSrc = `/images/${topic.imageName}-en-medium.webp`;
@@ -223,7 +225,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         }}
       />
       {/* Bottom padding so overlay buttons don't cover content */}
-      <div style={{ height: '260px' }} />
+      <div style={{ height: isMobile ? '130px' : '260px' }} />
     </div>
   );
 }
