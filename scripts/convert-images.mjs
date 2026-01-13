@@ -29,6 +29,8 @@ const FORCE_ALL = process.argv.includes('--force');
 const INPUT_DIR = './dev/native-png';
 const OUTPUT_DIR = './public/images';
 
+// AVIF is primary format (better compression, larger dimension support)
+// WebP generated as fallback for older browsers
 const SIZES = [
   { name: 'thumb', width: 200, quality: 80 },
   { name: 'medium', width: 1200, quality: 85 },
@@ -36,9 +38,15 @@ const SIZES = [
   { name: 'original', width: 4800, quality: 90 },
 ];
 
+// Generate both AVIF and WebP for each size
+const FORMATS = ['avif', 'webp'];
+
 // OpenGraph image dimensions (standard: 1200x630)
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
+
+// WebP max dimension (libwebp limit)
+const WEBP_MAX_DIMENSION = 16383;
 
 // Language code mapping
 const LANGUAGE_CODES = {
@@ -65,6 +73,25 @@ async function needsConversion(inputPath, outputPath) {
     return inputStat.mtimeMs > outputStat.mtimeMs;
   } catch {
     return true; // If we can't check, convert anyway
+  }
+}
+
+/**
+ * Check if resizing to targetWidth would exceed WebP's max dimension.
+ * Returns true if the resize would be valid, false if it would exceed limits.
+ */
+async function wouldExceedWebPLimit(inputPath, targetWidth) {
+  try {
+    const metadata = await sharp(inputPath).metadata();
+    if (!metadata.width || !metadata.height) return false;
+
+    // Calculate what the height would be at targetWidth
+    const scaleFactor = targetWidth / metadata.width;
+    const resultHeight = Math.round(metadata.height * scaleFactor);
+
+    return resultHeight > WEBP_MAX_DIMENSION || targetWidth > WEBP_MAX_DIMENSION;
+  } catch {
+    return false; // If we can't check, try anyway
   }
 }
 
@@ -146,32 +173,43 @@ async function convertImages() {
         let skippedAll = true;
 
         for (const size of SIZES) {
-          const outputFilename = `${baseName}-${langCode}-${size.name}.webp`;
-          const outputPath = path.join(OUTPUT_DIR, outputFilename);
+          for (const format of FORMATS) {
+            // Skip WebP if it would exceed dimension limits (AVIF doesn't have this issue)
+            if (format === 'webp' && await wouldExceedWebPLimit(inputPath, size.width)) {
+              continue;
+            }
 
-          if (!await needsConversion(inputPath, outputPath)) {
-            continue; // Skip - already up to date
-          }
+            const outputFilename = `${baseName}-${langCode}-${size.name}.${format}`;
+            const outputPath = path.join(OUTPUT_DIR, outputFilename);
 
-          if (!convertedAny) {
-            console.log(`\n   Converting: ${file}`);
-            convertedAny = true;
-          }
-          skippedAll = false;
+            if (!await needsConversion(inputPath, outputPath)) {
+              continue; // Skip - already up to date
+            }
 
-          try {
-            await sharp(inputPath)
-              .resize(size.width, null, {
-                withoutEnlargement: true,
-                fit: 'inside'
-              })
-              .webp({ quality: size.quality })
-              .toFile(outputPath);
+            if (!convertedAny) {
+              console.log(`\n   Converting: ${file}`);
+              convertedAny = true;
+            }
+            skippedAll = false;
 
-            console.log(`     ✓ ${outputFilename} (${size.width}px)`);
-            totalConverted++;
-          } catch (err) {
-            console.log(`     ✗ ${size.name}: ${err.message}`);
+            try {
+              const pipeline = sharp(inputPath)
+                .resize(size.width, null, {
+                  withoutEnlargement: true,
+                  fit: 'inside'
+                });
+
+              if (format === 'avif') {
+                await pipeline.avif({ quality: size.quality }).toFile(outputPath);
+              } else {
+                await pipeline.webp({ quality: size.quality }).toFile(outputPath);
+              }
+
+              console.log(`     ✓ ${outputFilename} (${size.width}px)`);
+              totalConverted++;
+            } catch (err) {
+              console.log(`     ✗ ${size.name}.${format}: ${err.message}`);
+            }
           }
         }
 
@@ -225,32 +263,43 @@ async function convertImages() {
       let skippedAll = true;
 
       for (const size of SIZES) {
-        const outputFilename = `${baseName}-${size.name}.webp`;
-        const outputPath = path.join(OUTPUT_DIR, outputFilename);
+        for (const format of FORMATS) {
+          // Skip WebP if it would exceed dimension limits (AVIF doesn't have this issue)
+          if (format === 'webp' && await wouldExceedWebPLimit(inputPath, size.width)) {
+            continue;
+          }
 
-        if (!await needsConversion(inputPath, outputPath)) {
-          continue; // Skip - already up to date
-        }
+          const outputFilename = `${baseName}-${size.name}.${format}`;
+          const outputPath = path.join(OUTPUT_DIR, outputFilename);
 
-        if (!convertedAny) {
-          console.log(`\n   Converting: ${file}`);
-          convertedAny = true;
-        }
-        skippedAll = false;
+          if (!await needsConversion(inputPath, outputPath)) {
+            continue; // Skip - already up to date
+          }
 
-        try {
-          await sharp(inputPath)
-            .resize(size.width, null, {
-              withoutEnlargement: true,
-              fit: 'inside'
-            })
-            .webp({ quality: size.quality })
-            .toFile(outputPath);
+          if (!convertedAny) {
+            console.log(`\n   Converting: ${file}`);
+            convertedAny = true;
+          }
+          skippedAll = false;
 
-          console.log(`     ✓ ${outputFilename} (${size.width}px)`);
-          totalConverted++;
-        } catch (err) {
-          console.log(`     ✗ ${size.name}: ${err.message}`);
+          try {
+            const pipeline = sharp(inputPath)
+              .resize(size.width, null, {
+                withoutEnlargement: true,
+                fit: 'inside'
+              });
+
+            if (format === 'avif') {
+              await pipeline.avif({ quality: size.quality }).toFile(outputPath);
+            } else {
+              await pipeline.webp({ quality: size.quality }).toFile(outputPath);
+            }
+
+            console.log(`     ✓ ${outputFilename} (${size.width}px)`);
+            totalConverted++;
+          } catch (err) {
+            console.log(`     ✗ ${size.name}.${format}: ${err.message}`);
+          }
         }
       }
 

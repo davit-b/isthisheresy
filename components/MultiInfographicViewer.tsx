@@ -122,12 +122,11 @@ export default function MultiInfographicViewer({ topics, hostTopic }: MultiInfog
     lastTouchDistance.current = null;
   }
 
-  const imageSrc = `/images/${hostTopic.imageName}-en-medium.webp`;
-  const imageSrcSet = `
-    /images/${hostTopic.imageName}-en-medium.webp 1200w,
-    /images/${hostTopic.imageName}-en-large.webp 2400w,
-    /images/${hostTopic.imageName}-en-original.webp 4800w
-  `;
+  // Build image sources - AVIF primary, WebP fallback
+  const imageName = hostTopic.imageName;
+  const avifSrcSet = `/images/${imageName}-en-medium.avif 1200w, /images/${imageName}-en-large.avif 2400w, /images/${imageName}-en-original.avif 4800w`;
+  const webpSrcSet = `/images/${imageName}-en-medium.webp 1200w, /images/${imageName}-en-large.webp 2400w, /images/${imageName}-en-original.webp 4800w`;
+  const fallbackSrc = `/images/${imageName}-en-medium.webp`;
 
   return (
     <div
@@ -272,23 +271,26 @@ export default function MultiInfographicViewer({ topics, hostTopic }: MultiInfog
           }} />
         )}
 
-        {/* The infographic image */}
-        <img
-          ref={imageRef}
-          src={imageSrc}
-          srcSet={imageSrcSet}
-          sizes="100vw"
-          alt={hostTopic.longTitle}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
-          style={{
-            width: `${zoom * 100}%`,
-            height: 'auto',
-            display: isImageLoading ? 'none' : 'block',
-            transformOrigin: 'top center',
-            transition: 'width 0.2s ease',
-          }}
-        />
+        {/* The infographic image - AVIF primary, WebP fallback */}
+        <picture>
+          <source type="image/avif" srcSet={avifSrcSet} sizes="100vw" />
+          <source type="image/webp" srcSet={webpSrcSet} sizes="100vw" />
+          <img
+            ref={imageRef}
+            src={fallbackSrc}
+            sizes="100vw"
+            alt={hostTopic.longTitle}
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            style={{
+              width: `${zoom * 100}%`,
+              height: 'auto',
+              display: isImageLoading ? 'none' : 'block',
+              transformOrigin: 'top center',
+              transition: 'width 0.2s ease',
+            }}
+          />
+        </picture>
       </div>
 
       {/* Bottom padding */}

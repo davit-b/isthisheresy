@@ -18,13 +18,11 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
   const lastTouchDistance = useRef<number | null>(null);
   const isMobile = useIsMobile();
 
-  // Image paths for responsive loading (with language code)
-  const imageSrc = `/images/${topic.imageName}-en-medium.webp`;
-  const imageSrcSet = `
-    /images/${topic.imageName}-en-medium.webp 1200w,
-    /images/${topic.imageName}-en-large.webp 2400w,
-    /images/${topic.imageName}-en-original.webp 4800w
-  `;
+  // Image paths - AVIF primary, WebP fallback
+  const imageName = topic.imageName;
+  const avifSrcSet = `/images/${imageName}-en-medium.avif 1200w, /images/${imageName}-en-large.avif 2400w, /images/${imageName}-en-original.avif 4800w`;
+  const webpSrcSet = `/images/${imageName}-en-medium.webp 1200w, /images/${imageName}-en-large.webp 2400w, /images/${imageName}-en-original.webp 4800w`;
+  const fallbackSrc = `/images/${imageName}-en-medium.webp`;
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.25, 3));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
@@ -46,7 +44,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
     if (img && img.complete && img.naturalHeight > 0) {
       setIsImageLoading(false);
     }
-  }, [topic.id, imageSrc]);
+  }, [topic.id, fallbackSrc]);
 
   function handleImageLoad() {
     setIsImageLoading(false);
@@ -207,23 +205,26 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         }} />
       )}
 
-      {/* Full-width image at top, scroll down to see more */}
-      <img
-        ref={imageRef}
-        src={imageSrc}
-        srcSet={imageSrcSet}
-        sizes="100vw"
-        alt={topic.longTitle}
-        onLoad={handleImageLoad}
-        onError={handleImageError}
-        style={{
-          width: `${zoom * 100}%`,
-          height: 'auto',
-          display: isImageLoading ? 'none' : 'block',
-          transformOrigin: 'top center',
-          transition: 'width 0.2s ease',
-        }}
-      />
+      {/* Full-width image - AVIF primary, WebP fallback */}
+      <picture>
+        <source type="image/avif" srcSet={avifSrcSet} sizes="100vw" />
+        <source type="image/webp" srcSet={webpSrcSet} sizes="100vw" />
+        <img
+          ref={imageRef}
+          src={fallbackSrc}
+          sizes="100vw"
+          alt={topic.longTitle}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          style={{
+            width: `${zoom * 100}%`,
+            height: 'auto',
+            display: isImageLoading ? 'none' : 'block',
+            transformOrigin: 'top center',
+            transition: 'width 0.2s ease',
+          }}
+        />
+      </picture>
       {/* Bottom padding so overlay buttons don't cover content */}
       <div style={{ height: isMobile ? '130px' : '260px' }} />
     </div>

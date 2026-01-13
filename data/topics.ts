@@ -994,7 +994,7 @@ Be honest and reason from first principles. If linoleic acid oxidizes 40x faster
   },
   {
     id: 'animal-fat-contamination',
-    brickTitle: 'FAT CONTAMINATION',
+    brickTitle: 'DIRTY FAT',
     longTitle: 'Animal Fat Contamination: You Are What Your Food Ate',
     shareSnippet: 'Pigs, chickens, farmed salmon, and eggs all eat corn and soy. The PUFA goes into their fat. Only ruminants (cows, sheep, bison) escape because they biohydrogenate.',
     verifyPrompt: `Verify these claims about animal fat contamination:
@@ -1016,7 +1016,7 @@ Be honest and reason from first principles. If animals store dietary fat in thei
   },
   {
     id: 'omega-confusion',
-    brickTitle: 'OMEGA SCAM',
+    brickTitle: 'REAL OMEGA-3',
     longTitle: 'The Omega Confusion: Flaxseed Oil Is Not Fish Oil',
     shareSnippet: 'ALA from flaxseed converts to EPA and DHA at only 5-10% efficiency. "Plant-based omega-3" is a scam. You need actual fish oil or fatty fish.',
     verifyPrompt: `Verify these claims about omega-3 fatty acids:
