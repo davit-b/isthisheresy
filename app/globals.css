@@ -29,3 +29,49 @@ html, body {
 button, a {
   user-select: none;
 }
+
+/* Loading skeleton animation */
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Accessibility: Focus indicators */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #d4af37;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  /* Hide UI controls when printing */
+  button,
+  footer,
+  nav,
+  [role="navigation"] {
+    display: none !important;
+  }
+
+  /* Show full infographic */
+  body {
+    background: white;
+  }
+
+  /* Ensure image prints at full quality */
+  img {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  /* Print topic title */
+  h1 {
+    page-break-after: avoid;
+  }
+}

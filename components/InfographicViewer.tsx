@@ -11,6 +11,7 @@ interface InfographicViewerProps {
 // Hausa: hoton da za a duba
 export default function InfographicViewer({ topic }: InfographicViewerProps) {
   const [zoom, setZoom] = useState(1);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastTouchDistance = useRef<number | null>(null);
 
@@ -26,9 +27,10 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
   const handleReset = () => setZoom(1);
 
-  // Reset zoom and scroll position when topic changes
+  // Reset zoom, scroll position, and loading state when topic changes
   useEffect(() => {
     setZoom(1);
+    setIsImageLoading(true);
     // Scroll to skip the top padding (100px) so image starts at top
     if (containerRef.current) {
       containerRef.current.scrollTop = 100;
@@ -87,6 +89,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
       }}>
         <button
           onClick={handleZoomIn}
+          aria-label="Zoom in"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -114,6 +117,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         </button>
         <button
           onClick={handleZoomOut}
+          aria-label="Zoom out"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -141,6 +145,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         </button>
         <button
           onClick={handleReset}
+          aria-label="Reset zoom"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -171,16 +176,28 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
       {/* Top padding - hidden on initial load but can scroll up to it */}
       <div style={{ height: '100px' }} />
 
+      {/* Loading skeleton */}
+      {isImageLoading && (
+        <div style={{
+          width: '100%',
+          height: '80vh',
+          background: 'linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%)',
+          backgroundSize: '200% 100%',
+          animation: 'loading 1.5s ease-in-out infinite',
+        }} />
+      )}
+
       {/* Full-width image at top, scroll down to see more */}
       <img
         src={imageSrc}
         srcSet={imageSrcSet}
         sizes="100vw"
         alt={topic.longTitle}
+        onLoad={() => setIsImageLoading(false)}
         style={{
           width: `${zoom * 100}%`,
           height: 'auto',
-          display: 'block',
+          display: isImageLoading ? 'none' : 'block',
           transformOrigin: 'top center',
           transition: 'width 0.2s ease',
         }}

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Share2, ArrowRight, CheckCircle } from 'lucide-react';
+import { Share2, ArrowRight, CheckCircle, Copy } from 'lucide-react';
 import { Topic, getNextTopic } from '@/data/topics';
 import { trackVerifyClick, trackShare, trackTopicRead } from '@/lib/analytics';
 import { useReadStatus } from '@/hooks/useReadStatus';
@@ -38,6 +38,11 @@ export default function BottomBar({ topic }: BottomBarProps) {
     trackTopicRead(topic.id, topic.longTitle);
   };
 
+  const handleCopyPrompt = async () => {
+    await navigator.clipboard.writeText(topic.verifyPrompt);
+    alert('Verification prompt copied!');
+  };
+
   const handleShare = async () => {
     const url = `https://isthisheresy.com/${topic.id}`;
     const hasNativeShare = typeof navigator !== 'undefined' && 'share' in navigator;
@@ -67,6 +72,9 @@ export default function BottomBar({ topic }: BottomBarProps) {
       }}>
         <button
           onClick={() => setShowVerifyMenu(!showVerifyMenu)}
+          aria-label="Verify with AI"
+          aria-expanded={showVerifyMenu}
+          aria-haspopup="true"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -100,26 +108,71 @@ export default function BottomBar({ topic }: BottomBarProps) {
 
         {/* Dropdown menu */}
         {showVerifyMenu && (
-          <div style={{
-            position: 'absolute',
-            bottom: '52px',
-            left: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4px',
-            background: 'rgba(0, 0, 0, 0.95)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid #444',
-            borderRadius: '8px',
-            padding: '8px',
-            minWidth: '180px',
-          }}>
+          <div
+            role="menu"
+            style={{
+              position: 'absolute',
+              bottom: '52px',
+              left: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+              background: 'rgba(0, 0, 0, 0.95)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid #444',
+              borderRadius: '8px',
+              padding: '8px',
+              minWidth: '180px',
+            }}>
+            {/* Copy prompt button */}
+            <button
+              onClick={handleCopyPrompt}
+              role="menuitem"
+              aria-label="Copy verification prompt to clipboard"
+              style={{
+                padding: '8px 12px',
+                background: 'transparent',
+                border: 'none',
+                borderRadius: '4px',
+                color: '#d4af37',
+                textDecoration: 'none',
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '11px',
+                fontWeight: '600',
+                letterSpacing: '0.5px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                textAlign: 'left',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+              }}
+            >
+              <Copy size={12} />
+              Copy Prompt
+            </button>
+
+            {/* Separator */}
+            <div style={{
+              height: '1px',
+              background: '#333',
+              margin: '4px 0',
+            }} />
+
             {aiPlatforms.map((platform) => (
               <a
                 key={platform.name}
                 href={getVerifyUrl(platform, topic.verifyPrompt)}
                 target="_blank"
                 rel="noopener noreferrer"
+                role="menuitem"
+                aria-label={`Verify with ${platform.name}`}
                 onClick={() => handleVerifyClick(platform.name)}
                 style={{
                   padding: '8px 12px',
@@ -163,6 +216,7 @@ export default function BottomBar({ topic }: BottomBarProps) {
         {/* Share button */}
         <button
           onClick={handleShare}
+          aria-label={`Share ${topic.longTitle}`}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -198,6 +252,7 @@ export default function BottomBar({ topic }: BottomBarProps) {
         <Link
           href={`/${nextTopic.id}`}
           onClick={handleNextClick}
+          aria-label={`Next topic: ${nextTopic.longTitle}`}
           style={{
             display: 'flex',
             alignItems: 'center',
