@@ -67,6 +67,25 @@ export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenu
     groupedTopics[section].push(t);
   });
 
+  // Explicit section ordering
+  const SECTION_ORDER = [
+    'Food Contamination',
+    'Nutrition',
+    'Health Basics',
+    'Water Contamination',
+    'Materials',
+  ];
+
+  const sortedSections = Object.entries(groupedTopics).sort(([a], [b]) => {
+    const aIndex = SECTION_ORDER.indexOf(a);
+    const bIndex = SECTION_ORDER.indexOf(b);
+    // Unlisted sections go to the end
+    if (aIndex === -1 && bIndex === -1) return 0;
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    return aIndex - bIndex;
+  });
+
   function handleTopicClick(t: Topic, e: React.MouseEvent, isHost: boolean) {
     // Update hash for same-page navigation (grouped topic)
     if (t.groupHost === currentTopic.id) {
@@ -150,7 +169,7 @@ export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenu
         overflowY: 'auto',
         padding: '12px 0',
       }}>
-        {Object.entries(groupedTopics).map(([sectionName, sectionTopics]) => (
+        {sortedSections.map(([sectionName, sectionTopics]) => (
           <div key={sectionName}>
             {/* Section header */}
             <div style={{
