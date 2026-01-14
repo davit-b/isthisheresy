@@ -5,8 +5,8 @@ import GoogleAnalytics from '@/components/GoogleAnalytics';
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // Allow native pinch-to-zoom on mobile for accessibility (WCAG 1.4.4)
+  // iOS Safari ignores maximumScale/userScalable restrictions anyway
 };
 
 // Use blue favicon in development to distinguish from production

@@ -55,7 +55,8 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
     setIsImageLoading(false);
   }
 
-  // Custom pinch-to-zoom handling
+  // Custom pinch-to-zoom handling - DESKTOP ONLY
+  // On mobile, we let Safari's native pinch-to-zoom handle everything
   const getTouchDistance = (touch1: React.Touch, touch2: React.Touch) => {
     const dx = touch1.clientX - touch2.clientX;
     const dy = touch1.clientY - touch2.clientY;
@@ -63,12 +64,14 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (isMobile) return; // Let Safari handle it natively
     if (e.touches.length === 2) {
       lastTouchDistance.current = getTouchDistance(e.touches[0], e.touches[1]);
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (isMobile) return; // Let Safari handle it natively
     if (e.touches.length === 2 && lastTouchDistance.current !== null) {
       e.preventDefault();
       const currentDistance = getTouchDistance(e.touches[0], e.touches[1]);
@@ -79,9 +82,63 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
   };
 
   const handleTouchEnd = () => {
+    if (isMobile) return; // Let Safari handle it natively
     lastTouchDistance.current = null;
   };
 
+  // On mobile, render a simpler view that works with Safari's native zoom
+  if (isMobile) {
+    return (
+      <div
+        ref={containerRef}
+        style={{
+          flex: 1,
+          overflow: 'auto',
+          background: '#0a0a0a',
+          WebkitOverflowScrolling: 'touch',
+          position: 'relative',
+        }}
+      >
+        {/* Top padding */}
+        <div style={{ height: '24px' }} />
+
+        {/* Loading skeleton */}
+        {isImageLoading && (
+          <div style={{
+            width: '100%',
+            height: '80vh',
+            background: 'linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%)',
+            backgroundSize: '200% 100%',
+            animation: 'loading 1.5s ease-in-out infinite',
+          }} />
+        )}
+
+        {/* Full-width image - Safari native zoom handles pinch-to-zoom */}
+        <picture>
+          <source type="image/avif" srcSet={avifSrcSet} sizes="100vw" />
+          <source type="image/webp" srcSet={webpSrcSet} sizes="100vw" />
+          <img
+            ref={imageRef}
+            src={fallbackSrc}
+            sizes="100vw"
+            alt={topic.longTitle}
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: isImageLoading ? 'none' : 'block',
+            }}
+          />
+        </picture>
+
+        {/* Bottom padding so overlay buttons don't cover content */}
+        <div style={{ height: '130px' }} />
+      </div>
+    );
+  }
+
+  // Desktop view with custom zoom controls
   return (
     <div
       ref={containerRef}
@@ -96,7 +153,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         position: 'relative',
       }}
     >
-      {/* Zoom controls - top right */}
+      {/* Zoom controls - top right, desktop only */}
       <div style={{
         position: 'fixed',
         top: '24px',
@@ -226,7 +283,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         />
       </picture>
       {/* Bottom padding so overlay buttons don't cover content */}
-      <div style={{ height: isMobile ? '130px' : '120px' }} />
+      <div style={{ height: '120px' }} />
     </div>
   );
 }
