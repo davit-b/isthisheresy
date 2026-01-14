@@ -86,22 +86,11 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
     lastTouchDistance.current = null;
   };
 
-  // On mobile, render a simpler view that works with Safari's native zoom
+  // Mobile: Absolutely minimal - just the image, no scroll containers
+  // The page itself scrolls naturally, Safari handles zoom natively
   if (isMobile) {
     return (
-      <div
-        ref={containerRef}
-        style={{
-          flex: 1,
-          overflow: 'auto',
-          background: '#0a0a0a',
-          WebkitOverflowScrolling: 'touch',
-          position: 'relative',
-        }}
-      >
-        {/* Top padding */}
-        <div style={{ height: '24px' }} />
-
+      <>
         {/* Loading skeleton */}
         {isImageLoading && (
           <div style={{
@@ -113,7 +102,7 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
           }} />
         )}
 
-        {/* Full-width image - Safari native zoom handles pinch-to-zoom */}
+        {/* Just the image - no wrapper, no scroll context */}
         <picture>
           <source type="image/avif" srcSet={avifSrcSet} sizes="100vw" />
           <source type="image/webp" srcSet={webpSrcSet} sizes="100vw" />
@@ -132,9 +121,9 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
           />
         </picture>
 
-        {/* Bottom padding so overlay buttons don't cover content */}
-        <div style={{ height: '130px' }} />
-      </div>
+        {/* Bottom padding so fixed buttons don't cover content */}
+        <div style={{ height: '140px' }} />
+      </>
     );
   }
 

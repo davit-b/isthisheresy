@@ -7,6 +7,7 @@ import MultiInfographicViewer from '@/components/MultiInfographicViewer';
 import BottomBar from '@/components/BottomBar';
 import ReadTracker from '@/components/ReadTracker';
 import MobileHeader from '@/components/MobileHeader';
+import TopicPageLayout from '@/components/TopicPageLayout';
 
 interface PageProps {
   params: { topic: string };
@@ -111,25 +112,17 @@ export default function TopicPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div style={{
-        height: '100vh',
-        background: '#000',
-        display: 'flex',
-        overflow: 'hidden',
-      }}>
-        <ReadTracker topicId={topic.id} />
-        <MobileHeader currentTopic={topic} />
-        <LeftRail currentTopic={topic} />
-
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-        }}>
-          {/* Title header for long titles */}
-          {topic.brickTitle.length > 15 && (
-            <div style={{
+      <TopicPageLayout
+        readTracker={<ReadTracker topicId={topic.id} />}
+        mobileHeader={<MobileHeader currentTopic={topic} />}
+        leftRail={<LeftRail currentTopic={topic} />}
+        bottomBar={<BottomBar topic={topic} />}
+      >
+        {/* Title header for long titles - desktop only */}
+        {topic.brickTitle.length > 15 && (
+          <div
+            className="desktop-only"
+            style={{
               padding: '16px 24px',
               borderBottom: '1px solid #222',
               fontFamily: "'Space Mono', monospace",
@@ -137,21 +130,18 @@ export default function TopicPage({ params }: PageProps) {
               fontWeight: '700',
               color: '#fff',
               letterSpacing: '2px',
-            }}>
-              {topic.longTitle}
-            </div>
-          )}
+            }}
+          >
+            {topic.longTitle}
+          </div>
+        )}
 
-          {isHost ? (
-            <MultiInfographicViewer topics={groupedTopics} hostTopic={topic} />
-          ) : (
-            <InfographicViewer topic={topic} />
-          )}
-        </div>
-
-        {/* Fixed overlay buttons */}
-        <BottomBar topic={topic} />
-      </div>
+        {isHost ? (
+          <MultiInfographicViewer topics={groupedTopics} hostTopic={topic} />
+        ) : (
+          <InfographicViewer topic={topic} />
+        )}
+      </TopicPageLayout>
     </>
   );
 }
