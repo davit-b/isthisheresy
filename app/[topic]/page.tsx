@@ -113,6 +113,7 @@ export default function TopicPage({ params }: PageProps) {
       />
 
       <TopicPageLayout
+        topic={topic}
         readTracker={<ReadTracker topicId={topic.id} />}
         mobileHeader={<MobileHeader currentTopic={topic} />}
         leftRail={<LeftRail currentTopic={topic} />}

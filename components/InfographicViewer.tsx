@@ -1,5 +1,11 @@
 'use client';
 
+/**
+ * IMPORTANT: This component has a sibling - MultiInfographicViewer.tsx
+ * When making changes here (especially mobile layout), update both files!
+ * MultiInfographicViewer handles grouped topics with virtual scroll anchors.
+ */
+
 import { Topic } from '@/data/topics';
 import { useState, useRef, useEffect } from 'react';
 import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
@@ -120,9 +126,6 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
             }}
           />
         </picture>
-
-        {/* Bottom padding so fixed buttons don't cover content */}
-        <div style={{ height: '140px' }} />
       </>
     );
   }
