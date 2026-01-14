@@ -109,7 +109,11 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         )}
 
         {/* Just the image - no wrapper, no scroll context */}
-        {/* sizes="200vw" forces browser to pick large (2400w) instead of medium on mobile */}
+        {/*
+          sizes="200vw" forces higher resolution on mobile.
+          Without this, iPhone 12 (390px × 3 DPR = 1170px) picks medium (1200w) which looks blurry.
+          With 200vw: 390px × 2 × 3 DPR = 2340px → picks large (2400w) which is crisp.
+        */}
         <picture>
           <source type="image/avif" srcSet={avifSrcSet} sizes="200vw" />
           <source type="image/webp" srcSet={webpSrcSet} sizes="200vw" />
