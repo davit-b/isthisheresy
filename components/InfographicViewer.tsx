@@ -109,13 +109,14 @@ export default function InfographicViewer({ topic }: InfographicViewerProps) {
         )}
 
         {/* Just the image - no wrapper, no scroll context */}
+        {/* sizes="200vw" forces browser to pick large (2400w) instead of medium on mobile */}
         <picture>
-          <source type="image/avif" srcSet={avifSrcSet} sizes="100vw" />
-          <source type="image/webp" srcSet={webpSrcSet} sizes="100vw" />
+          <source type="image/avif" srcSet={avifSrcSet} sizes="200vw" />
+          <source type="image/webp" srcSet={webpSrcSet} sizes="200vw" />
           <img
             ref={imageRef}
             src={fallbackSrc}
-            sizes="100vw"
+            sizes="200vw"
             alt={topic.longTitle}
             onLoad={handleImageLoad}
             onError={handleImageError}
