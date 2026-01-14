@@ -77,6 +77,25 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
     groupedTopics[section].push(t);
   });
 
+  // Explicit section ordering
+  const SECTION_ORDER = [
+    'Food Contamination',
+    'Nutrition',
+    'Health Basics',
+    'Water Contamination',
+    'Materials',
+  ];
+
+  const sortedSections = Object.entries(groupedTopics).sort(([a], [b]) => {
+    const aIndex = SECTION_ORDER.indexOf(a);
+    const bIndex = SECTION_ORDER.indexOf(b);
+    // Unlisted sections go to the end
+    if (aIndex === -1 && bIndex === -1) return 0;
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    return aIndex - bIndex;
+  });
+
   // Handle click on grouped topics - manually update hash for same-page navigation
   function handleGroupedTopicClick(t: Topic) {
     // If we're already on the host page, manually update the hash state
@@ -142,7 +161,7 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
           </Link>
 
           {/* Topics grouped by section */}
-          {Object.entries(groupedTopics).map(([sectionName, sectionTopics]) => (
+          {sortedSections.map(([sectionName, sectionTopics]) => (
             <div key={sectionName}>
               {/* Section header */}
               <div style={{
