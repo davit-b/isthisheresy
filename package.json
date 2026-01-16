@@ -8,7 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "convert-images": "node scripts/convert-images.mjs",
-    "view-requests": "node scripts/view-redis-requests.mjs"
+    "view-requests": "node scripts/view-redis-requests.mjs",
+    "analytics": "bash scripts/check-analytics.sh events",
+    "analytics:ioi": "bash scripts/check-analytics.sh ioi",
+    "analytics:funnel": "bash scripts/check-analytics.sh funnel",
+    "analytics:timeseries": "bash scripts/check-analytics.sh timeseries",
+    "analytics:verify": "bash scripts/check-analytics.sh verify"
   },
   "dependencies": {
     "lucide-react": "^0.263.1",
