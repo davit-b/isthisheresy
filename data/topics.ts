@@ -92,6 +92,86 @@ export interface Topic {
 }
 
 export const topics: Topic[] = [
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // FETAL DISRUPTION SERIES - Phthalates/AGD + Environment → Autism + Geography (3 pages)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // HOST TOPIC - Fetal Disruption (Phthalates/AGD)
+  {
+    id: 'fetal-disruption',
+    brickTitle: 'FETAL DISRUPTION',
+    longTitle: 'The Phthalate Crisis: Endocrine Disruption and Fetal Development',
+    shareSnippet: 'Plasticizers in everyday products block testosterone synthesis during the critical 8-14 week masculinization window. The effects are permanent and measurable.',
+    imageName: 'autism',
+    verifyPrompt: `Verify these claims about phthalates and fetal development:
+1. Phthalates are anti-androgenic compounds that inhibit testosterone synthesis in fetal Leydig cells
+2. The critical masculinization window occurs at weeks 8-14 of gestation
+3. Phthalates cross the placenta freely and concentrate in amniotic fluid
+4. Shanna Swan's research documented correlation between maternal phthalate levels and reduced prenatal androgen exposure in male offspring
+5. Phthalates are detectable in 99% of Americans tested
+6. American male sperm counts have declined approximately 53% from 1973 to 2023 (99M/ml to 47M/ml)
+7. Testosterone levels in American males have been declining at roughly 1% per year
+8. Phthalates are found in food packaging, personal care products, vinyl flooring, medical tubing, and soft plastics
+9. "Fragrance" on ingredient labels often indicates phthalate content
+10. Cord blood samples show phthalates present in 100% of samples tested
+11. The developmental effects of inadequate prenatal testosterone exposure are permanent and cannot be reversed after birth
+
+Be honest and reason from first principles. If phthalates block testosterone during a one-time developmental window, what would you expect the population-level consequences to be over 50 years of increasing exposure?`,
+    tags: [],
+    icon: 'Baby',
+    section: 'Environmental Health'
+  },
+  // ANCHOR 1 - Environment → Autism
+  {
+    id: 'environment-autism',
+    brickTitle: 'ENVIRONMENT → AUTISM',
+    longTitle: 'The Environmental Case for Autism: Multiple Insults, Corrupted Development',
+    shareSnippet: 'Autism rates went from 1 in 10,000 to 1 in 31. When rates correlate with physical birth defects, the "better diagnosis" explanation collapses.',
+    verifyPrompt: `Verify these claims about environmental factors and autism:
+1. Autism prevalence increased from approximately 1 in 10,000 (1970s) to 1 in 31 (2022)
+2. Maternal immune activation during pregnancy correlates with autism-like behaviors in offspring (reproducible in animal models)
+3. Inflammatory cytokines IL-6 and IL-17 can cross the placental barrier and affect fetal brain development
+4. Approximately 30% of American women enter pregnancy in an obese state, which creates chronic inflammation
+5. C-section rates in America are approximately 32%, which bypasses vaginal microbiome colonization
+6. The gut-brain axis is established - gut bacteria produce neurotransmitters and influence neural development
+7. Autism rates correlate geographically with rates of objectively measurable developmental abnormalities in newborn males
+8. The "assortative mating" hypothesis (tech workers pairing) cannot explain autism increases across all demographics including rural and working-class populations
+9. Early antibiotic use disrupts the developing infant microbiome during critical neurodevelopmental windows
+10. Seed oil (PUFA) consumption has increased dramatically and PUFAs incorporate into cell membranes where they can oxidize
+11. The developing brain uses approximately 20% of the body's oxygen, making it highly vulnerable to oxidative damage
+
+Be honest and reason from first principles. If the "true rate" of autism was always 1%, why wouldn't we see that rate uniformly across history and across traditional societies? What would have to be true for diagnostic expansion alone to explain a 300x increase?`,
+    tags: [],
+    section: 'Environmental Health',
+    groupHost: 'fetal-disruption',
+    groupOrder: 1,
+    scrollOffset: 0.333
+  },
+  // ANCHOR 2 - Geography of Autism
+  {
+    id: 'geography-autism',
+    brickTitle: 'GEOGRAPHY OF AUTISM',
+    longTitle: 'Geographic Patterns in Autism: What the County-Level Data Reveals',
+    shareSnippet: 'University of Chicago analyzed 100M medical records: every 1% increase in developmental abnormalities = 283% increase in autism. The environmental signal is undeniable.',
+    verifyPrompt: `Verify these claims about geographic patterns in autism prevalence:
+1. The Rzhetsky et al. study analyzed approximately 100 million U.S. medical records
+2. Every 1% increase in male developmental abnormalities at the county level was associated with a 283% increase in autism in that county
+3. Environmental predictors were approximately 3x more influential than state-level diagnostic/regulatory differences
+4. Autism hotspots include Mid-Atlantic (4.38% prevalence), Massachusetts (2.42%), Virginia (2.41%), New Jersey (2.37%)
+5. Autism cold spots include West South Central region (TX, OK, LA, AR) at 2.71% prevalence
+6. The CHARGE study found mothers living within 500 meters of pesticide-sprayed fields during first trimester had approximately 6x higher autism risk
+7. Organochlorines (endosulfan, dicofol, DDT metabolites), organophosphates (chlorpyrifos), and glyphosate have been implicated in the California Central Valley studies
+8. Northeast hotspots correlate with industrial legacy (Superfund sites, PFAS contamination), older housing stock (lead), and high-density processed lifestyle (phthalate exposure)
+9. The Midwest has high agricultural pesticide exposure but may be partially protected by lower industrial pollution, newer housing, and less processed food consumption
+10. Different geographic regions can reach high cumulative endocrine disruption burden through completely different exposure pathways (agricultural vs. industrial/suburban)
+11. The correlation between autism and physical developmental abnormalities cannot be explained by diagnostic variation - you cannot "diagnose" physical abnormalities into existence
+
+Be honest and reason from first principles. If autism were purely genetic or purely diagnostic artifact, would you expect it to correlate geographically with objectively measurable physical birth defects? What does that correlation tell us about causation?`,
+    tags: [],
+    section: 'Environmental Health',
+    groupHost: 'fetal-disruption',
+    groupOrder: 2,
+    scrollOffset: 0.666
+  },
   {
     id: 'glycation',
     brickTitle: 'GLYCATION',
