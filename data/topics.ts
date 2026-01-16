@@ -118,7 +118,7 @@ export const topics: Topic[] = [
 Be honest and reason from first principles. If phthalates block testosterone during a one-time developmental window, what would you expect the population-level consequences to be over 50 years of increasing exposure?`,
     tags: [],
     icon: 'Baby',
-    section: 'Environmental Health'
+    section: 'Autism'
   },
   // ANCHOR 1 - Environment → Autism
   {
@@ -141,7 +141,7 @@ Be honest and reason from first principles. If phthalates block testosterone dur
 
 Be honest and reason from first principles. If the "true rate" of autism was always 1%, why wouldn't we see that rate uniformly across history and across traditional societies? What would have to be true for diagnostic expansion alone to explain a 300x increase?`,
     tags: [],
-    section: 'Environmental Health',
+    section: 'Autism',
     groupHost: 'fetal-disruption',
     groupOrder: 1,
     scrollOffset: 0.333
@@ -167,10 +167,86 @@ Be honest and reason from first principles. If the "true rate" of autism was alw
 
 Be honest and reason from first principles. If autism were purely genetic or purely diagnostic artifact, would you expect it to correlate geographically with objectively measurable physical birth defects? What does that correlation tell us about causation?`,
     tags: [],
-    section: 'Environmental Health',
+    section: 'Autism',
     groupHost: 'fetal-disruption',
     groupOrder: 2,
     scrollOffset: 0.666
+  },
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // CHEMICAL EXPOSURE SERIES
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BPA - Single infographic
+  {
+    id: 'bpa-synthetic-estrogen',
+    brickTitle: 'BPA',
+    longTitle: 'BPA: The Synthetic Estrogen In Everything',
+    shareSnippet: 'BPA was tested as hormone therapy in the 1930s, then added to plastics because it had useful material properties. Now it coats every thermal receipt you touch.',
+    imageName: 'bpa',
+    verifyPrompt: `Verify these claims about BPA:
+1. BPA was first synthesized in 1891 by Russian chemist Alexander Dianin
+2. In the 1930s, BPA was studied as a pharmaceutical synthetic estrogen for hormone therapy
+3. BPA lost out to DES (diethylstilbestrol) only because DES was more potent as an estrogen
+4. The plastics industry adopted BPA in the 1950s knowing it was estrogenic, because it made polycarbonate clear and shatter-resistant
+5. Thermal receipt paper is coated with BPA across 100% of its surface - white areas are equally coated as black printed areas
+6. Thermal printing works by heating the BPA coating, not by applying ink - heat triggers a reaction that turns the BPA dark
+7. Hand sanitizer increases BPA absorption from receipts by up to 100x by dissolving BPA and opening skin pores
+8. Cashiers have measurably higher BPA blood levels than the general population
+9. BPS (bisphenol S) marketed as "BPA-free" has similar estrogenic activity to BPA
+10. Classical toxicology assumed linear dose-response, but endocrine disruptors operate at parts per billion mimicking hormones
+
+Be honest and reason from first principles. If BPA was literally tested as hormone replacement therapy, what does its presence in food contact materials imply?`,
+    tags: [],
+    icon: 'Receipt',
+    section: 'Chemical Exposure'
+  },
+  // Testosterone - Part 1 (Host)
+  {
+    id: 'testosterone-motivation',
+    brickTitle: 'TESTOSTERONE',
+    longTitle: 'Testosterone & Motivation: The Effort-Reward Connection',
+    shareSnippet: 'Testosterone modulates dopamine signaling. Lower T means effort produces less reward - not less capacity, but less payoff. The effort feels pointless.',
+    imageName: 'testosterone',
+    verifyPrompt: `Verify these claims about testosterone and motivation:
+1. Testosterone modulates dopamine receptor density and signaling efficiency in the brain
+2. Higher testosterone correlates with greater dopamine response to effort, making effort feel more rewarding
+3. Atrazine upregulates aromatase enzyme, converting testosterone to estrogen
+4. Phthalates inhibit testosterone synthesis directly in Leydig cells
+5. BPA and BPS act as estrogen mimics, occupying receptors and disrupting hormonal feedback
+6. Glyphosate disrupts the steroidogenesis pathway
+7. Phytoestrogens from soy, flax, and hops bind estrogen receptors and alter hormonal signaling
+8. Low testosterone creates a negative feedback loop: reduced effort-reward → less activity → fat gain → more aromatase → lower T
+9. Adipose tissue produces aromatase enzyme, converting more testosterone to estrogen
+10. Testosterone synthesizes primarily during deep sleep phases
+
+Be honest and reason from first principles. If testosterone amplifies the reward signal from effort, what happens to goal-seeking behavior when that amplification is reduced?`,
+    tags: [],
+    icon: 'Flame',
+    section: 'Chemical Exposure'
+  },
+  // Testosterone - Part 2 (Anchor)
+  {
+    id: 'testosterone-intervention',
+    brickTitle: 'INTERVENTION',
+    longTitle: 'Consequences & Intervention: Breaking the Feedback Loop',
+    shareSnippet: 'The hormone needed to fix the problem is the one being depleted. Escape requires strategy: stop suppression, support biology, force adaptation, protect recovery.',
+    verifyPrompt: `Verify these claims about testosterone disruption consequences and intervention:
+1. Low testosterone in men manifests as effort feeling draining rather than rewarding, goals becoming vague, risk aversion increasing
+2. Male depression often correlates with low testosterone due to reduced effort-reward signaling
+3. Women's systems are calibrated to 1/10th-1/20th male testosterone levels - disruption from their baseline causes dysfunction
+4. Estrogen dominance in women causes irregular cycles, PMS severity, weight gain, and mood instability
+5. Removing endocrine disruptor exposure must precede other interventions (can't rebuild while being torn down)
+6. Heavy resistance training creates acute testosterone spikes and long-term baseline increases
+7. Compound movements (squat, deadlift, press) produce maximum hormonal response compared to isolation exercises
+8. Training sessions beyond 60 minutes cause cortisol to rise and testosterone to fall
+9. Cholesterol is a direct precursor molecule for testosterone synthesis
+10. Superstimuli (pornography, social media, hyperpalatable food) re-desensitize recovering reward systems
+
+Be honest and reason from first principles. If willpower requires the same neurochemistry being depleted, can someone willpower their way out of low testosterone?`,
+    tags: [],
+    section: 'Chemical Exposure',
+    groupHost: 'testosterone-motivation',
+    groupOrder: 1,
+    scrollOffset: 0.5
   },
   {
     id: 'glycation',

@@ -338,22 +338,31 @@ export default function TopicPageLayout({
       height: '100vh',
       background: '#000',
       display: 'flex',
+      justifyContent: 'center',
       overflow: 'hidden',
     }}>
-      {readTracker}
-      {mobileHeader}
-      {leftRail}
-
       <div style={{
-        flex: 1,
+        width: '100%',
+        maxWidth: '1200px',
+        height: '100vh',
         display: 'flex',
-        flexDirection: 'column',
         overflow: 'hidden',
       }}>
-        {children}
-      </div>
+        {readTracker}
+        {mobileHeader}
+        {leftRail}
 
-      {bottomBar}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}>
+          {children}
+        </div>
+
+        {bottomBar}
+      </div>
     </div>
   );
 }

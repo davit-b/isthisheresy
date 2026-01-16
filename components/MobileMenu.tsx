@@ -69,6 +69,8 @@ export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenu
 
   // Explicit section ordering
   const SECTION_ORDER = [
+    'Autism',
+    'Chemical Exposure',
     'Food Contamination',
     'Nutrition',
     'Health Basics',
