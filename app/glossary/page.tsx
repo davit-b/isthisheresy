@@ -8,12 +8,4 @@ export const metadata: Metadata = {
 
 export default function GlossaryPage() {
   return <GlossaryContent />;
-        <h1 style={{
-          fontFamily: "'Space Mono', monospace",
-          fontSize: '28px',
-          fontWeight: '700',
-          color: '#fff',
-          letterSpacing: '2px',
-          marginBottom: '40px',
-        }}>
 }
