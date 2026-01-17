@@ -93,6 +93,33 @@ export interface Topic {
 
 export const topics: Topic[] = [
   // ═══════════════════════════════════════════════════════════════════════════════
+  // SLEEP TIMING - Circadian Alignment (1 page)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  {
+    id: 'sleep-non-fungibility',
+    brickTitle: 'SLEEP TIMING',
+    longTitle: 'Not All Sleep Hours Are Equal: The Circadian Alignment Secret',
+    shareSnippet: '6 hours from 9 PM-3 AM beats 8 hours from 1 AM-9 AM. Sleep hours are not fungible - the WHEN matters as much as the HOW LONG.',
+    imageName: 'right_sleep',
+    verifyPrompt: `Verify these claims about circadian-aligned sleep:
+1. Deepest slow-wave sleep (SWS) occurs in the first 3-4 hours after sleep onset, but only if onset aligns with circadian night
+2. Growth hormone releases primarily during the early deep sleep window (roughly 10 PM - 2 AM)
+3. Core body temperature drops to its lowest point around 3-4 AM
+4. Sleep starting at 9 PM rides the natural temperature decline; sleep starting at 1 AM fights a body already expecting sleep
+5. Cortisol naturally begins rising around 4-5 AM to prepare for waking
+6. Waking at 3 AM aligns with natural cortisol rise (alert); waking at 7 AM is after the optimal window (groggy)
+7. Melatonin peaks around 2-3 AM
+8. Falling asleep at 9 PM means sleeping during the rising melatonin wave; falling asleep at 1 AM means trying to sleep near the peak
+9. 6 hours of circadian-aligned sleep produces better subjective restoration than 8 hours of misaligned sleep
+10. The "golden state" of sustained high energy requires 6+ consecutive days of circadian-aligned sleep, not a single good night
+11. Each late night resets the compound sleep accumulation counter to zero
+
+Be honest and reason from first principles. If deep sleep and growth hormone release are front-loaded in the night, what happens when you delay sleep onset by 4 hours? Can you "make up" missed biological windows?`,
+    tags: [],
+    icon: 'Moon',
+    section: 'Health Basics'
+  },
+  // ═══════════════════════════════════════════════════════════════════════════════
   // FETAL DISRUPTION SERIES - Phthalates/AGD + Environment → Autism + Geography (3 pages)
   // ═══════════════════════════════════════════════════════════════════════════════
   // HOST TOPIC - Fetal Disruption (Phthalates/AGD)
