@@ -3,7 +3,7 @@
  * Used by: Homepage, LeftRail (desktop), MobileMenu
  */
 
-export const SECTION_ORDER = [
+export const SECTION_ORDER: string[] = [
   'How AI Works',
   'Health Basics',
   'Autism',
@@ -12,7 +12,7 @@ export const SECTION_ORDER = [
   'Nutrition',
   'Water Contamination',
   'Materials',
-] as const;
+];
 
 export const SECTION_COLORS: { [key: string]: string } = {
   'How AI Works': '#3b82f6',        // blue
