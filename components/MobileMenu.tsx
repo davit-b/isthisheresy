@@ -6,6 +6,7 @@ import { topics, Topic, getTopicUrl, getHostTopic } from '@/data/topics';
 import { useState, useEffect } from 'react';
 import { useReadStatus } from '@/hooks/useReadStatus';
 import { trackPasscodeAttempt, trackPasscodeUnlock, trackRequestSubmit } from '@/lib/analytics';
+import { SECTION_ORDER, SECTION_COLORS } from '@/lib/sections';
 
 interface MobileMenuProps {
   currentTopic: Topic;
@@ -66,17 +67,6 @@ export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenu
     }
     groupedTopics[section].push(t);
   });
-
-  // Explicit section ordering
-  const SECTION_ORDER = [
-    'Autism',
-    'Chemical Exposure',
-    'Food Contamination',
-    'Nutrition',
-    'Health Basics',
-    'Water Contamination',
-    'Materials',
-  ];
 
   const sortedSections = Object.entries(groupedTopics).sort(([a], [b]) => {
     const aIndex = SECTION_ORDER.indexOf(a);
@@ -171,7 +161,9 @@ export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenu
         overflowY: 'auto',
         padding: '12px 0',
       }}>
-        {sortedSections.map(([sectionName, sectionTopics]) => (
+        {sortedSections.map(([sectionName, sectionTopics]) => {
+          const accentColor = SECTION_COLORS[sectionName] || '#888';
+          return (
           <div key={sectionName}>
             {/* Section header */}
             <div style={{
@@ -179,9 +171,11 @@ export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenu
               fontFamily: "'Space Mono', monospace",
               fontSize: '11px',
               fontWeight: '700',
-              color: '#666',
+              color: accentColor,
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
+              borderBottom: `1px solid ${accentColor}40`,
+              marginRight: '20px',
             }}>
               {sectionName}
             </div>
@@ -232,7 +226,8 @@ export default function MobileMenu({ currentTopic, isOpen, onClose }: MobileMenu
               );
             })}
           </div>
-        ))}
+          );
+        })}
 
         {/* Glossary */}
         <div>

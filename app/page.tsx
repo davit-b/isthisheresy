@@ -1,6 +1,7 @@
 import { topics } from '@/data/topics';
 import Brick from '@/components/Brick';
 import { Metadata } from 'next';
+import { SECTION_ORDER, SECTION_COLORS } from '@/lib/sections';
 
 export const metadata: Metadata = {
   title: 'Is This Heresy? | Health Information They Don\'t Teach You',
@@ -35,6 +36,25 @@ export default function HomePage() {
     },
   };
 
+  // Group topics by section
+  const groupedTopics: { [key: string]: typeof topics } = {};
+  topics.forEach(t => {
+    const section = t.section || 'Other';
+    if (!groupedTopics[section]) {
+      groupedTopics[section] = [];
+    }
+    groupedTopics[section].push(t);
+  });
+
+  const sortedSections = Object.entries(groupedTopics).sort(([a], [b]) => {
+    const aIndex = SECTION_ORDER.indexOf(a);
+    const bIndex = SECTION_ORDER.indexOf(b);
+    if (aIndex === -1 && bIndex === -1) return 0;
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    return aIndex - bIndex;
+  });
+
   return (
     <>
       {/* Structured data */}
@@ -51,8 +71,7 @@ export default function HomePage() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
-          padding: '40px',
+          padding: '40px 20px',
         }}
       >
         {/* Title */}
@@ -64,34 +83,72 @@ export default function HomePage() {
             fontWeight: '700',
             color: '#fff',
             letterSpacing: '8px',
-            marginBottom: '40px',
+            marginBottom: '100px',
             textAlign: 'center',
           }}
         >
           IS THIS HERESY?
         </h1>
 
-        {/* Brick mosaic */}
-        <div
-          className="brick-grid"
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '12px',
-            justifyContent: 'center',
-            maxWidth: '900px',
-          }}
-        >
-          {topics.map((topic) => (
-            <Brick key={topic.id} topic={topic} />
-          ))}
+        {/* Sections */}
+        <div style={{ width: '100%', maxWidth: '1200px' }}>
+          {sortedSections.map(([sectionName, sectionTopics], index) => {
+            const accentColor = SECTION_COLORS[sectionName] || '#888';
+
+            return (
+              <div key={sectionName} style={{ marginBottom: '80px' }}>
+                {/* Section header */}
+                <h2
+                  style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: '32px',
+                    fontWeight: '400',
+                    color: '#fff',
+                    letterSpacing: '3px',
+                    textTransform: 'uppercase',
+                    marginBottom: '32px',
+                    marginTop: index === 0 ? '0' : '48px',
+                    paddingBottom: '16px',
+                    borderBottom: `2px solid ${accentColor}`,
+                  }}
+                >
+                  {sectionName}
+                </h2>
+
+                {/* Bricks in this section */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '16px',
+                    justifyContent: 'flex-start',
+                  }}
+                >
+                  {sectionTopics.map((topic) => (
+                    <Brick key={topic.id} topic={topic} sectionColor={accentColor} />
+                  ))}
+                </div>
+
+                {/* Divider line between sections (except last) */}
+                {index < sortedSections.length - 1 && (
+                  <div
+                    style={{
+                      marginTop: '64px',
+                      height: '1px',
+                      background: 'linear-gradient(to right, transparent, #333, transparent)',
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Footer */}
         <footer
           className="homepage-footer"
           style={{
-            marginTop: '60px',
+            marginTop: '40px',
             fontFamily: "'Space Mono', monospace",
             fontSize: '12px',
             fontWeight: '400',

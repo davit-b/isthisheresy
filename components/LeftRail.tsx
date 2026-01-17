@@ -6,6 +6,7 @@ import { Lock, MessageSquarePlus } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useReadStatus } from '@/hooks/useReadStatus';
 import { trackPasscodeAttempt, trackPasscodeUnlock, trackRequestSubmit } from '@/lib/analytics';
+import { SECTION_ORDER, SECTION_COLORS } from '@/lib/sections';
 
 interface LeftRailProps {
   currentTopic: Topic;
@@ -76,17 +77,6 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
     }
     groupedTopics[section].push(t);
   });
-
-  // Explicit section ordering
-  const SECTION_ORDER = [
-    'Autism',
-    'Chemical Exposure',
-    'Food Contamination',
-    'Nutrition',
-    'Health Basics',
-    'Water Contamination',
-    'Materials',
-  ];
 
   const sortedSections = Object.entries(groupedTopics).sort(([a], [b]) => {
     const aIndex = SECTION_ORDER.indexOf(a);
@@ -163,7 +153,9 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
           </Link>
 
           {/* Topics grouped by section */}
-          {sortedSections.map(([sectionName, sectionTopics]) => (
+          {sortedSections.map(([sectionName, sectionTopics]) => {
+            const accentColor = SECTION_COLORS[sectionName] || '#888';
+            return (
             <div key={sectionName}>
               {/* Section header */}
               <div style={{
@@ -171,10 +163,10 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                 fontFamily: "'Space Mono', monospace",
                 fontSize: '10px',
                 fontWeight: '700',
-                color: '#888',
+                color: accentColor,
                 letterSpacing: '1.5px',
                 textTransform: 'uppercase',
-                borderBottom: '1px solid #444',
+                borderBottom: `1px solid ${accentColor}40`,
                 marginRight: '16px',
               }}>
                 {sectionName}
@@ -245,7 +237,8 @@ export default function LeftRail({ currentTopic }: LeftRailProps) {
                 );
               })}
             </div>
-          ))}
+            );
+          })}
 
           {/* Other section */}
           <div>

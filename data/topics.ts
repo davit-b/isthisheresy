@@ -93,6 +93,339 @@ export interface Topic {
 
 export const topics: Topic[] = [
   // ═══════════════════════════════════════════════════════════════════════════════
+  // HOW AI WORKS - LLM Infographic Series (15 pages: 5 hosts + 10 anchors)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // GROUP 1: The Basics - Tokens, Loop, Output
+  {
+    id: 'what-is-a-token',
+    brickTitle: 'TOKENS',
+    longTitle: "What's a Token? The Vocabulary of AI",
+    shareSnippet: 'LLMs don\'t see words - they see numbers from a fixed 100K vocabulary decided before training ever began.',
+    imageName: 'ai_pt1',
+    verifyPrompt: `Verify these claims about LLM tokenization:
+1. LLMs convert text to numerical token IDs before processing
+2. The vocabulary is fixed before training begins (typically ~100K tokens)
+3. Byte Pair Encoding (BPE) creates tokens based on frequency in training data
+4. Common words like "the" get single tokens, rare words split into multiple
+5. Tokenization varies by language - non-English often requires more tokens
+6. Numbers tokenize inconsistently (1000 vs 1001 may differ)
+7. The model only outputs tokens that exist in its pre-defined vocabulary
+8. Code and programming patterns get their own efficient token encodings
+
+Be honest and reason from first principles. If vocabulary is fixed before training, what does that imply about the model's ability to "learn" new words?`,
+    tags: [],
+    icon: 'Hash',
+    section: 'How AI Works'
+  },
+  {
+    id: 'the-loop',
+    brickTitle: 'THE LOOP',
+    longTitle: 'The Loop: One Token at a Time',
+    shareSnippet: 'Every single token requires running the entire model. A 500-word response means 650+ full model runs.',
+    verifyPrompt: `Verify these claims about autoregressive generation:
+1. LLMs generate one token at a time, not words or sentences
+2. Each token requires a full forward pass through all model layers
+3. The new token is appended to input, then the entire model runs again
+4. A 500-word response requires ~650 separate model runs
+5. Generation stops when model predicts an end-of-sequence token
+6. Tokens cannot be generated in parallel due to sequential dependencies
+7. Each model run involves billions of matrix multiplications
+8. The "streaming" effect is literally watching this loop execute hundreds of times
+
+Be honest and reason from first principles. Why can't we parallelize token generation if each depends on all previous tokens?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'what-is-a-token',
+    groupOrder: 1,
+    scrollOffset: 0.333
+  },
+  {
+    id: 'what-model-outputs',
+    brickTitle: 'PROBABILITIES',
+    longTitle: 'What the Model Actually Outputs: 100K Scores',
+    shareSnippet: 'The model doesn\'t output "the answer" - it outputs 100,000 probability scores, one for every possible next token.',
+    verifyPrompt: `Verify these claims about LLM output:
+1. Models output a probability distribution over the entire vocabulary (~100K scores)
+2. All probabilities sum to exactly 1.0 (100%)
+3. The model never outputs a single "answer" - someone must pick from the distribution
+4. High confidence shows as a spike (e.g., "Paris" at 97%)
+5. Uncertainty shows as a flat distribution across many tokens
+6. The shape of the distribution indicates model confidence
+7. Sampling (picking the actual token) is a separate step from model inference
+8. "Greedy" decoding always picks highest probability; stochastic sampling adds randomness
+
+Be honest and reason from first principles. If the model outputs probabilities, not answers, what does that mean for claims about AI "knowing" things?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'what-is-a-token',
+    groupOrder: 2,
+    scrollOffset: 0.666
+  },
+  // GROUP 2: Sampling, Black Box, Attention
+  {
+    id: 'sampling-temperature',
+    brickTitle: 'SAMPLING',
+    longTitle: 'Sampling: Temperature, Top-p, and Randomness',
+    shareSnippet: 'AI creativity comes from how we pick from 100K probabilities. Temperature reshapes the distribution before rolling the dice.',
+    imageName: 'ai_pt2',
+    verifyPrompt: `Verify these claims about LLM sampling:
+1. Temperature rescales the probability distribution before sampling
+2. Temperature 0 = always pick highest probability (deterministic)
+3. Higher temperature flattens distribution, increasing randomness
+4. Top-p (nucleus) sampling limits choices to tokens covering p% of probability mass
+5. Top-k sampling limits choices to the k highest-probability tokens
+6. The randomness comes from a pseudo-random number generator, not the model
+7. Same prompt + same seed + temperature 0 = identical output
+8. "Creativity" is controlled randomness in token selection, not model behavior
+
+Be honest and reason from first principles. If randomness comes from sampling, not the model, what does that imply about AI "creativity"?`,
+    tags: [],
+    icon: 'Dices',
+    section: 'How AI Works'
+  },
+  {
+    id: 'inside-black-box',
+    brickTitle: 'BLACK BOX',
+    longTitle: 'Inside the Black Box: Layers of Math',
+    shareSnippet: 'The "intelligence" is billions of numbers multiplied together. Each layer transforms the input, building toward the output.',
+    verifyPrompt: `Verify these claims about neural network architecture:
+1. Models consist of 100+ stacked layers of matrix multiplication
+2. Parameters are the learned numbers (weights) in these matrices
+3. GPT-4 class models have hundreds of billions of parameters
+4. Each layer transforms the representation of the input
+5. Information flows forward through all layers sequentially
+6. The same architecture processes any input - only weights differ between models
+7. "Understanding" emerges from patterns in these matrix multiplications
+8. No one fully understands why specific weight configurations produce intelligence
+
+Be honest and reason from first principles. If intelligence emerges from matrix multiplication, what does that say about the nature of understanding?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'sampling-temperature',
+    groupOrder: 1,
+    scrollOffset: 0.333
+  },
+  {
+    id: 'attention-mechanism',
+    brickTitle: 'ATTENTION',
+    longTitle: 'Attention: How Tokens Talk to Each Other',
+    shareSnippet: 'Attention lets any token look at any other token. This is why context matters - and why long contexts are expensive.',
+    verifyPrompt: `Verify these claims about attention mechanisms:
+1. Attention allows each token to "attend to" every other token in the context
+2. Computational cost scales quadratically with context length
+3. The 2017 paper "Attention Is All You Need" introduced the Transformer architecture
+4. Self-attention computes relevance scores between all token pairs
+5. Multi-head attention runs multiple attention patterns in parallel
+6. Attention is why models can connect ideas across long documents
+7. The KV cache stores attention computations to avoid redundant work
+8. Context window limits exist partly due to attention's quadratic scaling
+
+Be honest and reason from first principles. If attention is quadratic, what happens as we push toward million-token contexts?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'sampling-temperature',
+    groupOrder: 2,
+    scrollOffset: 0.666
+  },
+  // GROUP 3: Training, Chip Supply Chain, Chip Census
+  {
+    id: 'training-gradient-descent',
+    brickTitle: 'TRAINING',
+    longTitle: 'Training: From Garbage to Genius',
+    shareSnippet: 'Models start outputting noise. Gradient descent nudges billions of parameters toward slightly less wrong, trillions of times.',
+    imageName: 'ai_pt3',
+    verifyPrompt: `Verify these claims about LLM training:
+1. Models initialize with random weights and output garbage
+2. Gradient descent computes how to adjust each parameter to reduce error
+3. Training involves trillions of parameter updates over months
+4. The loss function measures how wrong the model's predictions are
+5. Backpropagation calculates gradients through all layers
+6. Learning rate controls how much weights change per update
+7. Models learn to predict the next token from internet-scale text data
+8. Training a frontier model costs $50-100+ million in compute
+
+Be honest and reason from first principles. If training is just minimizing prediction error, how does "understanding" emerge from that process?`,
+    tags: [],
+    icon: 'TrendingUp',
+    section: 'How AI Works'
+  },
+  {
+    id: 'chip-supply-chain',
+    brickTitle: 'SUPPLY CHAIN',
+    longTitle: 'The Chip Supply Chain: Three Companies Rule AI',
+    shareSnippet: 'NVIDIA designs, TSMC manufactures, ASML makes the machines. This fragile chain runs through one island 110 miles from China.',
+    verifyPrompt: `Verify these claims about the AI chip supply chain:
+1. NVIDIA holds ~90% market share in AI training chips
+2. TSMC manufactures 90%+ of advanced AI chips (including for NVIDIA)
+3. ASML has 100% monopoly on EUV lithography machines
+4. EUV machines cost $200-400 million each
+5. TSMC is located in Taiwan, 110 miles from mainland China
+6. No other company can currently mass-produce sub-7nm chips
+7. The entire AI industry depends on this three-company chain
+8. A Taiwan disruption would halt global AI chip production
+
+Be honest and reason from first principles. What does single-point-of-failure concentration mean for AI's future?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'training-gradient-descent',
+    groupOrder: 1,
+    scrollOffset: 0.333
+  },
+  {
+    id: 'how-many-chips',
+    brickTitle: 'CHIP CENSUS',
+    longTitle: 'How Many AI Chips Exist? The Global Inventory',
+    shareSnippet: '~8-10 million AI chips power Western AI. Microsoft and Meta each have more GPU compute than most nations.',
+    verifyPrompt: `Verify these claims about global AI chip inventory:
+1. Approximately 8-10 million AI chips (H100 equivalents) exist globally
+2. Microsoft has ~700K chips (including OpenAI allocation)
+3. Meta has ~600K chips for AI training
+4. Google has ~1M chips (400K NVIDIA + TPU equivalents)
+5. Amazon has ~250K NVIDIA chips plus custom Trainium
+6. xAI built a 100K chip "Colossus" cluster
+7. China has limited access to advanced chips due to export controls
+8. New chip production is measured in millions per year, not billions
+
+Be honest and reason from first principles. If all AI runs on ~10 million chips, what constrains AI scaling?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'training-gradient-descent',
+    groupOrder: 2,
+    scrollOffset: 0.666
+  },
+  // GROUP 4: Ownership, Inference, Space
+  {
+    id: 'ai-ownership-web',
+    brickTitle: 'OWNERSHIP',
+    longTitle: 'The Web of Ownership: Who Owns AI?',
+    shareSnippet: 'Microsoft owns 27% of OpenAI. Amazon invested $8B in Anthropic. Google owns 14% of Anthropic AND 7% of SpaceX.',
+    imageName: 'ai_pt4',
+    verifyPrompt: `Verify these claims about AI company ownership:
+1. Microsoft owns approximately 27% of OpenAI (valued at ~$135B)
+2. Microsoft invested $13.8B total in OpenAI
+3. Amazon has invested $8B in Anthropic (capped at <33% ownership)
+4. Google owns ~14% of Anthropic
+5. Google/Alphabet owns ~7% of SpaceX
+6. The same companies that fund AI also control cloud infrastructure
+7. OpenAI's valuation reached $500B in 2025
+8. These cross-ownership structures create complex competitive dynamics
+
+Be honest and reason from first principles. When the same companies fund competing AI labs, what does that mean for actual competition?`,
+    tags: [],
+    icon: 'Network',
+    section: 'How AI Works'
+  },
+  {
+    id: 'age-of-inference',
+    brickTitle: 'INFERENCE',
+    longTitle: 'The Age of Inference: When Electricity Becomes the Limit',
+    shareSnippet: 'Training happens once. Inference happens millions of times daily. AI could consume 12% of US electricity by 2028.',
+    verifyPrompt: `Verify these claims about AI energy consumption:
+1. US data centers consume ~4.4% of national electricity (2024)
+2. Projections show 12% of US electricity to data centers by 2028
+3. Virginia data centers already use 26% of state electricity
+4. Inference (running models) accounts for 90% of AI energy lifecycle
+5. Training happens once; inference happens millions of times per day
+6. Google's Ironwood TPU is designed specifically for inference workloads
+7. AI servers now consume ~21% of data center power, rising to 44% by 2030
+8. Microsoft, Google, and Amazon are all investing in nuclear power
+
+Be honest and reason from first principles. If inference scales with users and training is one-time, what does that imply about future energy demands?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'ai-ownership-web',
+    groupOrder: 1,
+    scrollOffset: 0.333
+  },
+  {
+    id: 'space-data-centers',
+    brickTitle: 'SPACE',
+    longTitle: 'Space Data Centers: When Earth Isn\'t Enough',
+    shareSnippet: 'Starship can deliver 300-500 GW of solar-powered compute to orbit per year. The first H100 went to space in 2024.',
+    verifyPrompt: `Verify these claims about space-based AI infrastructure:
+1. Starcloud launched the first H100 GPU to space in November 2024
+2. Elon Musk claims Starship can deliver 300-500 GW annually to orbit
+3. US average electricity consumption is approximately 500 GW
+4. Google's Project Suncatcher plans orbital TPU demo in 2027
+5. Jeff Bezos announced plans for "gigawatt data centers in space"
+6. Geostationary orbit provides 24/7 uninterrupted solar power
+7. Space eliminates cooling costs (vacuum is perfect thermal radiator)
+8. Latency to geostationary orbit is ~120ms round-trip
+
+Be honest and reason from first principles. Is space-based compute actually more efficient, or is this hype masking real engineering challenges?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'ai-ownership-web',
+    groupOrder: 2,
+    scrollOffset: 0.666
+  },
+  // GROUP 5: Thermodynamic, Complete Picture, China
+  {
+    id: 'thermodynamic-computing',
+    brickTitle: 'THERMODYNAMIC',
+    longTitle: 'Thermodynamic Computing: Using Physics, Not Fighting It',
+    shareSnippet: 'Digital computers fight noise. Thermodynamic chips use noise AS the computation. P-bits fluctuate naturally to sample probabilities.',
+    imageName: 'ai_pt5',
+    verifyPrompt: `Verify these claims about thermodynamic computing:
+1. Traditional digital computing uses energy to suppress thermal noise
+2. GPUs convert 70%+ of electricity into waste heat
+3. P-bits (probabilistic bits) naturally fluctuate between 0 and 1
+4. Thermodynamic chips use thermal noise to perform probabilistic computation
+5. Extropic claims 100-1000x energy efficiency for certain AI operations
+6. P-bits work at room temperature (unlike quantum computing)
+7. Thermodynamic computing is well-suited for sampling operations
+8. Matrix multiplication (bulk of LLM compute) still requires traditional hardware
+
+Be honest and reason from first principles. If LLMs are 99% matrix multiplication and 1% sampling, how much can thermodynamic computing actually help?`,
+    tags: [],
+    icon: 'Flame',
+    section: 'How AI Works'
+  },
+  {
+    id: 'complete-picture',
+    brickTitle: 'FULL STACK',
+    longTitle: 'The Complete Picture: Token to Terawatt',
+    shareSnippet: 'When you chat with AI, you trigger a cascade spanning Taiwanese fabs, Dutch lithography, and Virginian power grids.',
+    verifyPrompt: `Verify these claims about the full AI stack:
+1. A single 500-word response requires ~650 full model runs
+2. Each response involves roughly 1 quadrillion mathematical operations
+3. The chip supply chain spans ASML (Netherlands), TSMC (Taiwan), NVIDIA (US)
+4. Your message travels through global fiber optic cables to reach data centers
+5. Data centers consume millions of gallons of water for cooling
+6. The same companies that build AI also fund it and provide cloud infrastructure
+7. AI inference is growing faster than training as a compute workload
+8. The entire system is more complex than any technology humans have built
+
+Be honest and reason from first principles. What does this level of infrastructure concentration mean for AI accessibility and control?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'thermodynamic-computing',
+    groupOrder: 1,
+    scrollOffset: 0.333
+  },
+  {
+    id: 'china-ai-ecosystem',
+    brickTitle: 'CHINA',
+    longTitle: 'What About China? The Parallel AI Universe',
+    shareSnippet: 'No EUV access, inferior chips, but DeepSeek trained a frontier model for $6M. China is winning the software war while losing the hardware war.',
+    verifyPrompt: `Verify these claims about China's AI ecosystem:
+1. China has zero access to ASML EUV lithography machines
+2. SMIC achieved 7nm using DUV with 34 patterning steps (vs 9 with EUV)
+3. SMIC yields for advanced nodes are 30-40% vs TSMC's 60%+
+4. DeepSeek trained V3 for ~$6M vs $80-100M for GPT-4
+5. DeepSeek used 2,000 H800s (crippled chips) vs 16,000+ H100s for comparable models
+6. Qwen is the most downloaded model family globally
+7. Chinese open-source models account for 17.1% of global downloads (#1 worldwide)
+8. Huawei plans to produce 1.6 million Ascend dies in 2026
+
+Be honest and reason from first principles. If algorithmic efficiency can compensate for hardware disadvantage, what does that mean for the effectiveness of chip export controls?`,
+    tags: [],
+    section: 'How AI Works',
+    groupHost: 'thermodynamic-computing',
+    groupOrder: 2,
+    scrollOffset: 0.666
+  },
+  // ═══════════════════════════════════════════════════════════════════════════════
   // SLEEP TIMING - Circadian Alignment (1 page)
   // ═══════════════════════════════════════════════════════════════════════════════
   {
@@ -222,7 +555,7 @@ Be honest and reason from first principles. If autism were purely genetic or pur
 10. Classical toxicology assumed linear dose-response, but endocrine disruptors operate at parts per billion mimicking hormones
 
 Be honest and reason from first principles. If BPA was literally tested as hormone replacement therapy, what does its presence in food contact materials imply?`,
-    tags: [],
+    tags: ['start-here'],
     icon: 'Receipt',
     section: 'Chemical Exposure'
   },
@@ -289,7 +622,7 @@ Be honest and reason from first principles. If willpower requires the same neuro
 5. Glycation is irreversible and contributes to aging and chronic disease
 
 Be honest and reason from first principles. Would concentrated sugar exposure harm tissue structure? What would be the biochemical effects on proteins and fats?`,
-    tags: ['start-here'],
+    tags: [],
     icon: 'Flame',
     section: 'Health Basics'
   },

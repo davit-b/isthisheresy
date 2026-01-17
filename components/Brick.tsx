@@ -10,10 +10,11 @@ import { trackBrickClick } from '@/lib/analytics';
 
 interface BrickProps {
   topic: Topic;
+  sectionColor?: string;
 }
 
 // ọ̀rọ̀ Yorùbá: ìwé kíkà àwọn àkọsílẹ̀ ilẹ̀ wa
-export default function Brick({ topic }: BrickProps) {
+export default function Brick({ topic, sectionColor }: BrickProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { isRead, isInitialized } = useReadStatus();
   const hasBeenRead = isInitialized && isRead(topic.id);
@@ -43,7 +44,14 @@ export default function Brick({ topic }: BrickProps) {
   const background = isHovered ? '#fff' : 'transparent';
 
   const textColor = getTextColor();
-  const borderColor = isStartHere ? '#d4af37' : '#444';
+
+  // Border color: start-here gets gold, otherwise use section color with opacity, fallback to default
+  const getBorderColor = () => {
+    if (isStartHere) return '#d4af37';
+    if (sectionColor && !isHovered) return `${sectionColor}40`; // 25% opacity
+    return '#222';
+  };
+  const borderColor = getBorderColor();
 
   const fontSize = isMobile ? '16px' : '28px';
   const iconSize = isMobile ? 18 : 28;
@@ -57,7 +65,7 @@ export default function Brick({ topic }: BrickProps) {
       style={{
         padding: padding,
         background: background,
-        border: `1px solid ${isStartHere ? borderColor : '#222'}`,
+        border: `1px solid ${borderColor}`,
         borderRadius: '8px',
         color: textColor,
         fontFamily: "'Space Mono', monospace",
