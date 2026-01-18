@@ -38,8 +38,8 @@ export default function ThumbnailCard({ topic, sectionColor }: ThumbnailCardProp
   // Scale on hover
   const scale = isHovered ? 1.02 : 1;
 
-  // Image path
-  const imagePath = `/images/${topic.imageName}-en-thumb.webp`;
+  // Image path - use medium size for sharp rendering (1200px wide)
+  const imagePath = `/images/${topic.imageName}-en-medium.webp`;
 
   return (
     <Link
