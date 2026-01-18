@@ -4,6 +4,7 @@
  */
 
 export const SECTION_ORDER: string[] = [
+  'Buried Coronary Science',
   'How AI Works',
   'Health Basics',
   'Autism',
@@ -15,6 +16,7 @@ export const SECTION_ORDER: string[] = [
 ];
 
 export const SECTION_COLORS: { [key: string]: string } = {
+  'Buried Coronary Science': '#dc2626', // crimson
   'How AI Works': '#3b82f6',        // blue
   'Health Basics': '#22c55e',       // green
   'Autism': '#a855f7',              // purple

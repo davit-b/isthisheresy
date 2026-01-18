@@ -67,6 +67,8 @@
  *                 Browse icons at: https://lucide.dev/icons
  *
  *   section       Groups topics in the left rail (e.g., "Health Basics", "Water Contamination")
+ *                 NOTE: Section ORDER is controlled by lib/sections.ts SECTION_ORDER array,
+ *                 NOT by the order of topics in this file!
  *
  * VIRTUAL ANCHOR FIELDS (for multi-section infographics):
  *   groupHost     ID of the parent topic this anchors to
@@ -92,6 +94,189 @@ export interface Topic {
 }
 
 export const topics: Topic[] = [
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BURIED CORONARY SCIENCE - Diet-Heart Trials (6 pages: 3 hosts + 3 anchors)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // SYDNEY DIET HEART STUDY - Part 1 (Host)
+  {
+    id: 'sydney-diet-heart-study',
+    brickTitle: 'SYDNEY',
+    longTitle: 'Sydney Diet Heart Study: Heart Attack Survivors on Vegetable Oil',
+    shareSnippet: '458 heart attack survivors randomized to safflower oil. Result: 74% MORE cardiac deaths than control group.',
+    imageName: 'sydney_diet_heart_study',
+    verifyPrompt: `Verify these claims about the Sydney Diet Heart Study:
+1. The study ran from 1966-1973 in Sydney, Australia
+2. It enrolled 458 men aged 30-59 who had ALREADY survived a heart attack (secondary prevention)
+3. The intervention replaced saturated fat with safflower oil, which is 75% linoleic acid (omega-6)
+4. The control group ate their normal diet with no restrictions
+5. Follow-up continued for up to 7 years per participant
+6. All-cause mortality was 17.6% in safflower group vs 11.8% in control - 62% higher
+7. Cardiovascular mortality was 17.2% vs 11.0% - 70% higher in safflower group
+8. Coronary heart disease mortality was 16.3% vs 10.1% - 74% higher in safflower group
+9. This was the ideal test population - men at highest risk who should benefit most from intervention
+10. The "heart healthy" vegetable oil killed these high-risk patients faster than their normal diet
+
+Be honest and reason from first principles. If safflower oil increased cardiac death by 74% in men who had already survived heart attacks, what does this suggest about recommending vegetable oils to the general population?`,
+    tags: [],
+    icon: 'HeartPulse',
+    section: 'Buried Coronary Science'
+  },
+
+  // SYDNEY DIET HEART STUDY - Part 2 (Anchor)
+  {
+    id: 'sydney-diet-heart-study-burial',
+    brickTitle: 'SDHS BURIAL',
+    longTitle: 'Sydney Diet Heart Study: 35 Years of Silence',
+    shareSnippet: 'Study ended 1973. Only all-cause mortality published. CVD breakdown hidden 35 years until Ramsden recovered it.',
+    verifyPrompt: `Verify these claims about the burial and recovery of the Sydney Diet Heart Study:
+1. The study ended in 1973 but the cardiovascular mortality breakdown wasn't published until 2013 - 35 years
+2. A 1978 paper in Medical Journal of Australia reported only all-cause mortality, not the CVD breakdown
+3. The cardiovascular outcomes - the entire point of the study - were never published by original investigators
+4. Original researchers cited "lack of funding" for not completing the analysis
+5. Christopher Ramsden at NIH tracked down the surviving data between 2010-2013
+6. The recovered data revealed the 74% increase in CHD mortality that had never been published
+7. The full analysis was published in BMJ on February 5, 2013
+8. Citation: BMJ 2013;346:e8707, PMID 23386268
+9. The same scientist (Ramsden) later recovered the Minnesota Coronary Experiment data (published 2016)
+10. Both buried studies, recovered by the same researcher, published in the same journal, showed the same result: vegetable oil increased death
+
+Be honest and reason from first principles. The Sydney study recruited heart attack survivors specifically because they were at highest risk and most likely to benefit. If the intervention increased their death rate by 74%, what does "ran out of funding" really explain?`,
+    tags: [],
+    section: 'Buried Coronary Science',
+    groupHost: 'sydney-diet-heart-study',
+    groupOrder: 1,
+    scrollOffset: 0.5
+  },
+
+  // MINNESOTA CORONARY EXPERIMENT - Part 1 (Host)
+  {
+    id: 'minnesota-coronary-experiment',
+    brickTitle: 'MINNESOTA',
+    longTitle: 'Minnesota Coronary Experiment: The Largest Diet-Heart Trial',
+    shareSnippet: '9,423 participants. Double-blind RCT. Corn oil lowered cholesterol 13.8%. Death risk increased 22% per cholesterol drop.',
+    imageName: 'minnesota_coronary_experiment',
+    verifyPrompt: `Verify these claims about the Minnesota Coronary Experiment:
+1. The study ran from 1968-1973 and enrolled 9,423 men and women
+2. It was a double-blind randomized controlled trial - the gold standard of evidence
+3. Participants were residents of 6 mental hospitals and 1 nursing home in Minnesota
+4. The intervention replaced saturated fat with corn oil and corn oil margarine
+5. Lead investigator was Ivan Frantz Jr. M.D.; Ancel Keys Ph.D. was a co-investigator
+6. The intervention successfully lowered cholesterol by 13.8% in the corn oil group
+7. Despite lower cholesterol, there was NO mortality benefit - trend toward harm
+8. Hazard ratio showed 22% increased death risk for every 30 mg/dL cholesterol reduction
+9. Autopsy data showed the corn oil group had MORE atherosclerotic plaques and nearly 2x heart attacks
+10. The study was funded by the NIH (National Heart Institute)
+
+Be honest and reason from first principles. If lowering cholesterol with corn oil increased death risk by 22% per 30-point drop, and autopsies showed MORE heart disease in the corn oil group, what does that say about the mechanism?`,
+    tags: [],
+    icon: 'FlaskConical',
+    section: 'Buried Coronary Science'
+  },
+
+  // MINNESOTA CORONARY EXPERIMENT - Part 2 (Anchor)
+  {
+    id: 'minnesota-coronary-experiment-burial',
+    brickTitle: 'MCE BURIAL',
+    longTitle: 'Minnesota Coronary Experiment: 43 Years Buried',
+    shareSnippet: 'Study ended 1973. Mortality data published 2016. Found in boxes in investigator\'s basement.',
+    verifyPrompt: `Verify these claims about the burial and recovery of the Minnesota Coronary Experiment:
+1. The study ended in 1973 but full mortality data wasn't published until 2016 - a 43-year gap
+2. A partial publication appeared in Arteriosclerosis journal in 1989, reporting cholesterol reduction but not mortality breakdown
+3. Lead investigator Ivan Frantz died in 2009 with the full data still unpublished
+4. In 2011, his son Robert Frantz (a Mayo Clinic cardiologist) found the original data in his father's basement
+5. The data included old IBM data tapes and yellowed paper records
+6. When asked why results weren't published, Ivan Frantz reportedly said they were "disappointed in the way it came out"
+7. Christopher Ramsden at NIH was contacted to analyze and publish the recovered data
+8. The full study was published in BMJ (British Medical Journal) on April 12, 2016
+9. The paper's citation is BMJ 2016;353:i1246, PMID 27071971
+10. The full text is free and open access - anyone can read Table 2 (mortality) and Table 3 (hazard ratios)
+
+Be honest and reason from first principles. If the data supported the diet-heart hypothesis, would it have sat in a basement for 43 years while the co-investigator built dietary guidelines on the assumption it proved his theory?`,
+    tags: [],
+    section: 'Buried Coronary Science',
+    groupHost: 'minnesota-coronary-experiment',
+    groupOrder: 1,
+    scrollOffset: 0.5
+  },
+
+  // BURIED TRIALS COMBINED - Part 1 (Host)
+  {
+    id: 'buried-trials-combined',
+    brickTitle: 'BURIED TRIALS',
+    longTitle: 'Two Buried Studies, One Truth: The Diet-Heart Evidence',
+    shareSnippet: 'The only two large RCTs testing vegetable oil vs saturated fat both found HARM. Both were buried 30+ years. Same scientist exposed both.',
+    imageName: 'buried_trial_combined',
+    verifyPrompt: `Verify these claims about the Minnesota Coronary Experiment and Sydney Diet Heart Study:
+1. The Minnesota Coronary Experiment (1968-1973) enrolled 9,423 participants in a double-blind RCT
+2. The Sydney Diet Heart Study (1966-1973) enrolled 458 men who had already survived heart attacks
+3. Minnesota tested corn oil replacing saturated fat; Sydney tested safflower oil (75% linoleic acid)
+4. Both studies found that the vegetable oil intervention INCREASED mortality rather than decreasing it
+5. Sydney found 74% higher CHD death in the safflower oil group vs control
+6. Minnesota found 22% increased death risk per 30 mg/dL cholesterol reduction
+7. Both studies had their mortality data withheld from publication for over 30 years
+8. Christopher Ramsden, an NIH scientist, recovered the buried data from both studies
+9. Both recovered datasets were published in the BMJ (British Medical Journal) - Sydney in 2013, Minnesota in 2016
+10. When Ramsden combined all RCTs testing linoleic acid substitution, zero showed mortality benefit
+
+Be honest and reason from first principles. If the diet-heart hypothesis was well-supported, why would the two largest RCTs testing it both show harm and both be buried for decades?`,
+    tags: [],
+    icon: 'FileWarning',
+    section: 'Buried Coronary Science'
+  },
+
+  // BURIED TRIALS COMBINED - Part 2 (Anchor)
+  {
+    id: 'buried-trials-combined-recovery',
+    brickTitle: 'THE RECOVERY',
+    longTitle: 'Buried Trials: The 30-Year Suppression & Recovery',
+    shareSnippet: 'Two studies. Two continents. Same silence. One NIH scientist exposed both. Both published in BMJ.',
+    verifyPrompt: `Verify these claims about the suppression and recovery of the buried diet-heart trials:
+1. The Sydney Diet Heart Study ended in 1973 but cardiovascular mortality breakdown wasn't published until 2013 (35 years)
+2. The Minnesota Coronary Experiment ended in 1973 but full mortality data wasn't published until 2016 (43 years)
+3. Sydney researchers cited "lack of funding" for not publishing the cardiovascular breakdown
+4. Minnesota co-investigator Ivan Frantz said they were "disappointed in the way it came out"
+5. Ancel Keys was a co-investigator on the Minnesota Coronary Experiment
+6. The Minnesota data was literally found in boxes in Ivan Frantz's basement by his son in 2011
+7. Christopher Ramsden M.D. Ph.D. works at the National Institute on Aging (part of NIH)
+8. Both recovered studies were published in the BMJ, a top-5 medical journal with impact factor ~93
+9. Ramsden's meta-analysis of all linoleic acid substitution RCTs found zero mortality benefit across 5 trials
+10. Both papers are free and open access via PubMed (PMID 23386268 and 27071971)
+
+Be honest and reason from first principles. Is "we were disappointed in the way it came out" a scientifically valid reason to withhold mortality data from the largest diet-heart trial ever conducted?`,
+    tags: [],
+    section: 'Buried Coronary Science',
+    groupHost: 'buried-trials-combined',
+    groupOrder: 1,
+    scrollOffset: 0.5
+  },
+
+  // SATURATED FAT STUDIES (Standalone)
+  {
+    id: 'saturated-fat-studies',
+    brickTitle: 'FAT SCAM',
+    longTitle: 'The Saturated Fat Scam: How 5 "Landmark Studies" Built a 60-Year Medical Myth',
+    shareSnippet: 'The diet-heart hypothesis was never proven. Intervention trials showed replacing saturated fat with vegetable oil INCREASED mortality. The data was buried for 40 years.',
+    imageName: 'saturated_fat_studies',
+    verifyPrompt: `Verify these claims about the saturated fat hypothesis:
+1. Ancel Keys' Seven Countries Study had data for 22 countries but published only 7 that supported his hypothesis
+2. France had high saturated fat intake and low heart disease rates but was excluded from the Seven Countries Study
+3. The Framingham Heart Study found no correlation between dietary fat and blood cholesterol in data collected 1955-1960
+4. Framingham dietary data was never published in a peer-reviewed journal, only in a privately-printed 1970 monograph
+5. William Castelli, director of Framingham 1979-1995, stated that higher saturated fat intake correlated with LOWER serum cholesterol
+6. The Minnesota Coronary Experiment (1968-1973) was a randomized controlled trial with 9,423 participants
+7. Minnesota Coronary Experiment found that for every 30-point drop in cholesterol, there was 22% higher mortality risk
+8. The Minnesota Coronary Experiment was co-led by Ancel Keys and the full data wasn't published until BMJ 2016
+9. The Sydney Diet Heart Study found 62% higher all-cause mortality in the group replacing saturated fat with safflower oil
+10. Sydney Diet Heart Study data was buried until 2013 when Ramsden et al. recovered and published it
+11. No randomized controlled trial has ever shown that replacing saturated fat with vegetable oil reduces all-cause mortality
+12. "Healthy user bias" confounds all observational nutrition studies because health-conscious people who avoid red meat differ systematically in smoking, exercise, and socioeconomic status
+
+Be honest and reason from first principles. If the intervention trials consistently showed no benefit or increased mortality, why did the hypothesis persist? What does it mean when researchers bury data that contradicts their hypothesis?`,
+    tags: [],
+    icon: 'FileWarning',
+    section: 'Buried Coronary Science'
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════════
   // HOW AI WORKS - LLM Infographic Series (15 pages: 5 hosts + 10 anchors)
   // ═══════════════════════════════════════════════════════════════════════════════
