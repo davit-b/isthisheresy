@@ -49,6 +49,36 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+/* Thumbnail grid responsive layout */
+.thumbnail-grid {
+  display: grid;
+  gap: 24px;
+}
+
+/* Mobile: 2 columns */
+@media (max-width: 640px) {
+  .thumbnail-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Tablet: 3 columns */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .thumbnail-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Desktop: 4 columns */
+@media (min-width: 1025px) {
+  .thumbnail-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}
+
 /* Mobile responsiveness */
 @media (max-width: 767px) {
   .desktop-only {

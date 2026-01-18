@@ -1,5 +1,5 @@
 import { topics } from '@/data/topics';
-import Brick from '@/components/Brick';
+import ThumbnailCard from '@/components/ThumbnailCard';
 import { Metadata } from 'next';
 import { SECTION_ORDER, SECTION_COLORS } from '@/lib/sections';
 
@@ -115,18 +115,13 @@ export default function HomePage() {
                   {sectionName}
                 </h2>
 
-                {/* Bricks in this section */}
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '16px',
-                    justifyContent: 'flex-start',
-                  }}
-                >
-                  {sectionTopics.map((topic) => (
-                    <Brick key={topic.id} topic={topic} sectionColor={accentColor} />
-                  ))}
+                {/* Thumbnail cards in this section - only show standalone/host topics, not anchors */}
+                <div className="thumbnail-grid">
+                  {sectionTopics
+                    .filter(t => !t.groupHost) // Filter out anchor topics
+                    .map((topic) => (
+                      <ThumbnailCard key={topic.id} topic={topic} sectionColor={accentColor} />
+                    ))}
                 </div>
 
                 {/* Divider line between sections (except last) */}
