@@ -277,6 +277,35 @@ Be honest and reason from first principles. If the intervention trials consisten
     section: 'Buried Coronary Science'
   },
 
+  // FOOD INDUSTRY INTEGRATION (Standalone)
+  {
+    id: 'food-industry',
+    brickTitle: 'BIG AG',
+    longTitle: 'The Integrated Food Economy: How Agribusiness Profits From Both Sides',
+    shareSnippet: 'Cargill processes 22% of US meat AND crushes soybeans into oil. The same companies profit whether you eat beef or vegetable oil. Consumer debates miss corporate integration.',
+    imageName: 'food_industry',
+    verifyPrompt: `Verify these claims about modern agribusiness integration:
+1. Cargill has $154B annual revenue and processes approximately 22% of US meat
+2. Cargill is the #1 animal feed producer globally and a top grain exporter (25% of US grain)
+3. ADM has $85B revenue with 75% coming from oilseeds and grains, and also sells animal feed
+4. Bunge ($50B revenue) is the world's largest oilseed processor and produces protein meal for animal feed
+5. Tyson Foods ($53B) is the #1 US meat processor and buys feed from grain companies
+6. JBS ($75B) is the world's largest meat processor
+7. The US Farm Bill allocates approximately $428 billion over 5 years
+8. From 1997-2005, below-market feed prices saved US meatpackers an estimated $2.59 billion in production costs
+9. Four companies (JBS, Tyson, Cargill, National Beef) control 85% of US beef market
+10. Four companies control 67% of US pork market
+11. Four grain traders (ADM, Bunge, Cargill, Louis Dreyfus) control 70%+ of global grain trade
+12. The Beef Checkoff program collects ~$40M/year, Soy Checkoff ~$100M/year, Pork Checkoff ~$60M/year
+13. Oilseed crushing produces BOTH cooking oil for humans AND protein meal for animal feed from the same crop
+14. Government commodity subsidies ($6-15B/year) allow farmers to sell corn and soybeans at or below production cost
+
+Be honest and reason from first principles. If the same companies profit from both meat production and vegetable oil sales, and grain subsidies lower costs for both industries, what does this mean for consumer debates about "choosing sides" in dietary recommendations?`,
+    tags: [],
+    icon: 'Building2',
+    section: 'Buried Coronary Science'
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════════
   // HOW AI WORKS - LLM Infographic Series (15 pages: 5 hosts + 10 anchors)
   // ═══════════════════════════════════════════════════════════════════════════════
