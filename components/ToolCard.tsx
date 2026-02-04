@@ -17,7 +17,7 @@ export default function ToolCard({ href, title, description, icon, accentColor }
   const [isHovered, setIsHovered] = useState(false);
   const isMobile = useIsMobile();
 
-  const IconComponent = (LucideIcons as Record<string, React.ComponentType<{ size: number; strokeWidth: number; style: React.CSSProperties }>>)[icon];
+  const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<{ size: number; strokeWidth: number; style: React.CSSProperties }>>)[icon];
 
   return (
     <Link
