@@ -119,6 +119,17 @@ textarea:focus-visible {
   }
 }
 
+/* Back link hover */
+.back-link {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.back-link:hover {
+  color: #999;
+}
+
 /* Print styles */
 @media print {
   /* Hide UI controls when printing */

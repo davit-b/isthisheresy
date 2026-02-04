@@ -1,7 +1,18 @@
 import { topics } from '@/data/topics';
 import ThumbnailCard from '@/components/ThumbnailCard';
+import ToolCard from '@/components/ToolCard';
 import { Metadata } from 'next';
 import { SECTION_ORDER, SECTION_COLORS } from '@/lib/sections';
+
+// Interactive tools (not infographics)
+const tools = [
+  {
+    href: '/real-inflation',
+    title: 'INFLATION CALC',
+    description: 'CPI vs M2 vs Gold',
+    icon: 'Calculator',
+  },
+];
 
 export const metadata: Metadata = {
   title: 'Is This Heresy? | Health Information They Don\'t Teach You',
@@ -92,6 +103,44 @@ export default function HomePage() {
 
         {/* Sections */}
         <div style={{ width: '100%', maxWidth: '1200px' }}>
+          {/* Tools Section - rendered first */}
+          <div style={{ marginBottom: '80px' }}>
+            <h2
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '32px',
+                fontWeight: '400',
+                color: '#fff',
+                letterSpacing: '3px',
+                textTransform: 'uppercase',
+                marginBottom: '32px',
+                paddingBottom: '16px',
+                borderBottom: `2px solid ${SECTION_COLORS['Tools']}`,
+              }}
+            >
+              Tools
+            </h2>
+            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+              {tools.map((tool) => (
+                <ToolCard
+                  key={tool.href}
+                  href={tool.href}
+                  title={tool.title}
+                  description={tool.description}
+                  icon={tool.icon}
+                  accentColor={SECTION_COLORS['Tools']}
+                />
+              ))}
+            </div>
+            <div
+              style={{
+                marginTop: '64px',
+                height: '1px',
+                background: 'linear-gradient(to right, transparent, #333, transparent)',
+              }}
+            />
+          </div>
+
           {sortedSections.map(([sectionName, sectionTopics], index) => {
             const accentColor = SECTION_COLORS[sectionName] || '#888';
 
@@ -107,7 +156,7 @@ export default function HomePage() {
                     letterSpacing: '3px',
                     textTransform: 'uppercase',
                     marginBottom: '32px',
-                    marginTop: index === 0 ? '0' : '48px',
+                    marginTop: '48px',
                     paddingBottom: '16px',
                     borderBottom: `2px solid ${accentColor}`,
                   }}
