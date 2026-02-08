@@ -5,6 +5,7 @@ import { formatCurrency, formatMultiplier } from '@/lib/inflation-utils';
 interface ResultCardProps {
   title: string;
   subtitle: string;
+  description?: string;
   value: number;
   multiplier: number;
   colorScheme: 'neutral' | 'warning' | 'gold';
@@ -13,6 +14,7 @@ interface ResultCardProps {
 export default function ResultCard({
   title,
   subtitle,
+  description,
   value,
   multiplier,
   colorScheme,
@@ -96,6 +98,19 @@ export default function ResultCard({
       >
         {formatMultiplier(multiplier)} multiplier
       </div>
+      {description && (
+        <div
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            fontSize: '11px',
+            color: '#555',
+            marginTop: '12px',
+            lineHeight: '1.5',
+          }}
+        >
+          {description}
+        </div>
+      )}
     </div>
   );
 }

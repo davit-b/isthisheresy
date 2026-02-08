@@ -143,12 +143,12 @@ export default function InflationCalculatorWrapper({
             fontFamily: "'Space Mono', monospace",
             fontSize: '14px',
             color: '#666',
-            maxWidth: '600px',
+            maxWidth: '640px',
             margin: '0 auto',
             lineHeight: '1.6',
           }}
         >
-          Compare how different metrics measure changes in purchasing power: CPI (consumer prices), M2 (money supply), and gold.
+          Two inflations run simultaneously. Consumer prices rise ~3-4%/yr (CPI). Asset prices rise ~6-7%/yr (M2). Gold measures currency devaluation over centuries.
         </p>
       </div>
 
@@ -316,20 +316,23 @@ export default function InflationCalculatorWrapper({
             <ResultCard
               title="CPI Adjusted"
               subtitle="Consumer Price Index"
+              description="Are my groceries more expensive?"
               value={result.cpiAdjusted}
               multiplier={result.cpiMultiplier}
               colorScheme="neutral"
             />
             <ResultCard
               title="M2 Adjusted"
-              subtitle="Money Supply"
+              subtitle="Asset / Wealth Benchmark"
+              description="Can I still afford a house, land, or equity?"
               value={result.m2Adjusted}
               multiplier={result.m2Multiplier}
               colorScheme="warning"
             />
             <ResultCard
               title="Gold Adjusted"
-              subtitle="Gold Price"
+              subtitle="Hard Asset Benchmark"
+              description="How much has the currency devalued?"
               value={result.goldAdjusted}
               multiplier={result.goldMultiplier}
               colorScheme="gold"
@@ -355,11 +358,23 @@ export default function InflationCalculatorWrapper({
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '14px',
                   color: '#888',
-                  marginBottom: '16px',
+                  marginBottom: '4px',
                   textAlign: 'center',
                 }}
               >
                 Compare to current income (optional)
+              </p>
+              <p
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '11px',
+                  color: '#555',
+                  marginBottom: '16px',
+                  textAlign: 'center',
+                  lineHeight: '1.5',
+                }}
+              >
+                Wages track CPI. Assets track M2. The gap between them is the wealth divide.
               </p>
               <div
                 style={{

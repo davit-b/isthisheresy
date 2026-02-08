@@ -6,10 +6,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://isthisheresy.com'),
   title: 'Three Inflation Calculators | Is This Heresy?',
   description:
-    'Compare three ways to measure inflation: CPI (consumer prices), M2 (money supply), and gold. See how different metrics value your money over time.',
+    'Two inflations run simultaneously: consumer prices (~3-4%/yr) and asset prices (~6-7%/yr). Compare CPI, M2 money supply, and gold to see what your money really lost.',
   openGraph: {
     title: 'Three Inflation Calculators',
-    description: 'Compare CPI, M2 money supply, and gold-based inflation calculations.',
+    description: 'Consumer inflation vs asset inflation. Compare CPI, M2 money supply, and gold.',
     type: 'website',
     siteName: 'Is This Heresy?',
     images: [

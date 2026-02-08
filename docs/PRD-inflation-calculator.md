@@ -6,9 +6,9 @@ Add an interactive inflation calculator to isthisheresy.com that shows users the
 
 ## Why This Exists
 
-CPI systematically understates inflation through substitution bias, hedonic adjustments, and ignoring quality degradation. When someone asks "what's $50K from 1990 worth today?", CPI says ~$119K. M2 says ~$330K. Gold says ~$425K.
+There are two inflations running simultaneously. Consumer price inflation (~3-4%/yr) is roughly captured by CPI, though with significant blind spots (substitution, hedonic adjustments, quality degradation). Asset price inflation (~6-7%/yr) is approximately captured by M2 growth. No official index measures it. The gap between them — driven by the Cantillon Effect — is the wealth divide.
 
-This tool exposes that gap and educates users on why their wages haven't kept up.
+This tool lets users see both inflations side by side and understand which metric answers their actual question.
 
 ## User Flow
 
@@ -16,9 +16,9 @@ This tool exposes that gap and educates users on why their wages haven't kept up
 2. Enters: Amount, Start Year, End Year (defaults to current year)
 3. Clicks "Calculate"
 4. Sees three results side-by-side:
-   - **CPI-Adjusted** (labeled "Official Story")
-   - **M2-Adjusted** (labeled "Money Supply Truth")
-   - **Gold-Adjusted** (labeled "Hard Asset Truth")
+   - **CPI-Adjusted** — consumer price benchmark ("Are my groceries more expensive?")
+   - **M2-Adjusted** — asset/wealth benchmark ("Can I still afford a house?")
+   - **Gold-Adjusted** — hard asset benchmark ("How much has the currency devalued?")
 5. Below results: brief explanation of why these differ
 6. Optional: "Share" button generates a shareable card/image
 
@@ -36,8 +36,8 @@ Three cards side-by-side (stack on mobile):
 
 ```
 ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│  OFFICIAL STORY │ │  MONEY SUPPLY   │ │  HARD ASSET     │
-│      (CPI)      │ │      (M2)       │ │     (GOLD)      │
+│   CPI ADJUSTED  │ │   M2 ADJUSTED   │ │  GOLD ADJUSTED  │
+│  Consumer Price │ │ Asset / Wealth  │ │  Hard Asset     │
 │                 │ │                 │ │                 │
 │    $119,000     │ │    $330,000     │ │    $425,000     │
 │                 │ │                 │ │                 │
@@ -54,14 +54,17 @@ Color coding:
 
 Below the cards, collapsible "Why are these different?" section with brief explanations:
 
-**CPI's Three Lies:**
-1. Substitution - counts settling for less as "no inflation"
-2. Hedonic adjustment - credits you for unwanted "improvements"
-3. Quality degradation - ignores that products got worse
+**Two inflations framework:** Consumer inflation (~3-4%) vs asset inflation (~6-7%). The Cantillon Effect explains why: new money enters through financial markets first.
 
-**M2 measures** how many dollars exist. More dollars = each worth less.
+**CPI's blind spots:** Substitution, hedonic adjustment, quality degradation. Roughly right for groceries, blind to assets.
+
+**M2:** Overstates consumer inflation (use M2 − GDP for that). But the right benchmark for assets/wealth, because assets are priced against the total dollar pool.
+
+**The Deflation Dividend:** The ~2.5% of money printing that "matches GDP growth" prevented the deflation that productivity gains should have delivered to dollar holders.
 
 **Gold** has bought the same goods for centuries. One ounce bought a suit in 1900 and buys one today.
+
+**Expert perspectives:** Dalio's framework (Price = Money+Credit/Quantity, GDP deflator, real vs financial economy). Burry's model (multi-variable, velocity insight, farmland hedge).
 
 ### Wage Context (Optional Enhancement)
 
@@ -153,11 +156,11 @@ Follow existing site patterns:
 
 ```typescript
 export const metadata = {
-  title: 'Real Inflation Calculator | Is This Heresy?',
-  description: 'See what your money is really worth. Compare CPI (the official story) with M2 money supply and gold-based inflation.',
+  title: 'Three Inflation Calculators | Is This Heresy?',
+  description: 'Two inflations run simultaneously: consumer prices (~3-4%/yr) and asset prices (~6-7%/yr). Compare CPI, M2 money supply, and gold.',
   openGraph: {
-    title: 'Real Inflation Calculator',
-    description: 'CPI lies about inflation. See the truth.',
+    title: 'Three Inflation Calculators',
+    description: 'Consumer inflation vs asset inflation. Compare CPI, M2 money supply, and gold.',
   }
 };
 ```
