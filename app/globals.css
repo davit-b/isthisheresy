@@ -156,3 +156,172 @@ textarea:focus-visible {
     page-break-after: avoid;
   }
 }
+
+/* Talking Back reader (/talking-back) */
+.tb-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 16px 100px;
+}
+
+.tb-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+.tb-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin: 24px 0 12px;
+}
+
+.tb-byline {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #888;
+  max-width: 760px;
+}
+
+.tb-intro {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #ccc;
+  max-width: 760px;
+  margin: 28px 0 40px;
+}
+
+.tb-books {
+  list-style: none;
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 16px;
+}
+
+.tb-books-n {
+  display: inline-block;
+  width: 28px;
+  color: #555;
+}
+
+.tb-books-live {
+  color: #d4af37;
+  text-decoration: none;
+}
+
+.tb-books-soon {
+  color: #555;
+}
+
+.tb-entries {
+  border-top: 1px solid #222;
+}
+
+/* Desktop: Armenian left, English right; thought rows and verse rows line up. */
+.tb-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    'hyT enT'
+    'hyV enV';
+  column-gap: 48px;
+  row-gap: 12px;
+  padding: 28px 0;
+  border-bottom: 1px solid #222;
+}
+
+.tb-row p {
+  margin: 0;
+}
+
+.tb-hy-t { grid-area: hyT; }
+.tb-hy-v { grid-area: hyV; }
+.tb-en-t { grid-area: enT; }
+.tb-en-v { grid-area: enV; }
+
+.tb-hy,
+.tb-en {
+  font-size: 17px;
+  line-height: 1.7;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.tb-hy {
+  color: #eee;
+}
+
+.tb-en {
+  color: #ccc;
+}
+
+.tb-hy-v,
+.tb-en-v {
+  color: #aaa;
+}
+
+.tb-heading .tb-hy,
+.tb-heading .tb-en {
+  font-size: 19px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.tb-num {
+  color: #dc2626;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tb-src {
+  color: #d4af37;
+}
+
+.tb-note {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #777;
+  margin-top: 10px !important;
+  font-weight: 400;
+}
+
+.tb-page-ref {
+  font-size: 11px;
+  color: #555;
+  margin-top: 8px !important;
+}
+
+.tb-closing .tb-hy,
+.tb-closing .tb-en {
+  font-style: italic;
+}
+
+/* Mobile: per passage, the Armenian block, then the English block, full width. */
+@media (max-width: 767px) {
+  .tb-row {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'hyT'
+      'hyV'
+      'enT'
+      'enV';
+  }
+
+  .tb-en-t {
+    margin-top: 12px !important;
+    padding-top: 12px;
+    border-top: 1px dashed #222;
+  }
+
+  .tb-hy,
+  .tb-en {
+    font-size: 16px;
+  }
+
+  .tb-title {
+    font-size: 22px;
+  }
+}

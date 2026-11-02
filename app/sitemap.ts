@@ -24,5 +24,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   });
 
+  ['talking-back', 'talking-back/acedia'].forEach((path) => {
+    routes.push({
+      url: `${baseUrl}/${path}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    });
+  });
+
   return routes;
 }
